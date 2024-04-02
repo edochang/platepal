@@ -66,4 +66,13 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    //anna - add constraint layout, appbar layout
+    implementation("androidx.constraintlayout:constraintlayout:2.2.0-alpha13")
+    implementation(libs.material)
+
+    //anna - nav_graph
+    implementation(libs.androidx.navigation.fragment.ktx)
+    implementation(libs.androidx.navigation.ui.ktx)
+
 }
