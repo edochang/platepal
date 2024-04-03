@@ -15,5 +15,7 @@
     <color name="baby_pink">#F7E9D8</color>
     <color name="light_teal">#D7EBCA</color>
     <color name="teal">#B8E6C1</color>
+    <color name="text_color">#7B7575</color>
+
 
 </resources>

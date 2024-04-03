@@ -67,9 +67,10 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
-    //anna - add constraint layout, appbar layout
+    //anna - add constraint layout, appbar layout, swipe refresh
     implementation("androidx.constraintlayout:constraintlayout:2.2.0-alpha13")
     implementation(libs.material)
+    implementation(libs.androidx.swiperefreshlayout)
 
     //anna - nav_graph
     implementation(libs.androidx.navigation.fragment.ktx)
