@@ -10,8 +10,11 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.PlatePal"
+        android:theme="@style/AppTheme.NoActionBar"
         tools:targetApi="31">
+        <!--original android:theme="@style/Theme.PlatePal"-->
+        <!--reddit uses android:theme="@style/AppTheme.NoActionBar"-->
+        <!--doc uses android:theme="@style/Theme.AppCompat.Light.NoActionBar"-->
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -23,6 +26,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
     </application>
 
 </manifest>
