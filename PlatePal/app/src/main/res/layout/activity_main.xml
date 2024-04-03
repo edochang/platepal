@@ -5,7 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    tools:layout="@layout/content_main" >
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -14,11 +15,21 @@
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
-            android:layout_gravity="fill_horizontal"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
+            android:layout_height="wrap_content"
             android:background="@color/orange"
             app:popupTheme="@style/AppTheme.PopupOverlay">
+            <!-- using downloadable fons w/ google play services -->
+            <!--https://developer.android.com/develop/ui/views/text-and-emoji/downloadable-fonts -->
+            <TextView
+                android:id="@+id/appTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/dancing_script_bold"
+                android:gravity="center_vertical"
+                android:text="@string/app_name"
+                android:textColor="@color/white"
+                android:textSize="32sp" />
         </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
 
