@@ -30,14 +30,15 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
     }
     buildFeatures {
         compose = true
+        viewBinding = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
@@ -68,7 +69,7 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
 
     //anna - add constraint layout, appbar layout, swipe refresh
-    implementation("androidx.constraintlayout:constraintlayout:2.2.0-alpha13")
+    implementation(libs.androidx.constraintlayout)
     implementation(libs.material)
     implementation(libs.androidx.swiperefreshlayout)
 
