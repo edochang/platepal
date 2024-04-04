@@ -7,6 +7,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import com.example.platepal.databinding.ActivityMainBinding
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
     private lateinit var navController : NavController
@@ -31,5 +32,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(activityMainBinding.root)
         activityMainBinding.toolbar.setTitle("")
         setSupportActionBar(activityMainBinding.toolbar)
+
+        val navView: BottomNavigationView = activityMainBinding.contentMain.navView
+        navView.itemIconTintList = null
+
     }
 }
