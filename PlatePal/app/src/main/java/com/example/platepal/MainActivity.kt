@@ -48,7 +48,7 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.setDisplayShowTitleEnabled(false) //disable title in bar
 
         //probably not the best way to navigate, but it works for now
-        val navView: BottomNavigationView = binding.contentMain.navView
+        val navView: BottomNavigationView = binding.navView
         navView.setOnItemSelectedListener { menuItem->
             when(menuItem.itemId){
                 R.id.navigation_discover -> {

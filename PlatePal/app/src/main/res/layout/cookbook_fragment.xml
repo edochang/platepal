@@ -9,7 +9,7 @@
 
     <androidx.cardview.widget.CardView
         xmlns:card_view="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/card_view"
+        android:id="@+id/cookbook_card_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         card_view:cardCornerRadius="10dp"
@@ -20,7 +20,7 @@
         card_view:cardBackgroundColor="@color/baby_pink"
         >
         <EditText
-            android:id="@+id/actionSearch"
+            android:id="@+id/cookbook_action_search"
             android:layout_width="wrap_content"
             android:minEms="16"
             android:layout_height="wrap_content"
@@ -46,7 +46,7 @@
         />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewGrid"
+        android:id="@+id/cookbook_rv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:scrollbars="vertical"
