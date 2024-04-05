@@ -3,22 +3,22 @@
 
     <item
         android:id="@+id/navigation_discover"
-        android:icon="@drawable/discover_selector"
+        android:icon="@drawable/ic_discover"
         android:title="@string/nav_discover" />
 
     <item
         android:id="@+id/navigation_cookbook"
-        android:icon="@drawable/cookbook_selector"
+        android:icon="@drawable/ic_cookbook"
         android:title="@string/nav_cookbook" />
 
     <item
         android:id="@+id/navigation_create"
-        android:icon="@drawable/create_selector"
+        android:icon="@drawable/ic_create"
         android:title="@string/nav_create" />
 
     <item
         android:id="@+id/navigation_community"
-        android:icon="@drawable/community_selector"
+        android:icon="@drawable/ic_community"
         android:title="@string/nav_community" />
 
 </menu>
