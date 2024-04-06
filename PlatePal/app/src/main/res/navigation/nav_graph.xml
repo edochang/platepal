@@ -12,4 +12,23 @@
             android:name="com.example.platepal.ui.DiscoverFragment"
             android:label="Home" >
     </fragment>
+
+    <fragment
+        android:id="@+id/cookbookFragment"
+        android:name="com.example.platepal.ui.CookbookFragment"
+        android:label="Cookbook" >
+    </fragment>
+
+    <fragment
+        android:id="@+id/createFragment"
+        android:name="com.example.platepal.ui.CreateFragment"
+        android:label="Create" >
+    </fragment>
+
+    <fragment
+        android:id="@+id/communityFragment"
+        android:name="com.example.platepal.ui.CommunityFragment"
+        android:label="Community" >
+    </fragment>
+
 </navigation>

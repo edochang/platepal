@@ -11,6 +11,7 @@
 
     <!--platepal palette-->
     <color name="orange">#F28E28</color>
+    <color name="dark_orange">#f27528</color>
     <color name="light_yellow">#FEE274</color>
     <color name="baby_pink">#F7E9D8</color>
     <color name="light_teal">#D7EBCA</color>

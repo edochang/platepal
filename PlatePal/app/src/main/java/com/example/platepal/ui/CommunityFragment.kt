@@ -1,15 +1,15 @@
 package com.example.platepal.ui
 
 import android.os.Bundle
+import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import com.example.platepal.R
-import com.example.platepal.databinding.DiscoverFragmentBinding
+import com.example.platepal.databinding.CommunityFragmentBinding
 
-class DiscoverFragment: Fragment() {
-    private var _binding: DiscoverFragmentBinding? = null
+class CommunityFragment : Fragment() {
+    private var _binding: CommunityFragmentBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -18,7 +18,7 @@ class DiscoverFragment: Fragment() {
         savedInstanceState: Bundle?
     ): View {
         // Inflate the layout for this fragment
-        _binding = DiscoverFragmentBinding.inflate(inflater, container, false)
+        _binding = CommunityFragmentBinding.inflate(inflater, container, false)
         return binding.root
     }
 
