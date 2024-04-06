@@ -7,16 +7,12 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
-import androidx.navigation.findNavController
 import com.example.platepal.databinding.ActivityMainBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
-import androidx.navigation.ui.setupWithNavController
 import com.example.platepal.ui.DiscoverFragment
 import com.example.platepal.ui.CookbookFragment
-import com.example.platepal.ui.CreateFragment
+import com.example.platepal.ui.create.CreateFragment
 import com.example.platepal.ui.CommunityFragment
 
 class MainActivity : AppCompatActivity() {
