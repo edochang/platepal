@@ -77,4 +77,8 @@ dependencies {
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
 
+    // Networking and Data Handling (e.g., JSON)
+    implementation(libs.retrofit)
+    implementation(libs.moshi)
+
 }
