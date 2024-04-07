@@ -4,13 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/notes_fragment"
+    android:id="@+id/directions_fragment"
     tools:context=".MainActivity"
     >
 
     <androidx.cardview.widget.CardView
         xmlns:card_view="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/notes_card_view"
+        android:id="@+id/directions_card_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         card_view:cardCornerRadius="10dp"
@@ -21,10 +21,10 @@
         card_view:cardBackgroundColor="@color/teal">
 
         <EditText
-            android:id="@+id/notes_edit_text"
+            android:id="@+id/directions_edit_text"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:hint="Add notes"
+            android:hint="Add directions"
             android:gravity="top|start"
             android:background="@android:color/transparent"
             />

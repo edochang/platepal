@@ -6,10 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.platepal.R
-import com.example.platepal.databinding.NotesFragmentBinding
+import com.example.platepal.databinding.IngredientsFragmentBinding
 
 class Ingredients : Fragment() {
-    private var _binding: NotesFragmentBinding? = null
+    private var _binding: IngredientsFragmentBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -18,7 +18,7 @@ class Ingredients : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         // Inflate the layout for this fragment
-        _binding = NotesFragmentBinding.inflate(inflater, container, false)
+        _binding = IngredientsFragmentBinding.inflate(inflater, container, false)
         return binding.root
     }
 
