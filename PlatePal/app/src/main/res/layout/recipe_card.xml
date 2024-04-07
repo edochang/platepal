@@ -15,7 +15,7 @@
             card_view:cardMaxElevation="2dp"
             card_view:cardElevation="1dp"
             android:layout_gravity="center"
-            card_view:cardBackgroundColor="#FFFFFF"
+            card_view:cardBackgroundColor="@android:color/transparent"
             >
 
         <RelativeLayout

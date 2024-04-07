@@ -28,7 +28,6 @@ class CreateFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d(javaClass.simpleName, "onViewCreated")
-        // XXX Write me.  Set title based on current subreddit
 
         val fragmentsList = arrayListOf(Ingredients(), Directions(), Notes())
 
