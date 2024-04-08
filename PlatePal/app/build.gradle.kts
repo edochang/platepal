@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
+    alias(libs.plugins.jetbrainsKotlinKapt)
 }
 
 android {
@@ -80,5 +81,10 @@ dependencies {
     // Networking and Data Handling (e.g., JSON)
     implementation(libs.retrofit)
     implementation(libs.moshi)
+
+    // Glide
+    implementation(libs.bumptech.glide.glide)
+    kapt(libs.bumptech.glide.compiler)
+    kapt(libs.androidx.annotation)
 
 }
