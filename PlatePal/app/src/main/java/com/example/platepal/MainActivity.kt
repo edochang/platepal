@@ -39,7 +39,6 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
-
         //activityMainBinding.toolbar.setTitle("") didn't work
         supportActionBar?.setDisplayShowTitleEnabled(false) //disable title in bar
 
