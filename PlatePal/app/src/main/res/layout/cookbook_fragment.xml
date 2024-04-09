@@ -55,4 +55,16 @@
         android:scrollbars="vertical"
         />
 
+    <TextView
+        android:id="@+id/placeholder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="No recipes saved in cookbook"
+        android:textStyle="bold"
+        android:textSize="15sp"
+        android:layout_marginTop="10dp"
+        android:layout_gravity="center"
+        android:textColor="@color/text_color"
+        />
+
 </androidx.appcompat.widget.LinearLayoutCompat>

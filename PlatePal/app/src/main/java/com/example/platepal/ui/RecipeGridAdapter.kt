@@ -9,6 +9,7 @@ import com.example.platepal.api.SpoonacularRecipe
 import com.google.android.material.snackbar.Snackbar
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.DiffUtil
+import com.example.platepal.R
 import com.example.platepal.databinding.RecipeCardBinding
 import edu.cs371m.reddit.glide.Glide
 
@@ -34,6 +35,27 @@ class RecipeGridAdapter(private val viewModel: MainViewModel)
         cardBinding.recipeTitle.text = item.title
         Glide.glideFetch(item.image, item.image, cardBinding.recipeImage)
         Log.d(javaClass.simpleName, "onBindViewHolder")
+
+        //favorites for discover RV
+        cardBinding.heart.setOnClickListener{
+            item.let {
+                if (viewModel.isFavorite(it)) {
+                    viewModel.removeFavorite(it)
+                    Log.d("removeFavItem", position.toString())
+                    notifyDataSetChanged()
+                } else {
+                    viewModel.addFavorite(it)
+                    Log.d("addFavItem", position.toString())
+                    notifyDataSetChanged()
+                }
+            }
+        }
+
+        if (viewModel.isFavorite(item)) {
+            cardBinding.heart.setImageResource(R.drawable.ic_heart_filled)
+        } else {
+            cardBinding.heart.setImageResource(R.drawable.ic_heart_empty)
+        }
 
     }
 
