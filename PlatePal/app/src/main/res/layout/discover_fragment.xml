@@ -11,26 +11,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
+    <androidx.cardview.widget.CardView
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/discover_card_view"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="#FFFFFFFF"
+        card_view:cardCornerRadius="10dp"
+        card_view:cardMaxElevation="2dp"
+        card_view:cardElevation="1dp"
+        android:layout_gravity="center"
+        android:layout_margin="10dp"
+        card_view:cardBackgroundColor="@color/baby_pink"
         >
-
-        <androidx.cardview.widget.CardView
-            xmlns:card_view="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/discover_card_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            card_view:cardCornerRadius="10dp"
-            card_view:cardMaxElevation="2dp"
-            card_view:cardElevation="1dp"
-            android:layout_gravity="center"
-            android:layout_margin="10dp"
-            card_view:cardBackgroundColor="@color/baby_pink"
-            >
             
             <EditText
                 android:id="@+id/discover_action_search"
@@ -46,7 +38,16 @@
                 android:inputType="text"
                 android:background="@color/baby_pink"
                 android:padding="8dp" />
-        </androidx.cardview.widget.CardView>
+    </androidx.cardview.widget.CardView>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
         <TextView
             android:layout_width="wrap_content"
@@ -61,50 +62,67 @@
         <androidx.cardview.widget.CardView
             xmlns:card_view="http://schemas.android.com/apk/res-auto"
             android:id="@+id/discover_spotlight_card_view"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             card_view:cardCornerRadius="8dp"
             card_view:cardMaxElevation="2dp"
             card_view:cardElevation="1dp"
             android:layout_gravity="center"
-            card_view:cardBackgroundColor="#FFFFFF"
+            android:layout_margin="10dp"
+            card_view:cardBackgroundColor="@color/light_yellow"
             >
 
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical">
 
-                <ImageView
-                    android:id="@+id/discover_recipe_image"
+                <RelativeLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:adjustViewBounds="true"
-                    android:scaleType="fitCenter"
-                    />
+                    android:layout_gravity="center"
+                    >
 
-                <ImageButton
-                    android:id="@+id/discover_heart"
-                    android:layout_width="wrap_content"
+                    <ImageView
+                        android:id="@+id/spotlight_recipe_image"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:adjustViewBounds="true"
+                        android:scaleType="fitCenter"
+                        android:contentDescription="Recipe in Spotlight"
+                        android:maxWidth="200dp"
+                        android:maxHeight="200dp"
+                        />
+
+                    <ImageButton
+                        android:id="@+id/spotlight_heart"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBottom="@+id/spotlight_recipe_image"
+                        android:layout_alignEnd="@+id/spotlight_recipe_image"
+                        android:src="@drawable/ic_heart_empty"
+                        android:backgroundTint="@android:color/transparent"
+                        />
+
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/spotlight_recipe_title"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignBottom="@+id/discover_recipe_image"
-                    android:layout_alignEnd="@+id/discover_recipe_image"
-                    android:src="@drawable/ic_heart_empty"
+                    android:textColor="#000"
+                    android:textSize="15sp"
+                    android:layout_margin="5dp"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:fontFamily="sans-serif-condensed"
+                    android:text="To be replaced"
+                    android:maxLines="1"
                     />
+            </LinearLayout>
 
-            </RelativeLayout>
-
-            <TextView
-                android:id="@+id/discover_recipe_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="#000"
-                android:textSize="20sp"
-                android:layout_margin="5dp"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:fontFamily="sans-serif-condensed"
-                />
         </androidx.cardview.widget.CardView>
 
         <TextView
@@ -124,6 +142,8 @@
             android:scrollbars="vertical"
             />
 
-    </LinearLayout>
+        </LinearLayout>
+
+    </ScrollView>
 
 </androidx.appcompat.widget.LinearLayoutCompat>

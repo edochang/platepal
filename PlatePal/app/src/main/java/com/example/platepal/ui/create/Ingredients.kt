@@ -1,4 +1,4 @@
-package com.example.platepal.ui
+package com.example.platepal.ui.create
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -6,10 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.platepal.R
-import com.example.platepal.databinding.CreateFragmentBinding
+import com.example.platepal.databinding.IngredientsFragmentBinding
 
-class CreateFragment : Fragment() {
-    private var _binding: CreateFragmentBinding? = null
+class Ingredients : Fragment() {
+    private var _binding: IngredientsFragmentBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -18,7 +18,7 @@ class CreateFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         // Inflate the layout for this fragment
-        _binding = CreateFragmentBinding.inflate(inflater, container, false)
+        _binding = IngredientsFragmentBinding.inflate(inflater, container, false)
         return binding.root
     }
 

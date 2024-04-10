@@ -3,6 +3,7 @@ import java.util.Properties
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
+    alias(libs.plugins.jetbrainsKotlinKapt)
 }
 
 android {
@@ -90,6 +91,11 @@ dependencies {
     //anna - nav_graph
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
+
+    // Glide
+    implementation(libs.bumptech.glide.glide)
+    kapt(libs.bumptech.glide.compiler)
+    kapt(libs.androidx.annotation)
 
     // Coroutines
     implementation(libs.kotlinx.coroutines.core)
