@@ -13,6 +13,12 @@ material = "1.11.0"
 navigationFragmentKtx = "2.7.7"
 navigationUiKtx = "2.7.7"
 swiperefreshlayout = "1.1.0"
+retrofit = "2.11.0"
+moshi = "1.15.1"
+glide = "4.16.0"
+compiler = "4.16.0"
+annotation = "1.7.1"
+
 
 [libraries]
 androidx-constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "constraintlayout" }
@@ -35,7 +41,16 @@ androidx-navigation-fragment-ktx = { group = "androidx.navigation", name = "navi
 androidx-navigation-ui-ktx = { group = "androidx.navigation", name = "navigation-ui-ktx", version.ref = "navigationUiKtx" }
 androidx-swiperefreshlayout = { group = "androidx.swiperefreshlayout", name = "swiperefreshlayout", version.ref = "swiperefreshlayout" }
 
+#Glide
+bumptech-glide-glide = {group = "com.github.bumptech.glide", name = "glide", version.ref = "glide"}
+bumptech-glide-compiler = {group = "com.github.bumptech.glide", name = "compiler", version.ref = "compiler"}
+androidx-annotation = {group = "androidx.annotation", name = "annotation", version.ref = "annotation"}
+
+# Networking and Data Handling
+retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
+moshi = { group = "com.squareup.moshi", name = "moshi", version.ref = "moshi" }
+
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 jetbrainsKotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-
+jetbrainsKotlinKapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }

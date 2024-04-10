@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">PlatePal</string>
+
+    <!-- bottom nav bar -->
+    <string name="nav_discover">Discover</string>
+    <string name="nav_cookbook">Cookbook</string>
+    <string name="nav_create">Create</string>
+    <string name="nav_community">Community</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
 </resources>
