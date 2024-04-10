@@ -14,7 +14,7 @@
     <androidx.cardview.widget.CardView
         xmlns:card_view="http://schemas.android.com/apk/res-auto"
         android:id="@+id/discover_card_view"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         card_view:cardCornerRadius="10dp"
         card_view:cardMaxElevation="2dp"
@@ -24,20 +24,17 @@
         card_view:cardBackgroundColor="@color/baby_pink"
         >
             
-            <EditText
+            <androidx.appcompat.widget.SearchView
                 android:id="@+id/discover_action_search"
-                android:layout_width="wrap_content"
-                android:minEms="16"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
-                android:layout_gravity="center"
-                android:hint="Search new recipe"
                 android:textColor="@color/text_color"
-                android:autofillHints=""
-                android:imeOptions="actionSearch"
-                android:inputType="text"
-                android:background="@color/baby_pink"
-                android:padding="8dp" />
+                android:padding="8dp"
+                app:queryHint="Search new recipe..."
+                app:queryBackground="@color/baby_pink"
+                card_view:iconifiedByDefault="false"
+                />
     </androidx.cardview.widget.CardView>
 
     <ScrollView
@@ -50,6 +47,7 @@
             android:orientation="vertical">
 
         <TextView
+            android:id="@+id/spotlight_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Spotlight"
@@ -61,7 +59,7 @@
 
         <androidx.cardview.widget.CardView
             xmlns:card_view="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/discover_spotlight_card_view"
+            android:id="@+id/spotlight_card_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             card_view:cardCornerRadius="8dp"
@@ -100,11 +98,10 @@
                         android:id="@+id/spotlight_heart"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignBottom="@+id/spotlight_recipe_image"
+                        android:layout_alignTop="@+id/spotlight_recipe_image"
                         android:layout_alignEnd="@+id/spotlight_recipe_image"
-                        android:src="@drawable/ic_heart_empty"
                         android:backgroundTint="@android:color/transparent"
-                        />
+                        android:src="@drawable/ic_heart_empty" />
 
                 </RelativeLayout>
 
@@ -126,6 +123,7 @@
         </androidx.cardview.widget.CardView>
 
         <TextView
+            android:id="@+id/popular_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Popular"

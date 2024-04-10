@@ -9,35 +9,56 @@ import com.example.platepal.api.Repository
 
 class MainViewModel: ViewModel() {
     private var repository = Repository()
-    // Maintain a list of all Data items
+    // Maintain a list of all Recipe items
     private var list = repository.fetchData()
 
+    // get a random recipe
+    private var randomRecipe = repository.fetchRandomRecipe()
+
+
     //favorite (cookbook)
-    private val favList = mutableListOf<SpoonacularRecipe>()
-    private val favListLive = MutableLiveData<List<SpoonacularRecipe>>()
+    private val favList = MutableLiveData<List<SpoonacularRecipe>>().apply{
+        postValue(mutableListOf())
+    }
+
+    fun getCopyOfRecipeList(): MutableList<SpoonacularRecipe> {
+        return list.toMutableList()
+    }
+
+    fun getRandomRecipe(): SpoonacularRecipe {
+        return randomRecipe
+    }
 
 
     //Favorites
-    fun isFavorite(favItem: SpoonacularRecipe): Boolean {
-        return favList.contains(favItem)
-    }
-    fun addFavorite(favItem: SpoonacularRecipe) {
-        favList.add(favItem)
-    }
-    fun removeFavorite(favItem: SpoonacularRecipe) {
-        favList.remove(favItem)
+    fun setFavoriteRecipe(recipe: SpoonacularRecipe, isFavorite: Boolean){
+        if (isFavorite){
+            //add favorite recipe
+            favList.apply{
+                this.value?.let{
+                    val tempFavList = it.toMutableList()
+                    tempFavList.add(recipe)
+                    this.value = tempFavList
+                }
+            }
+        } else {
+            //remove favorite recipe
+            favList.apply{
+                this.value?.let{
+                    val tempFavList = it.toMutableList()
+                    tempFavList.remove(recipe)
+                    this.value = tempFavList
+                }
+            }
+        }
     }
 
-    fun setFavList(){
-        favListLive.value = favList
-    }
-
-    fun faveListSize(): Int{
-        return favList.size
+    fun isFavoriteRecipe(recipe: SpoonacularRecipe): Boolean? {
+        return favList.value?.contains(recipe)
     }
 
     fun observeFavListLive(): LiveData<List<SpoonacularRecipe>> {
-        return favListLive
+        return favList
     }
 
 

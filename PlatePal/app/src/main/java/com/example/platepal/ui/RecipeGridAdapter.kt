@@ -37,24 +37,24 @@ class RecipeGridAdapter(private val viewModel: MainViewModel)
         Log.d(javaClass.simpleName, "onBindViewHolder")
 
         //favorites for discover RV
-        cardBinding.heart.setOnClickListener{
-            item.let {
-                if (viewModel.isFavorite(it)) {
-                    viewModel.removeFavorite(it)
-                    Log.d("removeFavItem", position.toString())
-                    notifyDataSetChanged()
-                } else {
-                    viewModel.addFavorite(it)
-                    Log.d("addFavItem", position.toString())
-                    notifyDataSetChanged()
-                }
-            }
+        viewModel.isFavoriteRecipe(item)?.let{
+            if (it) cardBinding.heart.setImageResource(R.drawable.ic_heart_filled)
+            else cardBinding.heart.setImageResource(R.drawable.ic_heart_empty)
         }
 
-        if (viewModel.isFavorite(item)) {
-            cardBinding.heart.setImageResource(R.drawable.ic_heart_filled)
-        } else {
-            cardBinding.heart.setImageResource(R.drawable.ic_heart_empty)
+        cardBinding.heart.setOnClickListener{
+            //Log.d(javaClass.simpleName, "heart clicklistener")
+            viewModel.isFavoriteRecipe(item)?.let{
+                if(it){
+                    viewModel.setFavoriteRecipe(item, false)
+                    cardBinding.heart.setImageResource(R.drawable.ic_heart_empty)
+                    //Log.d(javaClass.simpleName, "set heart to empty")
+                } else{
+                    viewModel.setFavoriteRecipe(item, true)
+                    cardBinding.heart.setImageResource(R.drawable.ic_heart_filled)
+                    //Log.d(javaClass.simpleName, "set heart to filled")
+                }
+            }
         }
 
     }

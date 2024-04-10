@@ -27,18 +27,23 @@ class CookbookFragment : Fragment() {
         val layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         binding.cookbookRv.layoutManager = layoutManager
 
-        viewModel.setFavList()
         viewModel.observeFavListLive().observe(viewLifecycleOwner){
+            if (it.isNotEmpty()){
+                binding.placeholder.visibility = View.GONE
+                //Log.d(javaClass.simpleName, "placeholder view gone")
+            }
+            else {
+                binding.placeholder.visibility = View.VISIBLE
+                //Log.d(javaClass.simpleName, "placeholder view visible")
+            }
+
             adapter.submitList(it)
         }
 
         //issue: placeholder does not reappear when favlist is emptied on cookbook page
         //placeholder msg only appears when we first go to the cookbook page w/ an empty favlist
         //could try putting this code in the adapter? Perhaps in a lambda?
-        if (viewModel.faveListSize() > 0)
-            binding.placeholder.visibility = View.GONE
-        else
-            binding.placeholder.visibility = View.VISIBLE
+
 
     }
 
@@ -53,7 +58,7 @@ class CookbookFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        Log.d(javaClass.simpleName, "onViewCreated")
+        //Log.d(javaClass.simpleName, "onViewCreated")
         _binding = CookbookFragmentBinding.bind(view)
         super.onViewCreated(view, savedInstanceState)
 
