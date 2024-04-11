@@ -14,7 +14,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.platepal.R
-import com.example.platepal.api.SpoonacularRecipe
+import com.example.platepal.data.SpoonacularRecipe
 import com.example.platepal.databinding.DiscoverFragmentBinding
 import edu.cs371m.reddit.glide.Glide
 import androidx.navigation.fragment.findNavController

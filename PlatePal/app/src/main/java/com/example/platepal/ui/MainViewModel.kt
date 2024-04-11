@@ -3,17 +3,17 @@ package com.example.platepal.ui
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.platepal.api.SpoonacularRecipe
-import com.example.platepal.api.Repository
+import com.example.platepal.data.SpoonacularRecipe
+import com.example.platepal.data.DummyRepository
 
 
 class MainViewModel: ViewModel() {
-    private var repository = Repository()
+    private var dummyRepository = DummyRepository()
     // Maintain a list of all Recipe items
-    private var list = repository.fetchData()
+    private var list = dummyRepository.fetchData()
 
     // get a random recipe
-    private var randomRecipe = repository.fetchRandomRecipe()
+    private var randomRecipe = dummyRepository.fetchRandomRecipe()
 
 
     //favorite (cookbook)
