@@ -1,5 +1,5 @@
 [versions]
-agp = "8.3.1"
+agp = "8.3.2"
 constraintlayout = "2.2.0-alpha13"
 kotlin = "1.9.0"
 coreKtx = "1.12.0"
@@ -18,6 +18,7 @@ moshi = "1.15.1"
 glide = "4.16.0"
 compiler = "4.16.0"
 annotation = "1.7.1"
+navigation = "2.7.7"
 
 
 [libraries]
@@ -54,3 +55,5 @@ moshi = { group = "com.squareup.moshi", name = "moshi", version.ref = "moshi" }
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 jetbrainsKotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 jetbrainsKotlinKapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
+androidxNavigationSafeargs = { id = "androidx.navigation.safeargs.kotlin", version.ref = "navigation" }
+

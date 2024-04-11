@@ -24,16 +24,14 @@
         card_view:cardBackgroundColor="@color/baby_pink"
         >
             
-            <androidx.appcompat.widget.SearchView
+            <TextView
                 android:id="@+id/discover_action_search"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
                 android:textColor="@color/text_color"
                 android:padding="8dp"
-                app:queryHint="Search new recipe..."
-                app:queryBackground="@color/baby_pink"
-                card_view:iconifiedByDefault="false"
+                android:text="Search new recipe..."
                 />
     </androidx.cardview.widget.CardView>
 

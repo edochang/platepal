@@ -2,11 +2,9 @@ package com.example.platepal.ui
 
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.platepal.api.SpoonacularRecipe
-import com.google.android.material.snackbar.Snackbar
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import com.example.platepal.R
@@ -14,8 +12,8 @@ import com.example.platepal.databinding.RecipeCardBinding
 import edu.cs371m.reddit.glide.Glide
 
 
-class RecipeGridAdapter(private val viewModel: MainViewModel)
-    : ListAdapter<SpoonacularRecipe, RecipeGridAdapter.VH>(RecipeDiff())
+class RecipeAdapter(private val viewModel: MainViewModel)
+    : ListAdapter<SpoonacularRecipe, RecipeAdapter.VH>(RecipeDiff())
 {
 
     inner class VH(val recipeCardBinding: RecipeCardBinding)

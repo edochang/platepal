@@ -12,7 +12,7 @@
 
     <androidx.cardview.widget.CardView
         xmlns:card_view="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/cookbook_card_view"
+        android:id="@+id/discover_card_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         card_view:cardCornerRadius="10dp"
@@ -22,44 +22,26 @@
         android:layout_margin="10dp"
         card_view:cardBackgroundColor="@color/baby_pink"
         >
-        <TextView
-            android:id="@+id/cookbook_action_search"
+
+        <androidx.appcompat.widget.SearchView
+            android:id="@+id/discover_action_search"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:textColor="@color/text_color"
             android:padding="8dp"
-            android:text="Search cookbook..."
+            app:queryHint="Search new recipe..."
+            app:queryBackground="@color/baby_pink"
+            card_view:iconifiedByDefault="false"
             />
     </androidx.cardview.widget.CardView>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="My Cookbook"
-        android:textStyle="bold"
-        android:textSize="20sp"
-        android:layout_marginTop="10dp"
-        android:layout_gravity="center"
-        />
-
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/cookbook_rv"
+        android:id="@+id/search_rv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:scrollbars="vertical"
         />
 
-    <TextView
-        android:id="@+id/placeholder"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="No recipes saved in cookbook"
-        android:textStyle="bold"
-        android:textSize="15sp"
-        android:layout_marginTop="10dp"
-        android:layout_gravity="center"
-        android:textColor="@color/text_color"
-        />
 
 </androidx.appcompat.widget.LinearLayoutCompat>

@@ -2,12 +2,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/nav_inbox"
+        android:id="@+id/inboxFragment"
         android:title="inbox"
         app:showAsAction="ifRoom"
         android:icon="@drawable/ic_chat"/>
     <item
-        android:id="@+id/nav_profile"
+        android:id="@+id/profileFragment"
         android:title="profile"
         app:showAsAction="ifRoom"
         android:icon="@drawable/ic_profile"/>

@@ -9,15 +9,16 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
-import androidx.compose.ui.text.toLowerCase
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.platepal.R
 import com.example.platepal.api.SpoonacularRecipe
 import com.example.platepal.databinding.DiscoverFragmentBinding
 import edu.cs371m.reddit.glide.Glide
-import java.util.Locale
+import androidx.navigation.fragment.findNavController
+import com.example.platepal.ui.DiscoverFragmentDirections
 
 class DiscoverFragment: Fragment() {
     private var _binding: DiscoverFragmentBinding? = null
@@ -41,7 +42,7 @@ class DiscoverFragment: Fragment() {
         Log.d(javaClass.simpleName, "onViewCreated")
 
         //bind adapter
-        val adapter = RecipeGridAdapter(viewModel)
+        val adapter = RecipeAdapter(viewModel)
         binding.discoverRv.adapter = adapter
 
         // grid layout for RecyclerView
@@ -77,28 +78,18 @@ class DiscoverFragment: Fragment() {
             }
         }
 
-        //hide the spotlight when search view icon is clicked
+        //click into search page
         binding.discoverActionSearch.setOnClickListener{
-            //how to make spotlight disappear when searching?
-            //the following code works but then they wouldn't reappear after search is done
-            binding.spotlightText.visibility = View.GONE
-            binding.spotlightCardView.visibility = View.GONE
-            binding.popularText.visibility = View.GONE
-            Log.d(javaClass.simpleName, "searchView.setOnClickListener")
+            val action = DiscoverFragmentDirections.actionDiscoverToSearch()
+            findNavController().navigate(action)
         }
 
-        //hide the spotlight when the edit text part of search view is clicked
-        binding.discoverActionSearch.setOnQueryTextFocusChangeListener{ _, _ ->
-            binding.spotlightText.visibility = View.GONE
-            binding.spotlightCardView.visibility = View.GONE
-            binding.popularText.visibility = View.GONE
-            Log.d(javaClass.simpleName, "searchView.setOnQueryTextFocusChangeListener")
-        }
 
         //make spotlight reappear after search but doesn't work
         //binding.spotlightText.visibility = View.VISIBLE
         //binding.spotlightCardView.visibility = View.VISIBLE
 
+        /*
         //search
         binding.discoverActionSearch.setOnQueryTextListener(object: SearchView.OnQueryTextListener{
             override fun onQueryTextSubmit(query: String?): Boolean {
@@ -116,10 +107,11 @@ class DiscoverFragment: Fragment() {
                 return true
             }
         })
+         */
     }
 
     //search
-    private fun filterList(query: String?, adapter: RecipeGridAdapter){
+    private fun filterList(query: String?, adapter: RecipeAdapter){
 
         if (query != null){
             val filteredList =  mutableListOf<SpoonacularRecipe>()
