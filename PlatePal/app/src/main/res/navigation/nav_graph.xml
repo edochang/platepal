@@ -18,6 +18,13 @@
         android:id="@+id/searchFragment"
         android:name="com.example.platepal.ui.SearchFragment"
         android:label="Search" >
+
+        <argument
+            android:name="hint"
+            app:argType="string"
+            android:defaultValue="Search Recipe..."
+            />
+
     </fragment>
 
     <fragment

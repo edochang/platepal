@@ -1,4 +1,4 @@
-package com.example.platepal.ui.create
+package com.example.platepal.ui
 
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.fragment.app.Fragment

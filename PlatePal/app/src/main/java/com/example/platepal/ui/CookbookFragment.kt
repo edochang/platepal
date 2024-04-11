@@ -11,6 +11,10 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.platepal.databinding.CookbookFragmentBinding
 
 class CookbookFragment : Fragment() {
+    companion object {
+        const val searchHint = "Search cookbook..."
+    }
+
     private var _binding: CookbookFragmentBinding? = null
     private val binding get() = _binding!!
     private val viewModel: MainViewModel by activityViewModels()
@@ -30,7 +34,9 @@ class CookbookFragment : Fragment() {
         _binding = CookbookFragmentBinding.bind(view)
         super.onViewCreated(view, savedInstanceState)
 
-        val adapter = RecipeAdapter(viewModel)
+        viewModel.setTitle("PlatePal")
+
+        val adapter = RecipeAdapter(viewModel){}
         binding.cookbookRv.adapter = adapter
 
         // grid layout for RecyclerView
@@ -52,7 +58,7 @@ class CookbookFragment : Fragment() {
 
         //click into search page
         binding.cookbookActionSearch.setOnClickListener{
-            val action = CookbookFragmentDirections.actionCookbookToSearch()
+            val action = CookbookFragmentDirections.actionCookbookToSearch(searchHint)
             findNavController().navigate(action)
         }
     }

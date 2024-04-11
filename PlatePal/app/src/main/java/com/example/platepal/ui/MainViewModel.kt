@@ -8,9 +8,14 @@ import com.example.platepal.data.DummyRepository
 
 
 class MainViewModel: ViewModel() {
+
+    //dummy repo
     private var dummyRepository = DummyRepository()
     // Maintain a list of all Recipe items
     private var list = dummyRepository.fetchData()
+
+    //title of the fragment
+    private var title = MutableLiveData<String>()
 
     // get a random recipe
     private var randomRecipe = dummyRepository.fetchRandomRecipe()
@@ -61,5 +66,11 @@ class MainViewModel: ViewModel() {
         return favList
     }
 
+    fun observeTitle(): LiveData<String> {
+        return title
+    }
+    fun setTitle(newTitle: String) {
+        title.value = newTitle
+    }
 
 }

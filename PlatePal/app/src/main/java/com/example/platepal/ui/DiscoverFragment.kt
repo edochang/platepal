@@ -21,6 +21,10 @@ import androidx.navigation.fragment.findNavController
 import com.example.platepal.ui.DiscoverFragmentDirections
 
 class DiscoverFragment: Fragment() {
+    companion object {
+        const val searchHint = "Search new recipe..."
+    }
+
     private var _binding: DiscoverFragmentBinding? = null
     private val binding get() = _binding!!
     private val viewModel: MainViewModel by activityViewModels()
@@ -40,9 +44,10 @@ class DiscoverFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d(javaClass.simpleName, "onViewCreated")
+        viewModel.setTitle("PlatePal")
 
         //bind adapter
-        val adapter = RecipeAdapter(viewModel)
+        val adapter = RecipeAdapter(viewModel){}
         binding.discoverRv.adapter = adapter
 
         // grid layout for RecyclerView
@@ -80,62 +85,14 @@ class DiscoverFragment: Fragment() {
 
         //click into search page
         binding.discoverActionSearch.setOnClickListener{
-            val action = DiscoverFragmentDirections.actionDiscoverToSearch()
+            val action = DiscoverFragmentDirections.actionDiscoverToSearch(searchHint)
             findNavController().navigate(action)
         }
 
-
-        //make spotlight reappear after search but doesn't work
-        //binding.spotlightText.visibility = View.VISIBLE
-        //binding.spotlightCardView.visibility = View.VISIBLE
-
-        /*
-        //search
-        binding.discoverActionSearch.setOnQueryTextListener(object: SearchView.OnQueryTextListener{
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                //hides keyboard when submitted a query
-                //but does not hide keybarod when submitting empty query
-                binding.discoverActionSearch.clearFocus()
-                //binding.spotlightText.visibility = View.VISIBLE
-                //binding.spotlightCardView.visibility = View.VISIBLE
-                //binding.popularText.visibility = View.VISIBLE
-                return false
-            }
-
-            override fun onQueryTextChange(newText: String?): Boolean {
-                filterList(newText, adapter)
-                return true
-            }
-        })
-         */
-    }
-
-    //search
-    private fun filterList(query: String?, adapter: RecipeAdapter){
-
-        if (query != null){
-            val filteredList =  mutableListOf<SpoonacularRecipe>()
-            for (i in viewModel.getCopyOfRecipeList()){
-                if (i.title.lowercase().contains(query)) {
-                    filteredList.add(i)
-                }
-            }
-            if (filteredList.isEmpty()){
-                Toast.makeText(activity, "No data found", Toast.LENGTH_LONG).show()
-            }else{
-                adapter.submitList(filteredList) // how is this going to work with staggered RV?
-            }
+        binding.spotlightRecipeImage.setOnClickListener{
+            //val action = DiscoverFragmentDirections.actionDiscoverToOneRecipe(single)
+            //findNavController().navigate(action)
         }
-    }
-
-    private fun hideKeyboard(binding: DiscoverFragmentBinding) {
-        val imm = activity?.getSystemService(AppCompatActivity.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(view?.windowToken, 0)
-
-        binding.spotlightText.visibility = View.VISIBLE
-        binding.spotlightCardView.visibility = View.VISIBLE
-        binding.popularText.visibility = View.VISIBLE
-        Log.d(javaClass.simpleName, "hide keyboard")
 
     }
 

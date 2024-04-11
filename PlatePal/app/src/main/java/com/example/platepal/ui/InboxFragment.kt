@@ -5,12 +5,15 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import com.example.platepal.R
+import com.example.platepal.databinding.CommunityFragmentBinding
 import com.example.platepal.databinding.InboxFragmentBinding
 
 class InboxFragment : Fragment() {
     private var _binding: InboxFragmentBinding? = null
     private val binding get() = _binding!!
+    private val viewModel: MainViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -20,6 +23,21 @@ class InboxFragment : Fragment() {
         // Inflate the layout for this fragment
         _binding = InboxFragmentBinding.inflate(inflater, container, false)
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        //Log.d(javaClass.simpleName, "onViewCreated")
+        _binding = InboxFragmentBinding.bind(view)
+        super.onViewCreated(view, savedInstanceState)
+
+        viewModel.setTitle("Inbox")
+
+
+    }
+
+    override fun onDestroyView() {
+        _binding = null
+        super.onDestroyView()
     }
 
 }

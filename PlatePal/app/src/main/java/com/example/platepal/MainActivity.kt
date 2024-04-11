@@ -1,34 +1,33 @@
 package com.example.platepal
 
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
-import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.MenuProvider
-import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
-import androidx.navigation.Navigation
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import com.example.platepal.databinding.ActivityMainBinding
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.onNavDestinationSelected
-import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.example.platepal.ui.MainViewModel
 
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding : ActivityMainBinding
     private lateinit var navController : NavController
     private lateinit var appBarConfiguration: AppBarConfiguration
+    private val viewModel: MainViewModel by viewModels()
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.bottom_nav_menu, menu)
-        return super.onCreateOptionsMenu(menu)
+        //menuInflater.inflate(R.menu.bottom_nav_menu, menu)
+        //super.onCreateOptionsMenu(menu)
+        return false  // gets rid of the 3-dot options menu on action bar
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -76,6 +75,14 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
+    private fun initTitleObservers() {
+        // Observe title changes
+        viewModel.observeTitle().observe(this){
+            binding.barTitle.text = it
+            Log.d(javaClass.simpleName, it)
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -83,10 +90,12 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(binding.toolbar)
         //binding.toolbar.setTitle("") //didn't work
         supportActionBar?.setDisplayShowTitleEnabled(false) //disable title in bar, didn't work
+        supportActionBar?.setDisplayShowCustomEnabled(true)
 
+        //observe top bar title
+        initTitleObservers()
 
-        val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.main_frame) as NavHostFragment
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.main_frame) as NavHostFragment
         navController = navHostFragment.navController
 
         //bottom navigation

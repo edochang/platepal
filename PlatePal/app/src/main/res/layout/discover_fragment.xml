@@ -32,6 +32,7 @@
                 android:textColor="@color/text_color"
                 android:padding="8dp"
                 android:text="Search new recipe..."
+                android:textSize="15sp"
                 />
     </androidx.cardview.widget.CardView>
 

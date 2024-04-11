@@ -12,7 +12,8 @@ import com.example.platepal.databinding.RecipeCardBinding
 import edu.cs371m.reddit.glide.Glide
 
 
-class RecipeAdapter(private val viewModel: MainViewModel)
+class RecipeAdapter(private val viewModel: MainViewModel,
+                    private val navigateToOneRecipe: (SpoonacularRecipe)->Unit)
     : ListAdapter<SpoonacularRecipe, RecipeAdapter.VH>(RecipeDiff())
 {
 
@@ -53,6 +54,10 @@ class RecipeAdapter(private val viewModel: MainViewModel)
                     //Log.d(javaClass.simpleName, "set heart to filled")
                 }
             }
+        }
+
+        cardBinding.recipeImage.setOnClickListener {
+            navigateToOneRecipe(item)
         }
 
     }

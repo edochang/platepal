@@ -15,9 +15,14 @@
 
         <action
             android:id="@+id/action_cookbook_to_search"
-            app:destination="@id/searchFragment" />
+            app:destination="@id/searchFragment" >
+            <argument
+                android:name="hint"
+                app:argType="string"
+                android:defaultValue="Search Recipe..."
+                />
+        </action>
+
     </fragment>
-
-
 
 </navigation>
