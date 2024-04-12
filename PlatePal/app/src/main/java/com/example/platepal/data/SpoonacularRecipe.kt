@@ -1,15 +1,13 @@
 package com.example.platepal.data
 
-import android.os.Parcelable
-import android.os.Parcel
 import com.squareup.moshi.Json
-import kotlinx.parcelize.Parcelize
+import java.io.Serializable
+
 
 /* The data class representing the Recipe data object provided by the Spoonacular Api:
     https://spoonacular.com/food-api/docs#Search-Recipes-Complex
  */
 
-@Parcelize
 data class SpoonacularRecipe(
     @Json(name="id")
     val id: Int,
@@ -19,4 +17,19 @@ data class SpoonacularRecipe(
     val image: String,
     @Json(name="imageType")
     val imageType: String
-): Parcelable
+): Serializable{
+    override fun equals(other: Any?) : Boolean =
+        if (other is SpoonacularRecipe) {
+            id == other.id
+        } else {
+            false
+        }
+
+    override fun hashCode(): Int {
+        var result = id.hashCode()
+        result = 31 * result + title.hashCode()
+        result = 31 * result + image.hashCode()
+        result = 31 * result + imageType.hashCode()
+        return result
+    }
+}

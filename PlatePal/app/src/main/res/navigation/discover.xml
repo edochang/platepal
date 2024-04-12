@@ -28,7 +28,7 @@
 
     <fragment
         android:id="@+id/onePostFragment"
-        android:name="com.example.platepal.ui.OnePostFragment"
+        android:name="com.example.platepal.ui.onepost.OnePostFragment"
         android:label="OnePost" >
 
         <argument
