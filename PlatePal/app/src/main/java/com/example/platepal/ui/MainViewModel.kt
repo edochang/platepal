@@ -73,4 +73,8 @@ class MainViewModel: ViewModel() {
         title.value = newTitle
     }
 
+    fun getFavList(): MutableList<SpoonacularRecipe>? {
+        return favList.value?.toMutableList()
+    }
+
 }

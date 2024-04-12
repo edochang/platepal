@@ -21,9 +21,6 @@ import androidx.navigation.fragment.findNavController
 import com.example.platepal.ui.DiscoverFragmentDirections
 
 class DiscoverFragment: Fragment() {
-    companion object {
-        const val searchHint = "Search new recipe..."
-    }
 
     private var _binding: DiscoverFragmentBinding? = null
     private val binding get() = _binding!!
@@ -47,7 +44,10 @@ class DiscoverFragment: Fragment() {
         viewModel.setTitle("PlatePal")
 
         //bind adapter
-        val adapter = RecipeAdapter(viewModel){}
+        val adapter = RecipeAdapter(viewModel){
+            val action = DiscoverFragmentDirections.actionDiscoverToOnePost(it)
+            findNavController().navigate(action)
+        }
         binding.discoverRv.adapter = adapter
 
         // grid layout for RecyclerView
@@ -85,13 +85,13 @@ class DiscoverFragment: Fragment() {
 
         //click into search page
         binding.discoverActionSearch.setOnClickListener{
-            val action = DiscoverFragmentDirections.actionDiscoverToSearch(searchHint)
+            val action = DiscoverFragmentDirections.actionDiscoverToSearch()
             findNavController().navigate(action)
         }
 
         binding.spotlightRecipeImage.setOnClickListener{
-            //val action = DiscoverFragmentDirections.actionDiscoverToOneRecipe(single)
-            //findNavController().navigate(action)
+            val action = DiscoverFragmentDirections.actionDiscoverToOnePost(single)
+            findNavController().navigate(action)
         }
 
     }

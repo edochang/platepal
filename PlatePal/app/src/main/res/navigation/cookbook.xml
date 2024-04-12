@@ -14,15 +14,23 @@
         android:label="Cookbook" >
 
         <action
-            android:id="@+id/action_cookbook_to_search"
-            app:destination="@id/searchFragment" >
-            <argument
-                android:name="hint"
-                app:argType="string"
-                android:defaultValue="Search Recipe..."
-                />
+            android:id="@+id/action_cookbook_to_one_post"
+            app:destination="@id/onePostFragment" >
+
         </action>
 
     </fragment>
+
+    <fragment
+        android:id="@+id/onePostFragment"
+        android:name="com.example.platepal.ui.onepost.OnePostFragment"
+        android:label="OnePost" >
+
+
+        <argument
+            android:name="post"
+            app:argType="com.example.platepal.data.SpoonacularRecipe" />
+    </fragment>
+
 
 </navigation>

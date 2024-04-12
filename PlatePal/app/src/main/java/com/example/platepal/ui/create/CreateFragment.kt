@@ -46,7 +46,6 @@ class CreateFragment : Fragment() {
                     2 -> tab.text = "Notes"
                 }
             }.attach()
-
         }
     }
 
