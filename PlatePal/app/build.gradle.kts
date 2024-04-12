@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.jetbrainsKotlinAndroid)
     alias(libs.plugins.jetbrainsKotlinKapt)
     alias(libs.plugins.androidxNavigationSafeargs)
+    alias(libs.plugins.parcelize)
 }
 
 android {

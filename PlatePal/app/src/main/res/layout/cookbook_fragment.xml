@@ -23,15 +23,15 @@
         android:layout_margin="10dp"
         card_view:cardBackgroundColor="@color/baby_pink"
         >
-        <TextView
-            android:id="@+id/cookbook_action_search"
+        <androidx.appcompat.widget.SearchView
+            android:id="@+id/search"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
             android:textColor="@color/text_color"
-            android:padding="8dp"
-            android:text="Search cookbook..."
+            app:queryHint="Search cookbook..."
+            card_view:iconifiedByDefault="false"
             android:textSize="15sp"
+            app:queryBackground="@android:color/transparent"
             />
     </androidx.cardview.widget.CardView>
 

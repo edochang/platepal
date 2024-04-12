@@ -5,15 +5,15 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.example.platepal.data.SpoonacularRecipe
 import com.example.platepal.databinding.CookbookFragmentBinding
 
 class CookbookFragment : Fragment() {
-    companion object {
-        const val searchHint = "Search cookbook..."
-    }
 
     private var _binding: CookbookFragmentBinding? = null
     private val binding get() = _binding!!
@@ -36,7 +36,10 @@ class CookbookFragment : Fragment() {
 
         viewModel.setTitle("PlatePal")
 
-        val adapter = RecipeAdapter(viewModel){}
+        val adapter = RecipeAdapter(viewModel){
+            val action = CookbookFragmentDirections.actionCookbookToOnePost(it)
+            findNavController().navigate(action)
+        }
         binding.cookbookRv.adapter = adapter
 
         // grid layout for RecyclerView
@@ -56,12 +59,41 @@ class CookbookFragment : Fragment() {
             adapter.submitList(it)
         }
 
-        //click into search page
-        binding.cookbookActionSearch.setOnClickListener{
-            val action = CookbookFragmentDirections.actionCookbookToSearch(searchHint)
-            findNavController().navigate(action)
+        //search
+        binding.search.setOnQueryTextListener(object: SearchView.OnQueryTextListener{
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                //hides keyboard when submitted a query
+                //but does not hide keybarod when submitting empty query
+                binding.search.clearFocus()
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                filterFavList(newText, adapter, binding.cookbookRv)
+                return true
+            }
+        })
+    }
+
+    private fun filterFavList(query: String?, adapter: RecipeAdapter, view: View){
+
+        if (query != null){
+            val filteredList =  mutableListOf<SpoonacularRecipe>()
+            for (i in viewModel.getFavList()!!){
+                if (i.title.lowercase().contains(query)) {
+                    filteredList.add(i)
+                }
+            }
+            if (filteredList.isEmpty()){
+                //Toast.makeText(activity, "No data found", Toast.LENGTH_SHORT).show()
+                view.visibility = View.GONE // remove recycler view list
+            }else{
+                view.visibility = View.VISIBLE  // put rv list back in
+                adapter.submitList(filteredList)
+            }
         }
     }
+
     override fun onDestroyView() {
         _binding = null
         super.onDestroyView()

@@ -21,7 +21,6 @@ class SearchFragment : Fragment() {
     private val viewModel: MainViewModel by activityViewModels()
     private var _binding: SearchFragmentBinding? = null
     private val binding get() = _binding!!
-    private val args: SearchFragmentArgs by navArgs()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -37,10 +36,9 @@ class SearchFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         viewModel.setTitle("Search")
 
-        binding.search.queryHint = args.hint
-
         val adapter = RecipeAdapter(viewModel){
-
+            val action = SearchFragmentDirections.actionSearchToOnePost(it)
+            findNavController().navigate(action)
         }
         binding.searchRv.adapter = adapter
 

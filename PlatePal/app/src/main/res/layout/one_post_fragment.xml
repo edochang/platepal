@@ -11,19 +11,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/one_recipe_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Recipe Title"
-            android:textStyle="bold"
-            android:textSize="20sp"
-            android:layout_marginTop="8dp"
-            android:layout_gravity="center"
-            />
+    <TextView
+        android:id="@+id/one_post_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Recipe Title"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:layout_marginTop="8dp"
+        android:layout_gravity="center"
+        />
 
     <ImageView
-        android:id="@+id/one_recipe_image"
+        android:id="@+id/one_post_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
