@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--copied from reddit so far-->
+
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/discover"
+        app:startDestination="@id/discoverFragment">
+
+    <fragment
+            android:id="@+id/discoverFragment"
+            android:name="com.example.platepal.ui.DiscoverFragment"
+            android:label="Home" >
+
+        <action
+            android:id="@+id/action_discover_to_search"
+            app:destination="@id/searchFragment" >
+            <argument
+                android:name="hint"
+                app:argType="string"
+                android:defaultValue="Search Recipe..."
+                />
+        </action>
+
+    </fragment>
+
+</navigation>

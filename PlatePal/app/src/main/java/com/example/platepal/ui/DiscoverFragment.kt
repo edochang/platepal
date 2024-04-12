@@ -5,18 +5,30 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.platepal.R
-import com.example.platepal.api.Repository
+import com.example.platepal.data.SpoonacularRecipe
 import com.example.platepal.databinding.DiscoverFragmentBinding
 import edu.cs371m.reddit.glide.Glide
+import androidx.navigation.fragment.findNavController
+import com.example.platepal.ui.DiscoverFragmentDirections
 
 class DiscoverFragment: Fragment() {
+    companion object {
+        const val searchHint = "Search new recipe..."
+    }
+
     private var _binding: DiscoverFragmentBinding? = null
     private val binding get() = _binding!!
     private val viewModel: MainViewModel by activityViewModels()
+    //private lateinit var searchView: SearchView
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -28,9 +40,14 @@ class DiscoverFragment: Fragment() {
         return binding.root
     }
 
-    private fun initRVGrid(binding: DiscoverFragmentBinding) {
 
-        val adapter = RecipeGridAdapter(viewModel)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        Log.d(javaClass.simpleName, "onViewCreated")
+        viewModel.setTitle("PlatePal")
+
+        //bind adapter
+        val adapter = RecipeAdapter(viewModel){}
         binding.discoverRv.adapter = adapter
 
         // grid layout for RecyclerView
@@ -38,19 +55,44 @@ class DiscoverFragment: Fragment() {
         binding.discoverRv.layoutManager = layoutManager
 
         //populate initial list
-        adapter.submitList(Repository().fetchData())
+        adapter.submitList(viewModel.getCopyOfRecipeList())
 
         //populate spotlight
-        val single = Repository().fetchRandomRecipe()
+        val single = viewModel.getRandomRecipe()
         binding.spotlightRecipeTitle.text = single.title
         Glide.glideFetch(single.image, single.image, binding.spotlightRecipeImage)
 
-    }
+        //spotlight favorites
+        viewModel.isFavoriteRecipe(single)?.let{
+            if (it) binding.spotlightHeart.setImageResource(R.drawable.ic_heart_filled)
+            else binding.spotlightHeart.setImageResource(R.drawable.ic_heart_empty)
+        }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        Log.d(javaClass.simpleName, "onViewCreated")
-        initRVGrid(binding)
+        binding.spotlightHeart.setOnClickListener{
+            Log.d(javaClass.simpleName, "heart clicklistener")
+            viewModel.isFavoriteRecipe(single)?.let{
+                if(it){
+                    viewModel.setFavoriteRecipe(single, false)
+                    binding.spotlightHeart.setImageResource(R.drawable.ic_heart_empty)
+                    Log.d(javaClass.simpleName, "set heart to empty")
+                } else{
+                    viewModel.setFavoriteRecipe(single, true)
+                    binding.spotlightHeart.setImageResource(R.drawable.ic_heart_filled)
+                    Log.d(javaClass.simpleName, "set heart to filled")
+                }
+            }
+        }
+
+        //click into search page
+        binding.discoverActionSearch.setOnClickListener{
+            val action = DiscoverFragmentDirections.actionDiscoverToSearch(searchHint)
+            findNavController().navigate(action)
+        }
+
+        binding.spotlightRecipeImage.setOnClickListener{
+            //val action = DiscoverFragmentDirections.actionDiscoverToOneRecipe(single)
+            //findNavController().navigate(action)
+        }
 
     }
 

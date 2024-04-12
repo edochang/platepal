@@ -6,13 +6,16 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.example.platepal.R
+import androidx.fragment.app.activityViewModels
 import com.example.platepal.databinding.CreateFragmentBinding
+import com.example.platepal.ui.MainViewModel
+import com.example.platepal.ui.ViewPagerAdapter
 import com.google.android.material.tabs.TabLayoutMediator
 
 class CreateFragment : Fragment() {
     private var _binding: CreateFragmentBinding? = null
     private val binding get() = _binding!!
+    private val viewModel: MainViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -28,6 +31,8 @@ class CreateFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d(javaClass.simpleName, "onViewCreated")
+
+        viewModel.setTitle("PlatePal")
 
         val fragmentsList = arrayListOf(Ingredients(), Directions(), Notes())
 

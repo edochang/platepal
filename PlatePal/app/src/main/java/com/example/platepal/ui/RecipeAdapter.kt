@@ -2,11 +2,9 @@ package com.example.platepal.ui
 
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.platepal.api.SpoonacularRecipe
-import com.google.android.material.snackbar.Snackbar
+import com.example.platepal.data.SpoonacularRecipe
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import com.example.platepal.R
@@ -14,8 +12,9 @@ import com.example.platepal.databinding.RecipeCardBinding
 import edu.cs371m.reddit.glide.Glide
 
 
-class RecipeGridAdapter(private val viewModel: MainViewModel)
-    : ListAdapter<SpoonacularRecipe, RecipeGridAdapter.VH>(RecipeDiff())
+class RecipeAdapter(private val viewModel: MainViewModel,
+                    private val navigateToOneRecipe: (SpoonacularRecipe)->Unit)
+    : ListAdapter<SpoonacularRecipe, RecipeAdapter.VH>(RecipeDiff())
 {
 
     inner class VH(val recipeCardBinding: RecipeCardBinding)
@@ -37,24 +36,28 @@ class RecipeGridAdapter(private val viewModel: MainViewModel)
         Log.d(javaClass.simpleName, "onBindViewHolder")
 
         //favorites for discover RV
+        viewModel.isFavoriteRecipe(item)?.let{
+            if (it) cardBinding.heart.setImageResource(R.drawable.ic_heart_filled)
+            else cardBinding.heart.setImageResource(R.drawable.ic_heart_empty)
+        }
+
         cardBinding.heart.setOnClickListener{
-            item.let {
-                if (viewModel.isFavorite(it)) {
-                    viewModel.removeFavorite(it)
-                    Log.d("removeFavItem", position.toString())
-                    notifyDataSetChanged()
-                } else {
-                    viewModel.addFavorite(it)
-                    Log.d("addFavItem", position.toString())
-                    notifyDataSetChanged()
+            //Log.d(javaClass.simpleName, "heart clicklistener")
+            viewModel.isFavoriteRecipe(item)?.let{
+                if(it){
+                    viewModel.setFavoriteRecipe(item, false)
+                    cardBinding.heart.setImageResource(R.drawable.ic_heart_empty)
+                    //Log.d(javaClass.simpleName, "set heart to empty")
+                } else{
+                    viewModel.setFavoriteRecipe(item, true)
+                    cardBinding.heart.setImageResource(R.drawable.ic_heart_filled)
+                    //Log.d(javaClass.simpleName, "set heart to filled")
                 }
             }
         }
 
-        if (viewModel.isFavorite(item)) {
-            cardBinding.heart.setImageResource(R.drawable.ic_heart_filled)
-        } else {
-            cardBinding.heart.setImageResource(R.drawable.ic_heart_empty)
+        cardBinding.recipeImage.setOnClickListener {
+            navigateToOneRecipe(item)
         }
 
     }

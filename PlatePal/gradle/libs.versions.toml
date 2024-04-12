@@ -1,5 +1,5 @@
 [versions]
-agp = "8.3.1"
+agp = "8.3.2"
 constraintlayout = "2.2.0-alpha13"
 kotlin = "1.9.0"
 coreKtx = "1.12.0"
@@ -20,6 +20,7 @@ converter-moshi = "2.11.0"
 glide = "4.16.0"
 compiler = "4.16.0"
 annotation = "1.7.1"
+navigation = "2.7.7"
 logging-interceptor = "4.12.0"
 coroutines-core = "1.8.0"
 coroutines-android = "1.8.0"
@@ -77,3 +78,5 @@ firebase-storage = { group = "com.google.firebase", name = "firebase-storage" }
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 jetbrainsKotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 jetbrainsKotlinKapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
+androidxNavigationSafeargs = { id = "androidx.navigation.safeargs.kotlin", version.ref = "navigation" }
+
