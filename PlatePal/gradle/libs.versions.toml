@@ -27,6 +27,7 @@ coroutines-android = "1.8.0"
 coroutines-test = "1.8.0"
 firebase-bom = "32.8.0"
 mockwebserver = "4.12.0"
+google = "4.4.1"
 
 [libraries]
 androidx-constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "constraintlayout" }
@@ -79,4 +80,4 @@ androidApplication = { id = "com.android.application", version.ref = "agp" }
 jetbrainsKotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 jetbrainsKotlinKapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 androidxNavigationSafeargs = { id = "androidx.navigation.safeargs.kotlin", version.ref = "navigation" }
-
+googleServices = {id = "com.google.gms.google-services", version.ref = "google"}
