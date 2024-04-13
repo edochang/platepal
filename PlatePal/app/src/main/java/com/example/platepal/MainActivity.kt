@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.MenuProvider
@@ -17,11 +18,21 @@ import androidx.navigation.ui.onNavDestinationSelected
 import androidx.navigation.ui.setupWithNavController
 import com.example.platepal.ui.MainViewModel
 
+private const val TAG = "MainActivity"
+
 class MainActivity : AppCompatActivity() {
     private lateinit var binding : ActivityMainBinding
     private lateinit var navController : NavController
     private lateinit var appBarConfiguration: AppBarConfiguration
     private val viewModel: MainViewModel by viewModels()
+
+    fun progressBarOn() {
+        binding.indeterminateBar.visibility = View.VISIBLE
+    }
+
+    fun progressBarOff() {
+        binding.indeterminateBar.visibility = View.GONE
+    }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         //menuInflater.inflate(R.menu.bottom_nav_menu, menu)
@@ -82,15 +93,27 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun initRecipeList() {
+        Log.d(TAG, "Retrieving recipes from Repo...")
+        progressBarOn()
+        viewModel.fetchReposRecipeList {
+            Log.d(TAG, "Recipes retrieval listener invoked.")
+            progressBarOff()
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         binding = ActivityMainBinding.inflate(layoutInflater)
+
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
         //binding.toolbar.setTitle("") //didn't work
         supportActionBar?.setDisplayShowTitleEnabled(false) //disable title in bar, didn't work
         supportActionBar?.setDisplayShowCustomEnabled(true)
+
+        // Retrieve Recipes
+        initRecipeList()
 
         //observe top bar title
         initTitleObservers()

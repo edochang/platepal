@@ -15,9 +15,10 @@ data class SpoonacularRecipe(
     val title: String,
     @Json(name="image")
     val image: String,
-    @Json(name="imageType")
+    @Json(name="i" +
+            "mageType")
     val imageType: String
-): Serializable{
+): Serializable {
     override fun equals(other: Any?) : Boolean =
         if (other is SpoonacularRecipe) {
             id == other.id

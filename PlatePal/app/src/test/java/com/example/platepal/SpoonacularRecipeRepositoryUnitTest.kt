@@ -2,9 +2,8 @@ package com.example.platepal
 
 import com.example.platepal.api.ApiUtils
 import com.example.platepal.api.SpoonacularApi
-import com.example.platepal.api.SpoonacularTestApi
 import com.example.platepal.data.SpoonacularRecipe
-import com.example.platepal.repository.RecipeRepositoryTestImpl
+import com.example.platepal.repository.SpoonacularRecipeRepository
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlinx.coroutines.test.runTest
@@ -15,25 +14,24 @@ import org.junit.Test
 
 import org.junit.Assert.*
 import org.junit.Before
-import org.junit.Rule
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import java.net.HttpURLConnection
 
-class RecipeRepositoryUnitTest {
-    private lateinit var repository: RecipeRepositoryTestImpl
-    private lateinit var spoonacularTestApis: SpoonacularTestApi
+class SpoonacularRecipeRepositoryUnitTest {
+    private lateinit var repository: SpoonacularRecipeRepository
+    private lateinit var spoonacularApis: SpoonacularApi
     private lateinit var mockWebServer: MockWebServer
 
     object RetrofitHelper {
 
-        fun testApiInstance(baseUrl: String): SpoonacularTestApi {
+        fun testApiInstance(baseUrl: String): SpoonacularApi {
             val moshi = ApiUtils.getMoshiConverterFactory()
             return Retrofit.Builder()
                 .baseUrl(baseUrl)
                 .addConverterFactory(MoshiConverterFactory.create(moshi))
                 .build()
-                .create(SpoonacularTestApi::class.java)
+                .create(SpoonacularApi::class.java)
         }
     }
 
@@ -41,8 +39,8 @@ class RecipeRepositoryUnitTest {
     fun setUp() {
         mockWebServer = MockWebServer()
         mockWebServer.start()
-        spoonacularTestApis = RetrofitHelper.testApiInstance(mockWebServer.url("/").toString())
-        repository = RecipeRepositoryTestImpl(spoonacularTestApis)
+        spoonacularApis = RetrofitHelper.testApiInstance(mockWebServer.url("/").toString())
+        repository = SpoonacularRecipeRepository(spoonacularApis)
     }
 
     @After
@@ -123,7 +121,7 @@ class RecipeRepositoryUnitTest {
 
         //println(recipeResponseJson)
 
-        val actualResponse = repository.getSpoonacularRecipes()
+        val actualResponse = repository.getRecipes()
         assertEquals(spoonacularRecipes, actualResponse)
     }
 }

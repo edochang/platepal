@@ -14,7 +14,7 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.platepal.R
-import com.example.platepal.data.SpoonacularRecipe
+import com.example.platepal.data.RecipeMeta
 import com.example.platepal.databinding.SearchFragmentBinding
 
 class SearchFragment : Fragment() {
@@ -45,8 +45,11 @@ class SearchFragment : Fragment() {
         // linear layout for RecyclerView
         binding.searchRv.layoutManager = LinearLayoutManager(activity)
 
-        //populate initial list
-        adapter.submitList(viewModel.getCopyOfRecipeList())
+        //populate recipe list
+        //adapter.submitList(viewModel.getCopyOfRecipeList())
+        viewModel.observeRecipeList().observe(viewLifecycleOwner) {
+            adapter.submitList(it)
+        }
 
         //search
         binding.search.setOnQueryTextListener(object: SearchView.OnQueryTextListener{
@@ -68,9 +71,14 @@ class SearchFragment : Fragment() {
     //search
     private fun filterList(query: String?, adapter: RecipeAdapter, view: View){
 
+        var recipeList: List<RecipeMeta> = emptyList()
+        viewModel.observeRecipeList().observe(viewLifecycleOwner) {
+            recipeList = it
+        }
+
         if (query != null){
-            val filteredList =  mutableListOf<SpoonacularRecipe>()
-            for (i in viewModel.getCopyOfRecipeList()){
+            val filteredList =  mutableListOf<RecipeMeta>()
+            for (i in recipeList){
                 if (i.title.lowercase().contains(query)) {
                     filteredList.add(i)
                 }
@@ -78,7 +86,7 @@ class SearchFragment : Fragment() {
             if (filteredList.isEmpty()){
                 //Toast.makeText(activity, "No data found", Toast.LENGTH_SHORT).show()
                 view.visibility = View.GONE // remove recycler view list
-            }else{
+            } else {
                 view.visibility = View.VISIBLE  // put rv list back in
                 adapter.submitList(filteredList)
             }

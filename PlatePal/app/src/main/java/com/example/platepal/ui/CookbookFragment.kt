@@ -10,7 +10,7 @@ import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.example.platepal.data.SpoonacularRecipe
+import com.example.platepal.data.RecipeMeta
 import com.example.platepal.databinding.CookbookFragmentBinding
 
 class CookbookFragment : Fragment() {
@@ -78,7 +78,7 @@ class CookbookFragment : Fragment() {
     private fun filterFavList(query: String?, adapter: RecipeAdapter, view: View){
 
         if (query != null){
-            val filteredList =  mutableListOf<SpoonacularRecipe>()
+            val filteredList =  mutableListOf<RecipeMeta>()
             for (i in viewModel.getFavList()!!){
                 if (i.title.lowercase().contains(query)) {
                     filteredList.add(i)

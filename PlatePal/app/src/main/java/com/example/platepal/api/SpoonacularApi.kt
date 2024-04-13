@@ -7,7 +7,7 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.Query
 
 interface SpoonacularApi {
-    @GET("/recipes/complexSearch?sort=popularity&number=10")
+    @GET("/recipes/complexSearch?sort=popularity&number=$RECIPE_LIMIT")
     suspend fun getPopularRecipes(
         @Query("apiKey") apiKey: String
     ): RecipeResponse
@@ -15,7 +15,9 @@ interface SpoonacularApi {
     data class RecipeResponse(val results: List<SpoonacularRecipe>)
 
     companion object {
-        private fun create(): SpoonacularApi {
+        private const val RECIPE_LIMIT = 50
+
+        fun create(): SpoonacularApi {
             val moshi = ApiUtils.getMoshiConverterFactory()
 
             val host = "api.spoonacular.com"
