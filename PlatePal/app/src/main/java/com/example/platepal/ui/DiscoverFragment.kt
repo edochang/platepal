@@ -1,5 +1,6 @@
 package com.example.platepal.ui
 
+import android.opengl.Visibility
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -14,11 +15,11 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.platepal.R
-import com.example.platepal.data.SpoonacularRecipe
 import com.example.platepal.databinding.DiscoverFragmentBinding
 import edu.cs371m.reddit.glide.Glide
 import androidx.navigation.fragment.findNavController
-import com.example.platepal.ui.DiscoverFragmentDirections
+
+private const val TAG = "MainActivity"
 
 class DiscoverFragment: Fragment() {
 
@@ -54,46 +55,59 @@ class DiscoverFragment: Fragment() {
         val layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         binding.discoverRv.layoutManager = layoutManager
 
-        //populate initial list
-        adapter.submitList(viewModel.getCopyOfRecipeList())
-
-        //populate spotlight
-        val single = viewModel.getRandomRecipe()
-        binding.spotlightRecipeTitle.text = single.title
-        Glide.glideFetch(single.image, single.image, binding.spotlightRecipeImage)
-
-        //spotlight favorites
-        viewModel.isFavoriteRecipe(single)?.let{
-            if (it) binding.spotlightHeart.setImageResource(R.drawable.ic_heart_filled)
-            else binding.spotlightHeart.setImageResource(R.drawable.ic_heart_empty)
+        //populate recipe list
+        viewModel.observeRecipeList().observe(viewLifecycleOwner) {
+            adapter.submitList(it)
+            viewModel.setRandomRecipe()
         }
 
-        binding.spotlightHeart.setOnClickListener{
-            Log.d(javaClass.simpleName, "heart clicklistener")
-            viewModel.isFavoriteRecipe(single)?.let{
-                if(it){
-                    viewModel.setFavoriteRecipe(single, false)
-                    binding.spotlightHeart.setImageResource(R.drawable.ic_heart_empty)
-                    Log.d(javaClass.simpleName, "set heart to empty")
-                } else{
-                    viewModel.setFavoriteRecipe(single, true)
-                    binding.spotlightHeart.setImageResource(R.drawable.ic_heart_filled)
-                    Log.d(javaClass.simpleName, "set heart to filled")
+        //populate spotlight
+        viewModel.observeRandomSpotlightRecipe().observe(viewLifecycleOwner) { recipeSpotlight ->
+            Log.d(TAG, "Observed random recipe: $recipeSpotlight")
+            if (recipeSpotlight == null) {
+                binding.spotlightText.visibility = View.GONE
+                binding.spotlightCardView.visibility = View.GONE
+            } else {
+                binding.spotlightText.visibility = View.VISIBLE
+                binding.spotlightCardView.visibility = View.VISIBLE
+                binding.spotlightRecipeTitle.text = recipeSpotlight.title
+                Glide.glideFetch(recipeSpotlight.image, recipeSpotlight.image, binding.spotlightRecipeImage)
+
+                //spotlight favorites
+                viewModel.isFavoriteRecipe(recipeSpotlight)?.let{
+                    if (it) binding.spotlightHeart.setImageResource(R.drawable.ic_heart_filled)
+                    else binding.spotlightHeart.setImageResource(R.drawable.ic_heart_empty)
+                }
+
+                binding.spotlightHeart.setOnClickListener{
+                    Log.d(javaClass.simpleName, "heart clicklistener")
+                    viewModel.isFavoriteRecipe(recipeSpotlight)?.let{
+                        if(it){
+                            viewModel.setFavoriteRecipe(recipeSpotlight, false)
+                            binding.spotlightHeart.setImageResource(R.drawable.ic_heart_empty)
+                            Log.d(javaClass.simpleName, "set heart to empty")
+                        } else{
+                            viewModel.setFavoriteRecipe(recipeSpotlight, true)
+                            binding.spotlightHeart.setImageResource(R.drawable.ic_heart_filled)
+                            Log.d(javaClass.simpleName, "set heart to filled")
+                        }
+                    }
+                }
+
+                binding.spotlightRecipeImage.setOnClickListener{
+                    val action = DiscoverFragmentDirections.actionDiscoverToOnePost(recipeSpotlight)
+                    findNavController().navigate(action)
                 }
             }
         }
 
         //click into search page
+        /*
         binding.discoverActionSearch.setOnClickListener{
             val action = DiscoverFragmentDirections.actionDiscoverToSearch()
             findNavController().navigate(action)
         }
-
-        binding.spotlightRecipeImage.setOnClickListener{
-            val action = DiscoverFragmentDirections.actionDiscoverToOnePost(single)
-            findNavController().navigate(action)
-        }
-
+         */
     }
 
     override fun onDestroyView() {

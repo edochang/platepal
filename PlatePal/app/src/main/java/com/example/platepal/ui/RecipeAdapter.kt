@@ -4,17 +4,17 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.platepal.data.SpoonacularRecipe
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import com.example.platepal.R
+import com.example.platepal.data.RecipeMeta
 import com.example.platepal.databinding.RecipeCardBinding
 import edu.cs371m.reddit.glide.Glide
 
 
 class RecipeAdapter(private val viewModel: MainViewModel,
-                    private val navigateToOneRecipe: (SpoonacularRecipe)->Unit)
-    : ListAdapter<SpoonacularRecipe, RecipeAdapter.VH>(RecipeDiff())
+                    private val navigateToOneRecipe: (RecipeMeta)->Unit)
+    : ListAdapter<RecipeMeta, RecipeAdapter.VH>(RecipeDiff())
 {
 
     inner class VH(val recipeCardBinding: RecipeCardBinding)
@@ -64,16 +64,17 @@ class RecipeAdapter(private val viewModel: MainViewModel,
 
 
 
-    class RecipeDiff : DiffUtil.ItemCallback<SpoonacularRecipe>() {
+    class RecipeDiff: DiffUtil.ItemCallback<RecipeMeta>() {
         // Item identity
-        override fun areItemsTheSame(oldItem: SpoonacularRecipe, newItem: SpoonacularRecipe): Boolean {
+        override fun areItemsTheSame(oldItem: RecipeMeta, newItem: RecipeMeta): Boolean {
             Log.d("RecipeDiff", "areItemsTheSame triggered")
             return oldItem.hashCode() == newItem.hashCode()
         }
         // Item contents are the same, but the object might have changed
-        override fun areContentsTheSame(oldItem: SpoonacularRecipe, newItem: SpoonacularRecipe): Boolean {
+        override fun areContentsTheSame(oldItem: RecipeMeta, newItem: RecipeMeta): Boolean {
             Log.d("RecipeDiff", "areContentsTheSame triggered")
-            return oldItem.id == newItem.id
+            return oldItem.firestoreId == newItem.firestoreId
+                    && oldItem.sourceId == newItem.sourceId
                     && oldItem.title == newItem.title
                     && oldItem.image == newItem.image
                     && oldItem.imageType == newItem.imageType

@@ -1,10 +1,10 @@
 package com.example.platepal.data
 
-
+import com.example.platepal.data.SpoonacularRecipe
 
 class DummyRepository {
     companion object {
-        private var initialRecipeList = listOf (
+        private var initialSpoonacularRecipeList = listOf (
             SpoonacularRecipe(
                 id = 782585,
                 title = "Cannellini Bean and Asparagus Salad with Mushrooms",
@@ -66,17 +66,46 @@ class DummyRepository {
                 imageType = "jpg"
             )
         )
+
+        private var secondSpoonacularRecipeList = listOf (
+            SpoonacularRecipe(
+                id = 716426,
+                title = "Cauliflower, Brown Rice, and Vegetable Fried Rice",
+                image = "https://img.spoonacular.com/recipes/716426-312x231.jpg",
+                imageType = "jpg"
+            ),
+            SpoonacularRecipe(
+                id = 766453,
+                title = "Hummus and Za'atar",
+                image = "https://img.spoonacular.com/recipes/766453-312x231.jpg",
+                imageType = "jpg"
+            ),
+            SpoonacularRecipe(
+            715449,
+            "How to Make OREO Turkeys for Thanksgiving",
+            "https://img.spoonacular.com/recipes/715449-312x231.jpg",
+            "jpg"),
+            SpoonacularRecipe(
+                715424,
+                "The Best Chili",
+                "https://img.spoonacular.com/recipes/715424-312x231.jpg",
+                "jpg"),
+        )
     }
 
     fun fetchData(): List<SpoonacularRecipe> {
-        return initialRecipeList
+        return initialSpoonacularRecipeList
     }
 
-    private fun size() : Int { return initialRecipeList.size }
+    fun secondFetchData(): List<SpoonacularRecipe> {
+        return secondSpoonacularRecipeList
+    }
+
+    private fun size() : Int { return initialSpoonacularRecipeList.size }
 
     fun fetchRandomRecipe(): SpoonacularRecipe{
         val rand = (0..<size()).random()
-        return initialRecipeList[rand]
+        return initialSpoonacularRecipeList[rand]
     }
 
 }
