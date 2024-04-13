@@ -6,14 +6,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.platepal.R
-import com.example.platepal.databinding.CommunityFragmentBinding
-import com.example.platepal.databinding.CookbookFragmentBinding
+import com.example.platepal.databinding.InboxFragmentBinding
+import com.example.platepal.databinding.ProfileFragmentBinding
 
-class CommunityFragment : Fragment() {
-    private var _binding: CommunityFragmentBinding? = null
+class ProfileFragment : Fragment() {
+    private var _binding: ProfileFragmentBinding? = null
     private val binding get() = _binding!!
     private val viewModel: MainViewModel by activityViewModels()
 
@@ -23,24 +21,21 @@ class CommunityFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         // Inflate the layout for this fragment
-        _binding = CommunityFragmentBinding.inflate(inflater, container, false)
+        _binding = ProfileFragmentBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         //Log.d(javaClass.simpleName, "onViewCreated")
-        _binding = CommunityFragmentBinding.bind(view)
+        _binding = ProfileFragmentBinding.bind(view)
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.setTitle("PlatePal")
-
-
+        viewModel.setTitle("Profile")
     }
 
     override fun onDestroyView() {
         _binding = null
         super.onDestroyView()
     }
-
 
 }

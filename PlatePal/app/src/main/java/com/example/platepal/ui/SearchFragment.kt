@@ -1,6 +1,7 @@
 package com.example.platepal.ui
 
 import android.os.Bundle
+import android.view.Gravity
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -9,15 +10,17 @@ import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.example.platepal.R
 import com.example.platepal.data.RecipeMeta
-import com.example.platepal.databinding.CookbookFragmentBinding
+import com.example.platepal.databinding.SearchFragmentBinding
 
-class CookbookFragment : Fragment() {
-
-    private var _binding: CookbookFragmentBinding? = null
-    private val binding get() = _binding!!
+class SearchFragment : Fragment() {
     private val viewModel: MainViewModel by activityViewModels()
+    private var _binding: SearchFragmentBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -25,37 +28,26 @@ class CookbookFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         // Inflate the layout for this fragment
-        _binding = CookbookFragmentBinding.inflate(inflater, container, false)
+        _binding = SearchFragmentBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        //Log.d(javaClass.simpleName, "onViewCreated")
-        _binding = CookbookFragmentBinding.bind(view)
         super.onViewCreated(view, savedInstanceState)
-
-        viewModel.setTitle("PlatePal")
+        viewModel.setTitle("Search")
 
         val adapter = RecipeAdapter(viewModel){
-            val action = CookbookFragmentDirections.actionCookbookToOnePost(it)
+            val action = SearchFragmentDirections.actionSearchToOnePost(it)
             findNavController().navigate(action)
         }
-        binding.cookbookRv.adapter = adapter
+        binding.searchRv.adapter = adapter
 
-        // grid layout for RecyclerView
-        val layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-        binding.cookbookRv.layoutManager = layoutManager
+        // linear layout for RecyclerView
+        binding.searchRv.layoutManager = LinearLayoutManager(activity)
 
-        viewModel.observeFavListLive().observe(viewLifecycleOwner){
-            if (it.isNotEmpty()){
-                binding.placeholder.visibility = View.GONE
-                //Log.d(javaClass.simpleName, "placeholder view gone")
-            }
-            else {
-                binding.placeholder.visibility = View.VISIBLE
-                //Log.d(javaClass.simpleName, "placeholder view visible")
-            }
-
+        //populate recipe list
+        //adapter.submitList(viewModel.getCopyOfRecipeList())
+        viewModel.observeRecipeList().observe(viewLifecycleOwner) {
             adapter.submitList(it)
         }
 
@@ -69,17 +61,24 @@ class CookbookFragment : Fragment() {
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                filterFavList(newText, adapter, binding.cookbookRv)
+                filterList(newText, adapter, binding.searchRv)
                 return true
             }
         })
+
     }
 
-    private fun filterFavList(query: String?, adapter: RecipeAdapter, view: View){
+    //search
+    private fun filterList(query: String?, adapter: RecipeAdapter, view: View){
+
+        var recipeList: List<RecipeMeta> = emptyList()
+        viewModel.observeRecipeList().observe(viewLifecycleOwner) {
+            recipeList = it
+        }
 
         if (query != null){
             val filteredList =  mutableListOf<RecipeMeta>()
-            for (i in viewModel.getFavList()!!){
+            for (i in recipeList){
                 if (i.title.lowercase().contains(query)) {
                     filteredList.add(i)
                 }
@@ -87,7 +86,7 @@ class CookbookFragment : Fragment() {
             if (filteredList.isEmpty()){
                 //Toast.makeText(activity, "No data found", Toast.LENGTH_SHORT).show()
                 view.visibility = View.GONE // remove recycler view list
-            }else{
+            } else {
                 view.visibility = View.VISIBLE  // put rv list back in
                 adapter.submitList(filteredList)
             }
@@ -98,5 +97,4 @@ class CookbookFragment : Fragment() {
         _binding = null
         super.onDestroyView()
     }
-
 }
