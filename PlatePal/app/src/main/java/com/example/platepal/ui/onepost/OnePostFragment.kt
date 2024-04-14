@@ -8,20 +8,57 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.navArgs
+import com.example.platepal.MainActivity
 import com.example.platepal.R
+import com.example.platepal.data.RecipeMeta
 import com.example.platepal.databinding.OnePostFragmentBinding
-import com.example.platepal.ui.MainViewModel
+import com.example.platepal.ui.viewmodel.MainViewModel
 import com.example.platepal.ui.ViewPagerAdapter
+import com.example.platepal.ui.viewmodel.OneRecipeViewModel
 import com.google.android.material.tabs.TabLayoutMediator
 import edu.cs371m.reddit.glide.Glide
+
+private const val TAG = "OnePostFragment"
 
 class OnePostFragment : Fragment() {
 
     private var _binding: OnePostFragmentBinding? = null
     private val binding get() = _binding!!
     private val viewModel: MainViewModel by activityViewModels()
+    private val oneRecipeViewModel: OneRecipeViewModel by activityViewModels()
     private val args: OnePostFragmentArgs by navArgs()
+    private lateinit var mainActivity: MainActivity
 
+    private fun getRecipeInfo() {
+        //mainActivity.progressBarOn()
+        Log.d(TAG, "Retrieving recipe info from Repo...")
+        oneRecipeViewModel.fetchReposRecipeInfo {
+            Log.d(TAG, "Recipe info retrieval listener invoked.")
+            //mainActivity.progressBarOff()
+        }
+    }
+
+    private fun setupFavorites(recipe: RecipeMeta) {
+        viewModel.isFavoriteRecipe(recipe)?.let{
+            if(it) binding.onePostHeart.setImageResource(R.drawable.ic_heart_filled)
+            else binding.onePostHeart.setImageResource(R.drawable.ic_heart_empty)
+        }
+
+        binding.onePostHeart.setOnClickListener{
+            Log.d(javaClass.simpleName, "heart clicklistener")
+            viewModel.isFavoriteRecipe(recipe)?.let{
+                if(it) {
+                    viewModel.setFavoriteRecipe(recipe, false)
+                    binding.onePostHeart.setImageResource(R.drawable.ic_heart_empty)
+                    Log.d(javaClass.simpleName, "set heart to empty")
+                } else {
+                    viewModel.setFavoriteRecipe(recipe, true)
+                    binding.onePostHeart.setImageResource(R.drawable.ic_heart_filled)
+                    Log.d(javaClass.simpleName, "set heart to filled")
+                }
+            }
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -35,39 +72,29 @@ class OnePostFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         //Log.d(javaClass.simpleName, "onViewCreated")
-        _binding = OnePostFragmentBinding.bind(view)
         super.onViewCreated(view, savedInstanceState)
+        mainActivity = (requireActivity() as MainActivity)
 
         viewModel.setTitle("Recipe")
-        binding.onePostTitle.text = args.post.title
+        val recipe = args.recipe
+        oneRecipeViewModel.setRecipeSourceId(recipe.sourceId)
 
-        Glide.glideFetch(args.post.image, args.post.image, binding.onePostImage)
+        getRecipeInfo()
 
-        //spotlight favorites
-        viewModel.isFavoriteRecipe(args.post)?.let{
-            if (it) binding.onePostHeart.setImageResource(R.drawable.ic_heart_filled)
-            else binding.onePostHeart.setImageResource(R.drawable.ic_heart_empty)
-        }
+        // Set main information
+        binding.onePostTitle.text = recipe.title
+        Glide.glideFetch(recipe.image, recipe.image, binding.onePostImage)
 
-        binding.onePostHeart.setOnClickListener{
-            Log.d(javaClass.simpleName, "heart clicklistener")
-            viewModel.isFavoriteRecipe(args.post)?.let{
-                if(it){
-                    viewModel.setFavoriteRecipe(args.post, false)
-                    binding.onePostHeart.setImageResource(R.drawable.ic_heart_empty)
-                    Log.d(javaClass.simpleName, "set heart to empty")
-                } else{
-                    viewModel.setFavoriteRecipe(args.post, true)
-                    binding.onePostHeart.setImageResource(R.drawable.ic_heart_filled)
-                    Log.d(javaClass.simpleName, "set heart to filled")
-                }
-            }
-        }
+        // Favorites
+        setupFavorites(recipe)
 
         val fragmentsList = arrayListOf(PostIngredients(), PostDirections(), PostNotes())
 
         binding.apply {
-            viewPager.adapter = ViewPagerAdapter(fragmentsList, this@OnePostFragment.childFragmentManager, lifecycle)
+            viewPager.adapter = ViewPagerAdapter(
+                fragmentsList,
+                this@OnePostFragment.childFragmentManager,
+                lifecycle)
 
             TabLayoutMediator(tabView, viewPager) { tab, position ->
                 when (position) {
@@ -84,5 +111,4 @@ class OnePostFragment : Fragment() {
         _binding = null
         super.onDestroyView()
     }
-
 }

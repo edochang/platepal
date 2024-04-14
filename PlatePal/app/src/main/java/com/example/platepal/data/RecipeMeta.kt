@@ -5,7 +5,7 @@ import com.google.firebase.firestore.DocumentId
 import com.google.firebase.firestore.ServerTimestamp
 import java.io.Serializable
 
-/* Data class that represents the PhotoMeta Document Collection in Firestore
+/* Data class that represents the RecipeMeta Document Collection in Firestore
     title: title of Recipe
     externalId: external Id of this recipe.  If sourced internally by user this attribute can be
         blank

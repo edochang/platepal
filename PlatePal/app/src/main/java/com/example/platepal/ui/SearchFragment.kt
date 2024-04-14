@@ -1,21 +1,17 @@
 package com.example.platepal.ui
 
 import android.os.Bundle
-import android.view.Gravity
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.example.platepal.R
 import com.example.platepal.data.RecipeMeta
 import com.example.platepal.databinding.SearchFragmentBinding
+import com.example.platepal.ui.viewmodel.MainViewModel
 
 class SearchFragment : Fragment() {
     private val viewModel: MainViewModel by activityViewModels()

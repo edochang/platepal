@@ -6,9 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
-import com.example.platepal.R
-import com.example.platepal.databinding.InboxFragmentBinding
 import com.example.platepal.databinding.ProfileFragmentBinding
+import com.example.platepal.ui.viewmodel.MainViewModel
 
 class ProfileFragment : Fragment() {
     private var _binding: ProfileFragmentBinding? = null
