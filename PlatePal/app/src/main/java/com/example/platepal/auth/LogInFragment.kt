@@ -13,7 +13,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.platepal.R
 import com.example.platepal.databinding.LogInFragmentBinding
 import com.example.platepal.ui.DiscoverFragment
-import com.example.platepal.ui.MainViewModel
+import com.example.platepal.ui.viewmodel.MainViewModel
 import com.google.firebase.auth.FirebaseAuth
 
 

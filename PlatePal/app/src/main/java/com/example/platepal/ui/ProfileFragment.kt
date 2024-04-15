@@ -13,12 +13,15 @@ import com.example.platepal.auth.AuthUser
 import com.example.platepal.databinding.ProfileFragmentBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.example.platepal.R
+import com.example.platepal.ui.viewmodel.MainViewModel
+import com.example.platepal.ui.viewmodel.AuthViewModel
 
 class ProfileFragment : Fragment() {
     private var _binding: ProfileFragmentBinding? = null
     private val binding get() = _binding!!
     private lateinit var authUser : AuthUser
     private val viewModel: MainViewModel by activityViewModels()
+    private val authViewModel: AuthViewModel by activityViewModels()
     private lateinit var navController: NavController
 
     override fun onCreateView(
@@ -46,7 +49,7 @@ class ProfileFragment : Fragment() {
 
         authUser.observeUser().observe(viewLifecycleOwner) {
             // XXX Write me, user status has changed
-            viewModel.setCurrentAuthUser(it)
+            authViewModel.setCurrentAuthUser(it)
             binding.profileName.text = it.name
             binding.profileEmail.text = it.email
         }

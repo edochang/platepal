@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import com.example.platepal.R
-import com.example.platepal.ui.MainViewModel
+import com.example.platepal.ui.viewmodel.MainViewModel
 import com.example.platepal.databinding.NewPasswordFragmentBinding
 import com.google.firebase.auth.FirebaseAuth
 

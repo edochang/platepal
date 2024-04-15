@@ -38,7 +38,8 @@
                 android:layout_height="wrap_content"
                 android:background="@color/orange"
                 app:menu="@menu/menu_main"
-                app:popupTheme="@style/AppTheme.PopupOverlay">
+                app:popupTheme="@style/AppTheme.PopupOverlay"
+                app:navigationIcon="@null">
                 <!-- using downloadable fons w/ google play services -->
                 <!--https://developer.android.com/develop/ui/views/text-and-emoji/downloadable-fonts -->
                 <TextView

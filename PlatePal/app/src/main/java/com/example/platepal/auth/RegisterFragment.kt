@@ -9,7 +9,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import com.example.platepal.databinding.RegisterFragmentBinding
-import com.example.platepal.ui.MainViewModel
+import com.example.platepal.ui.viewmodel.MainViewModel
 import com.google.firebase.auth.FirebaseAuth
 
 
