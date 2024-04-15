@@ -5,9 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.recyclerview.widget.DiffUtil
 import com.example.platepal.api.SpoonacularApi
-import com.example.platepal.data.DummyRepository
 import com.example.platepal.data.RecipeMeta
 import com.example.platepal.data.SpoonacularRecipe
 import com.example.platepal.repository.RecipesDBHelper
@@ -17,6 +15,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.time.Duration
 import java.time.Instant
+import com.example.platepal.auth.User
+import com.example.platepal.auth.invalidUser
 
 private const val TAG = "MainViewModel"
 
@@ -38,6 +38,17 @@ class MainViewModel: ViewModel() {
 
     //title of the fragment
     private var randomSpotlightRecipe = MutableLiveData<RecipeMeta>()
+
+    // Track current authenticated user
+    private var currentAuthUser = invalidUser
+
+
+    // MainActivity gets updates on this via live data and informs view model
+    fun setCurrentAuthUser(user: User) {
+        currentAuthUser = user
+    }
+
+
 
     //favorite (cookbook)
     private val favList = MutableLiveData<List<RecipeMeta>>().apply{

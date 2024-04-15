@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
@@ -13,14 +14,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
-        <!--original android:theme="@style/Theme.PlatePal"-->
-        <!--reddit uses android:theme="@style/AppTheme.NoActionBar"-->
-        <!--doc uses android:theme="@style/Theme.AppCompat.Light.NoActionBar"-->
+        <!-- original android:theme="@style/Theme.PlatePal" -->
+        <!-- reddit uses android:theme="@style/AppTheme.NoActionBar" -->
+        <!-- doc uses android:theme="@style/Theme.AppCompat.Light.NoActionBar" -->
         <activity
             android:name=".MainActivity"
-            android:windowSoftInputMode="adjustPan"
-            android:exported="true">
-            <!-- Need to use an AppCompat theme.  Comment out-->
+            android:exported="true"
+            android:windowSoftInputMode="adjustPan">
+
+            <!-- Need to use an AppCompat theme.  Comment out -->
             <!-- android:theme="@style/Theme.PlatePal" -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -28,18 +30,19 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
+
         <provider
-            android:authorities="com.example.platpal"
             android:name="androidx.core.content.FileProvider"
+            android:authorities="com.example.platepal"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths"
-                />
+                android:resource="@xml/file_paths" />
         </provider>
     </application>
 

@@ -80,6 +80,8 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.activity)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
@@ -118,6 +120,16 @@ dependencies {
     implementation(libs.firebase.auth)
     implementation(libs.firebase.firestore)
     implementation(libs.firebase.storage)
+
+    // Authentication (email & password)
+    implementation(libs.firebase.ui.auth)
+    implementation(libs.firebase.ui.storage)
+
+    // Authentication (Google sign-in, via Credential Manager)
+    implementation(libs.google.services.auth)
+    implementation(libs.androidx.credentials)
+    implementation(libs.androidx.credentials.auth)
+    implementation(libs.google.id)
 
     // Test Implementation
     testImplementation(libs.junit)

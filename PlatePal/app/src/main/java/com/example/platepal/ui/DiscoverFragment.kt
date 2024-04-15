@@ -102,12 +102,10 @@ class DiscoverFragment: Fragment() {
         }
 
         //click into search page
-        /*
         binding.discoverActionSearch.setOnClickListener{
             val action = DiscoverFragmentDirections.actionDiscoverToSearch()
             findNavController().navigate(action)
         }
-         */
     }
 
     override fun onDestroyView() {
