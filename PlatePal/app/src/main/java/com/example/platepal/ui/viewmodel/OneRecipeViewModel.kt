@@ -84,12 +84,13 @@ class OneRecipeViewModel: ViewModel() {
                 "Recipe Sourced From: ${spoonacularRecipeInfo.sourceName} " +
                     "(url: ${spoonacularRecipeInfo.sourceUrl})<br/>"
 
+        val instruction = spoonacularRecipeInfo.instructions ?: "Be creative, no directions!"
 
         return RecipeInfoMeta(
             spoonacularRecipeInfo.id.toString(),
             ingredients,
             spoonacularRecipeInfo.ingredients,
-            spoonacularRecipeInfo.instructions,
+            instruction,
             notes
         )
     }

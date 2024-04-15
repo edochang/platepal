@@ -1,6 +1,7 @@
 package com.example.platepal.ui.onepost
 
 import android.os.Bundle
+import android.text.Html
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -30,24 +31,23 @@ class OnePostFragment : Fragment() {
     private lateinit var mainActivity: MainActivity
 
     private fun getRecipeInfo() {
-        //mainActivity.progressBarOn()
+        mainActivity.progressBarOn()
         Log.d(TAG, "Retrieving recipe info from Repo...")
         oneRecipeViewModel.fetchReposRecipeInfo {
             Log.d(TAG, "Recipe info retrieval listener invoked.")
-            //mainActivity.progressBarOff()
         }
     }
 
     private fun setupFavorites(recipe: RecipeMeta) {
-        viewModel.isFavoriteRecipe(recipe)?.let{
-            if(it) binding.onePostHeart.setImageResource(R.drawable.ic_heart_filled)
+        viewModel.isFavoriteRecipe(recipe)?.let {
+            if (it) binding.onePostHeart.setImageResource(R.drawable.ic_heart_filled)
             else binding.onePostHeart.setImageResource(R.drawable.ic_heart_empty)
         }
 
-        binding.onePostHeart.setOnClickListener{
+        binding.onePostHeart.setOnClickListener {
             Log.d(javaClass.simpleName, "heart clicklistener")
-            viewModel.isFavoriteRecipe(recipe)?.let{
-                if(it) {
+            viewModel.isFavoriteRecipe(recipe)?.let {
+                if (it) {
                     viewModel.setFavoriteRecipe(recipe, false)
                     binding.onePostHeart.setImageResource(R.drawable.ic_heart_empty)
                     Log.d(javaClass.simpleName, "set heart to empty")
@@ -94,7 +94,8 @@ class OnePostFragment : Fragment() {
             viewPager.adapter = ViewPagerAdapter(
                 fragmentsList,
                 this@OnePostFragment.childFragmentManager,
-                lifecycle)
+                lifecycle
+            )
 
             TabLayoutMediator(tabView, viewPager) { tab, position ->
                 when (position) {
@@ -105,9 +106,13 @@ class OnePostFragment : Fragment() {
             }.attach()
         }
 
+        oneRecipeViewModel.observeRecipeInfo().observe(viewLifecycleOwner) {
+            mainActivity.progressBarOff()
+        }
+
     }
 
-        override fun onDestroyView() {
+    override fun onDestroyView() {
         _binding = null
         super.onDestroyView()
     }

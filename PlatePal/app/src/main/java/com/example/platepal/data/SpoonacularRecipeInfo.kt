@@ -22,7 +22,7 @@ data class SpoonacularRecipeInfo(
     @Json(name="extendedIngredients")
     val ingredients: List<SpoonacularIngredient>,
     @Json(name="instructions")
-    val instructions: String,
+    val instructions: String?,
     @Json(name="analyzedInstructions")
     val analyzedInstructions: List<SpoonacularSteps>
 ): Serializable
