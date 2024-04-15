@@ -1,50 +1,98 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/nav_graph"
-        app:startDestination="@id/discover">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/discoverFragment">
 
-    <include app:graph="@navigation/discover"/>
-    <include app:graph="@navigation/create"/>
-    <include app:graph="@navigation/cookbook"/>
-    <include app:graph="@navigation/community"/>
+    <include app:graph="@navigation/create" />
+    <include app:graph="@navigation/cookbook" />
+    <include app:graph="@navigation/community" />
 
     <fragment
-        android:id="@+id/searchFragment"
-        android:name="com.example.platepal.ui.SearchFragment"
-        android:label="Search" >
+        android:id="@+id/discoverFragment"
+        android:name="com.example.platepal.ui.DiscoverFragment"
+        android:label="Home">
 
         <action
-            android:id="@+id/action_search_to_one_post"
-            app:destination="@id/onePostFragment" >
+            android:id="@+id/action_discover_to_search"
+            app:destination="@id/searchFragment" />
 
+        <action
+            android:id="@+id/action_discover_to_one_post"
+            app:destination="@id/onePostFragment">
+            <argument
+                android:name="recipe"
+                app:argType="com.example.platepal.data.RecipeMeta" />
         </action>
-
-
     </fragment>
 
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.example.platepal.ui.ProfileFragment"
-        android:label="Profile" >
+        android:label="Profile" />
+
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="com.example.platepal.ui.SearchFragment"
+        android:label="Search">
+        <action
+            android:id="@+id/action_search_to_one_post"
+            app:destination="@id/onePostFragment">
+            <argument
+                android:name="recipe"
+                app:argType="com.example.platepal.data.RecipeMeta" />
+        </action>
     </fragment>
 
     <fragment
         android:id="@+id/inboxFragment"
         android:name="com.example.platepal.ui.InboxFragment"
-        android:label="Inbox" >
+        android:label="Inbox" />
+
+    <fragment
+        android:id="@+id/registerFragment"
+        android:name="com.example.platepal.ui.ProfileFragment"
+        android:label="Profile" />
+
+    <fragment
+        android:id="@+id/logInFragment"
+        android:name="com.example.platepal.ui.ProfileFragment"
+        android:label="Profile" />
+
+    <fragment
+        android:id="@+id/newPasswordFragment"
+        android:name="com.example.platepal.ui.ProfileFragment"
+        android:label="Profile" />
+
+    <fragment
+        android:id="@+id/cookbookFragment"
+        android:name="com.example.platepal.ui.CookbookFragment"
+        android:label="Cookbook">
+        <action
+            android:id="@+id/action_cookbook_to_one_post"
+            app:destination="@id/onePostFragment">
+            <argument
+                android:name="recipe"
+                app:argType="com.example.platepal.data.RecipeMeta" />
+        </action>
     </fragment>
 
     <fragment
         android:id="@+id/onePostFragment"
         android:name="com.example.platepal.ui.onepost.OnePostFragment"
-        android:label="OnePost" >
+        android:label="OnePost">
 
         <argument
-            android:name="post"
+            android:name="recipe"
             app:argType="com.example.platepal.data.RecipeMeta" />
     </fragment>
 
+    <action
+        android:id="@+id/action_cookbook_to_one_post"
+        app:destination="@id/onePostFragment">
+        <argument
+            android:name="recipe"
+            app:argType="com.example.platepal.data.RecipeMeta" />
+    </action>
 </navigation>

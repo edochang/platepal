@@ -9,8 +9,8 @@ import androidx.recyclerview.widget.DiffUtil
 import com.example.platepal.R
 import com.example.platepal.data.RecipeMeta
 import com.example.platepal.databinding.RecipeCardBinding
+import com.example.platepal.ui.viewmodel.MainViewModel
 import edu.cs371m.reddit.glide.Glide
-
 
 class RecipeAdapter(private val viewModel: MainViewModel,
                     private val navigateToOneRecipe: (RecipeMeta)->Unit)

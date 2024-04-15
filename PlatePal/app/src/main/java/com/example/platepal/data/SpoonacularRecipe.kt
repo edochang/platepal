@@ -7,7 +7,6 @@ import java.io.Serializable
 /* The data class representing the Recipe data object provided by the Spoonacular Api:
     https://spoonacular.com/food-api/docs#Search-Recipes-Complex
  */
-
 data class SpoonacularRecipe(
     @Json(name="id")
     val id: Int,

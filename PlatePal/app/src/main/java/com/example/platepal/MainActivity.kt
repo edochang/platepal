@@ -16,14 +16,19 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.onNavDestinationSelected
 import androidx.navigation.ui.setupWithNavController
-import com.example.platepal.ui.MainViewModel
+import com.example.platepal.ui.viewmodel.MainViewModel
 
 private const val TAG = "MainActivity"
 
 class MainActivity : AppCompatActivity() {
+    companion object {
+        var globalDebug = false
+    }
     private lateinit var binding : ActivityMainBinding
     private lateinit var navController : NavController
     private lateinit var appBarConfiguration: AppBarConfiguration
+
+
     private val viewModel: MainViewModel by viewModels()
 
     fun progressBarOn() {
@@ -128,12 +133,14 @@ class MainActivity : AppCompatActivity() {
         //toolbar
         initToolBarMenu()
         appBarConfiguration= AppBarConfiguration(
-            setOf(R.id.discover, R.id.cookbook, R.id.create, R.id.community)
+            setOf(R.id.discoverFragment, R.id.cookbook, R.id.create, R.id.community)
         )
         //appBarConfiguration = AppBarConfiguration(navController.graph)
         binding.toolbar.setupWithNavController(navController, appBarConfiguration)
         //setupActionBarWithNavController(navController, appBarConfiguration)
+
     }
+
 
     // navigateUp:
     // If we came here from within the app, pop the back stack

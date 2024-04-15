@@ -9,7 +9,6 @@ class RecipesDBHelper: DBHelper<RecipeMeta>(
 ) {
     fun getRecipes(resultListener: (List<RecipeMeta>) -> Unit) {
         val query = db.collection(rootCollection)
-
         getDocuments(query, RecipeMeta::class.java, resultListener)
     }
 }

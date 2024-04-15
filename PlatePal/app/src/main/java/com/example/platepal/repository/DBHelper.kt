@@ -6,7 +6,7 @@ import com.google.firebase.firestore.Query
 
 private const val TAG = "DBHelper"
 
-abstract class DBHelper<Any> (
+abstract class DBHelper<Any : kotlin.Any> (
         protected val rootCollection: String
 ) {
     protected val db: FirebaseFirestore = FirebaseFirestore.getInstance()
@@ -53,7 +53,7 @@ abstract class DBHelper<Any> (
     }
 
     open fun createDocuments(
-        meta: Class<Any>,
+        meta: Any,
         resultListener: (List<Any>)->Unit
     ) {
         db.collection(rootCollection)
@@ -68,7 +68,6 @@ abstract class DBHelper<Any> (
         documentId: String,
         resultListener: (List<Class<Any>>)->Unit
     ) {
-        // XXX Write me.  Make sure you delete the correct entry.  What uniquely identifies a photoMeta?
         db.collection(rootCollection).document(documentId)
             .delete()
             .addOnSuccessListener {

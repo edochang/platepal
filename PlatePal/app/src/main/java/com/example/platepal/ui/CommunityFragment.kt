@@ -6,11 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.example.platepal.R
 import com.example.platepal.databinding.CommunityFragmentBinding
-import com.example.platepal.databinding.CookbookFragmentBinding
+import com.example.platepal.ui.viewmodel.MainViewModel
 
 class CommunityFragment : Fragment() {
     private var _binding: CommunityFragmentBinding? = null

@@ -1,25 +1,20 @@
 package com.example.platepal.ui
 
-import android.opengl.Visibility
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.Navigation
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.platepal.R
 import com.example.platepal.databinding.DiscoverFragmentBinding
 import edu.cs371m.reddit.glide.Glide
 import androidx.navigation.fragment.findNavController
+import com.example.platepal.ui.viewmodel.MainViewModel
 
-private const val TAG = "MainActivity"
+private const val TAG = "DiscoverFragment"
 
 class DiscoverFragment: Fragment() {
 
@@ -37,7 +32,6 @@ class DiscoverFragment: Fragment() {
         _binding = DiscoverFragmentBinding.inflate(inflater, container, false)
         return binding.root
     }
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -102,12 +96,10 @@ class DiscoverFragment: Fragment() {
         }
 
         //click into search page
-        /*
         binding.discoverActionSearch.setOnClickListener{
             val action = DiscoverFragmentDirections.actionDiscoverToSearch()
             findNavController().navigate(action)
         }
-         */
     }
 
     override fun onDestroyView() {
