@@ -16,11 +16,14 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.onNavDestinationSelected
 import androidx.navigation.ui.setupWithNavController
-import com.example.platepal.ui.MainViewModel
+import com.example.platepal.ui.viewmodel.MainViewModel
 
 private const val TAG = "MainActivity"
 
 class MainActivity : AppCompatActivity() {
+    companion object {
+        var globalDebug = false
+    }
     private lateinit var binding : ActivityMainBinding
     private lateinit var navController : NavController
     private lateinit var appBarConfiguration: AppBarConfiguration

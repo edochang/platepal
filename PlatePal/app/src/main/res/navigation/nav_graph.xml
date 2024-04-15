@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
@@ -30,7 +29,7 @@
         android:label="OnePost" >
 
         <argument
-            android:name="post"
+            android:name="recipe"
             app:argType="com.example.platepal.data.RecipeMeta">
 
         </argument>
@@ -52,15 +51,10 @@
     <fragment
         android:id="@+id/searchFragment"
         android:name="com.example.platepal.ui.SearchFragment"
-        android:label="Search" >
-
+        android:label="Search">
         <action
             android:id="@+id/action_search_to_one_post"
-            app:destination="@id/onePostFragment" >
-
-        </action>
-
-
+            app:destination="@id/onePostFragment" />
     </fragment>
 
     <fragment
@@ -73,8 +67,7 @@
     <fragment
         android:id="@+id/registerFragment"
         android:name="com.example.platepal.ui.ProfileFragment"
-        android:label="Profile" >
-    </fragment>
+        android:label="Profile" />
 
     <fragment
         android:id="@+id/logInFragment"
@@ -88,4 +81,15 @@
         android:label="Profile" >
     </fragment>
 
+    <fragment
+        android:id="@+id/discoverFragment"
+        android:name="com.example.platepal.ui.DiscoverFragment"
+        android:label="Home">
+        <action
+            android:id="@+id/action_discover_to_search"
+            app:destination="@id/searchFragment" />
+        <action
+            android:id="@+id/action_discover_to_one_post"
+            app:destination="@id/onePostFragment" />
+    </fragment>
 </navigation>

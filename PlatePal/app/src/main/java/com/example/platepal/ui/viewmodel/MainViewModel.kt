@@ -1,11 +1,13 @@
-package com.example.platepal.ui
+package com.example.platepal.ui.viewmodel
 
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.platepal.MainActivity
 import com.example.platepal.api.SpoonacularApi
+import com.example.platepal.data.DummyRepository
 import com.example.platepal.data.RecipeMeta
 import com.example.platepal.data.SpoonacularRecipe
 import com.example.platepal.repository.RecipesDBHelper
@@ -15,8 +17,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.time.Duration
 import java.time.Instant
-import com.example.platepal.auth.User
-import com.example.platepal.auth.invalidUser
 
 private const val TAG = "MainViewModel"
 
@@ -38,17 +38,6 @@ class MainViewModel: ViewModel() {
 
     //title of the fragment
     private var randomSpotlightRecipe = MutableLiveData<RecipeMeta>()
-
-    // Track current authenticated user
-    private var currentAuthUser = invalidUser
-
-
-    // MainActivity gets updates on this via live data and informs view model
-    fun setCurrentAuthUser(user: User) {
-        currentAuthUser = user
-    }
-
-
 
     //favorite (cookbook)
     private val favList = MutableLiveData<List<RecipeMeta>>().apply{
@@ -124,10 +113,14 @@ class MainViewModel: ViewModel() {
     // Public helper functions
     fun fetchReposRecipeList(resultListener:() -> Unit) {
         recipesDBHelper.getRecipes {
-            if (it.isEmpty()) {
+            if(it.isEmpty()) {
                 viewModelScope.launch(Dispatchers.IO) {
-                    //val spoonacularRecipes = DummyRepository().fetchData() // Used for testing
-                    val spoonacularRecipes = spoonacularRecipeRepository.getRecipes()
+                    val spoonacularRecipes = if(MainActivity.globalDebug) {
+                        DummyRepository().fetchData() // Used for testing
+                    } else {
+                        spoonacularRecipeRepository.getRecipes()
+                    }
+
                     val recipeMetas = List(spoonacularRecipes.size) { index ->
                         convertSpoonacularRecipeToRecipeMeta(spoonacularRecipes[index])
                     }
@@ -145,16 +138,23 @@ class MainViewModel: ViewModel() {
                 val nowTimestampSeconds = Timestamp.now().seconds
                 val dayDuration = Duration.ofDays(1).seconds
                 val minStaleTimestamp = nowTimestampSeconds - dayDuration
-                Log.d(TAG, "recentDuration: ${mostRecentRecipe.timeStamp?.seconds}, minStaleDuration: $minStaleTimestamp")
-                if (minStaleTimestamp > mostRecentRecipe.timeStamp!!.seconds) {
+                Log.d(
+                    TAG,
+                    "recentDuration: ${mostRecentRecipe.timeStamp?.seconds}, minStaleDuration: $minStaleTimestamp"
+                )
+                if(minStaleTimestamp > mostRecentRecipe.timeStamp!!.seconds) {
                     viewModelScope.launch(Dispatchers.IO) {
-                        //val spoonacularRecipes = DummyRepository().secondFetchData() // Used for testing
-                        val spoonacularRecipes = spoonacularRecipeRepository.getRecipes()
+                        val spoonacularRecipes = if(MainActivity.globalDebug) {
+                            DummyRepository().secondFetchData() // Used for testing
+                        } else {
+                            spoonacularRecipeRepository.getRecipes()
+                        }
+
                         val recipeMetas = List(spoonacularRecipes.size) { index ->
                             convertSpoonacularRecipeToRecipeMeta(spoonacularRecipes[index])
                         }
                         val newRecipes = (recipeMetas.toSet() - it.toSet()).toList()
-                        if (newRecipes.isNotEmpty()) {
+                        if(newRecipes.isNotEmpty()) {
                             Log.d(TAG, "New recipes received from Spoonacular: $newRecipes")
                             recipesDBHelper.batchCreateDocuments(newRecipes) {
                                 fetchReposRecipeList(resultListener)
@@ -181,10 +181,5 @@ class MainViewModel: ViewModel() {
             spoonacularRecipe.image,
             spoonacularRecipe.imageType
         )
-    }
-
-    private fun convertTimeToMilliseconds(time: String): Long {
-        val instant = Instant.parse(time)
-        return instant.toEpochMilli()
     }
 }
