@@ -17,6 +17,8 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.onNavDestinationSelected
 import androidx.navigation.ui.setupWithNavController
 import com.example.platepal.ui.viewmodel.MainViewModel
+import com.google.firebase.auth.FirebaseAuth
+import android.content.Intent
 
 private const val TAG = "MainActivity"
 
@@ -107,6 +109,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -141,6 +144,13 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    //log out current user, go back to sign in page
+    fun logout(){
+        FirebaseAuth.getInstance().signOut()
+        val intent = Intent(this, SignInActivity::class.java)
+        startActivity(intent)
+        finish()
+    }
 
     // navigateUp:
     // If we came here from within the app, pop the back stack

@@ -50,20 +50,6 @@
         android:name="com.example.platepal.ui.InboxFragment"
         android:label="Inbox" />
 
-    <fragment
-        android:id="@+id/registerFragment"
-        android:name="com.example.platepal.ui.ProfileFragment"
-        android:label="Profile" />
-
-    <fragment
-        android:id="@+id/logInFragment"
-        android:name="com.example.platepal.ui.ProfileFragment"
-        android:label="Profile" />
-
-    <fragment
-        android:id="@+id/newPasswordFragment"
-        android:name="com.example.platepal.ui.ProfileFragment"
-        android:label="Profile" />
 
     <fragment
         android:id="@+id/cookbookFragment"
@@ -95,4 +81,5 @@
             android:name="recipe"
             app:argType="com.example.platepal.data.RecipeMeta" />
     </action>
+
 </navigation>
