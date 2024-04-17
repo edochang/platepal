@@ -12,9 +12,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.platepal.data.RecipeMeta
 import com.example.platepal.databinding.SearchFragmentBinding
 import com.example.platepal.ui.viewmodel.MainViewModel
+import com.example.platepal.ui.viewmodel.UserViewModel
 
 class SearchFragment : Fragment() {
     private val viewModel: MainViewModel by activityViewModels()
+    private val userViewModel: UserViewModel by activityViewModels()
     private var _binding: SearchFragmentBinding? = null
     private val binding get() = _binding!!
 
@@ -32,7 +34,7 @@ class SearchFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         viewModel.setTitle("Search")
 
-        val adapter = RecipeAdapter(viewModel){
+        val adapter = RecipeAdapter(userViewModel){
             val action = SearchFragmentDirections.actionSearchToOnePost(it)
             findNavController().navigate(action)
         }

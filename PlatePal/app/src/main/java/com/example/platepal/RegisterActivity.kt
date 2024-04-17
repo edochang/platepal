@@ -11,8 +11,11 @@ import android.view.View
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.navigation.fragment.findNavController
+import com.example.platepal.data.UserMeta
 import com.example.platepal.databinding.ActivityRegisterBinding
 import com.example.platepal.databinding.ActivitySignInBinding
+import com.example.platepal.repository.UserDBHelper
+import com.example.platepal.ui.viewmodel.UserViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.auth
@@ -24,6 +27,7 @@ class RegisterActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     private lateinit var binding : ActivityRegisterBinding
     private lateinit var progressbar: ProgressBar
+    private val userViewModel = UserViewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,6 +36,7 @@ class RegisterActivity : AppCompatActivity() {
 
         auth = Firebase.auth
         progressbar = binding.progressBar
+
         progressbar.visibility = View.GONE
 
         binding.buttonSignUp.setOnClickListener {
@@ -47,43 +52,12 @@ class RegisterActivity : AppCompatActivity() {
                         if (it.isSuccessful){
                             Toast.makeText(baseContext, "success",
                                 Toast.LENGTH_SHORT).show()
+
+                            val userID = auth.currentUser?.uid.toString()
+                            userViewModel.createUserMeta(username, email, userID)
+
                             val intent = Intent(this, SignInActivity::class.java)
                             startActivity(intent)
-
-                            /*
-                            val user = auth.currentUser
-                            val profileUpdates = UserProfileChangeRequest.Builder()
-                                .setDisplayName(username) // Set the name
-                                //can also set photourl?
-                                .build()
-                            user?.updateProfile(profileUpdates)
-                                ?.addOnCompleteListener { task ->
-                                    if (task.isSuccessful) {
-                                        // Name updated successfully
-                                        val intent = Intent(this, MainActivity::class.java)
-                                        startActivity(intent)
-                                    } else {
-                                        // Name update failed
-                                        Log.d("name update", "failed")
-                                    }
-                                }
-
-                            val userUpdates = hashMapOf<String, Any>(
-                                "email" to email // Set the email
-                            )
-                            val db = FirebaseFirestore.getInstance()
-                            db.collection("users").document(user?.uid.toString())
-                                .set(userUpdates)
-                                .addOnSuccessListener { documentReference ->
-                                    // email added successfully
-                                    Log.d("email added", "success")
-                                }
-                                .addOnFailureListener { e ->
-                                    // email addition failed
-                                    Log.d("email added", "success")
-                                }
-
-                             */
                         }else{
                             Toast.makeText(baseContext,"Cannot register account. Please try again.",Toast.LENGTH_SHORT).show()
                             progressbar.visibility = View.GONE
@@ -106,3 +80,23 @@ class RegisterActivity : AppCompatActivity() {
 
     }
 }
+
+/*
+                           val user = auth.currentUser
+                           val profileUpdates = UserProfileChangeRequest.Builder()
+                               .setDisplayName(username) // Set the name
+                               //can also set photourl?
+                               .build()
+                           user?.updateProfile(profileUpdates)
+                               ?.addOnCompleteListener { task ->
+                                   if (task.isSuccessful) {
+                                       // Name updated successfully
+                                       val intent = Intent(this, MainActivity::class.java)
+                                       startActivity(intent)
+                                   } else {
+                                       // Name update failed
+                                       Log.d("name update", "failed")
+                                   }
+                               }
+
+                            */

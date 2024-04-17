@@ -13,6 +13,7 @@ import com.example.platepal.databinding.DiscoverFragmentBinding
 import edu.cs371m.reddit.glide.Glide
 import androidx.navigation.fragment.findNavController
 import com.example.platepal.ui.viewmodel.MainViewModel
+import com.example.platepal.ui.viewmodel.UserViewModel
 
 private const val TAG = "DiscoverFragment"
 
@@ -21,7 +22,7 @@ class DiscoverFragment: Fragment() {
     private var _binding: DiscoverFragmentBinding? = null
     private val binding get() = _binding!!
     private val viewModel: MainViewModel by activityViewModels()
-    //private lateinit var searchView: SearchView
+    private val userViewModel: UserViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -39,7 +40,7 @@ class DiscoverFragment: Fragment() {
         viewModel.setTitle("PlatePal")
 
         //bind adapter
-        val adapter = RecipeAdapter(viewModel){
+        val adapter = RecipeAdapter(userViewModel){
             val action = DiscoverFragmentDirections.actionDiscoverToOnePost(it)
             findNavController().navigate(action)
         }
@@ -48,6 +49,8 @@ class DiscoverFragment: Fragment() {
         // grid layout for RecyclerView
         val layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         binding.discoverRv.layoutManager = layoutManager
+
+        userViewModel.fetchInitialFavRecipes()
 
         //populate recipe list
         viewModel.observeRecipeList().observe(viewLifecycleOwner) {
@@ -68,20 +71,20 @@ class DiscoverFragment: Fragment() {
                 Glide.glideFetch(recipeSpotlight.image, recipeSpotlight.image, binding.spotlightRecipeImage)
 
                 //spotlight favorites
-                viewModel.isFavoriteRecipe(recipeSpotlight)?.let{
+                userViewModel.isFavoriteRecipe(recipeSpotlight)?.let{
                     if (it) binding.spotlightHeart.setImageResource(R.drawable.ic_heart_filled)
                     else binding.spotlightHeart.setImageResource(R.drawable.ic_heart_empty)
                 }
 
                 binding.spotlightHeart.setOnClickListener{
                     Log.d(javaClass.simpleName, "heart clicklistener")
-                    viewModel.isFavoriteRecipe(recipeSpotlight)?.let{
+                    userViewModel.isFavoriteRecipe(recipeSpotlight)?.let{
                         if(it){
-                            viewModel.setFavoriteRecipe(recipeSpotlight, false)
+                            userViewModel.setFavoriteRecipe(recipeSpotlight, false)
                             binding.spotlightHeart.setImageResource(R.drawable.ic_heart_empty)
                             Log.d(javaClass.simpleName, "set heart to empty")
                         } else{
-                            viewModel.setFavoriteRecipe(recipeSpotlight, true)
+                            userViewModel.setFavoriteRecipe(recipeSpotlight, true)
                             binding.spotlightHeart.setImageResource(R.drawable.ic_heart_filled)
                             Log.d(javaClass.simpleName, "set heart to filled")
                         }

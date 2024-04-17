@@ -12,12 +12,14 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.platepal.data.RecipeMeta
 import com.example.platepal.databinding.CookbookFragmentBinding
 import com.example.platepal.ui.viewmodel.MainViewModel
+import com.example.platepal.ui.viewmodel.UserViewModel
 
 class CookbookFragment : Fragment() {
 
     private var _binding: CookbookFragmentBinding? = null
     private val binding get() = _binding!!
     private val viewModel: MainViewModel by activityViewModels()
+    private val userViewModel: UserViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,7 +38,7 @@ class CookbookFragment : Fragment() {
 
         viewModel.setTitle("PlatePal")
 
-        val adapter = RecipeAdapter(viewModel){
+        val adapter = RecipeAdapter(userViewModel){
             val action = CookbookFragmentDirections.actionCookbookToOnePost(it)
             findNavController().navigate(action)
         }
@@ -46,7 +48,7 @@ class CookbookFragment : Fragment() {
         val layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         binding.cookbookRv.layoutManager = layoutManager
 
-        viewModel.observeFavListLive().observe(viewLifecycleOwner){
+        userViewModel.observeDbFavList().observe(viewLifecycleOwner){
             if (it.isNotEmpty()){
                 binding.placeholder.visibility = View.GONE
                 //Log.d(javaClass.simpleName, "placeholder view gone")
@@ -55,7 +57,6 @@ class CookbookFragment : Fragment() {
                 binding.placeholder.visibility = View.VISIBLE
                 //Log.d(javaClass.simpleName, "placeholder view visible")
             }
-
             adapter.submitList(it)
         }
 
@@ -79,7 +80,7 @@ class CookbookFragment : Fragment() {
 
         if (query != null){
             val filteredList =  mutableListOf<RecipeMeta>()
-            for (i in viewModel.getFavList()!!){
+            for (i in userViewModel.getFavList()!!){
                 if (i.title.lowercase().contains(query)) {
                     filteredList.add(i)
                 }
