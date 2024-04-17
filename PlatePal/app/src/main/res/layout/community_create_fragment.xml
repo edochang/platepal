@@ -6,18 +6,19 @@
 
     <ImageButton
         android:id="@+id/post_close_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
-        android:background="@color/white"
-        android:tint="@color/black"
+        android:background="@color/design_default_color_background"
+        android:contentDescription="Close Button"
         app:layout_constraintBottom_toTopOf="@id/post_user_profile_picture"
         app:layout_constraintEnd_toStartOf="@id/post_title"
         app:layout_constraintHorizontal_chainStyle="spread_inside"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@android:drawable/ic_menu_close_clear_cancel" />
+        app:srcCompat="@android:drawable/ic_menu_close_clear_cancel"
+        app:tint="@color/black" />
 
     <TextView
         android:id="@+id/post_title"
@@ -37,7 +38,7 @@
         android:id="@+id/post_save_button"
         style="?android:attr/buttonBarButtonStyle"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:layout_marginEnd="10dp"
         android:backgroundTint="@color/orange"
         android:minHeight="0dp"
@@ -78,7 +79,8 @@
         app:layout_constraintEnd_toEndOf="@id/post_user_profile_picture"
         app:layout_constraintStart_toStartOf="@id/post_user_profile_picture"
         app:layout_constraintTop_toTopOf="@id/post_user_profile_picture"
-        app:srcCompat="@drawable/frame_circle" />
+        app:srcCompat="@drawable/frame_circle"
+        app:tint="@color/design_default_color_background" />
 
     <TextView
         android:id="@+id/post_user_name"
@@ -98,7 +100,7 @@
     <ImageButton
         android:id="@+id/post_camera_button"
         android:layout_width="wrap_content"
-        android:layout_height="35dp"
+        android:layout_height="48dp"
         android:layout_gravity="center_vertical"
         android:background="@android:color/transparent"
         android:contentDescription="Camera Button"
