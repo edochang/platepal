@@ -66,15 +66,15 @@ class MainActivity : AppCompatActivity() {
                 item.onNavDestinationSelected(navController)
                 true
             }
-            R.id.cookbook -> {
+            R.id.cookbookFragment -> {
                 item.onNavDestinationSelected(navController)
                 true
             }
-            R.id.create -> {
+            R.id.createFragment -> {
                 item.onNavDestinationSelected(navController)
                 true
             }
-            R.id.community -> {
+            R.id.communityFragment -> {
                 item.onNavDestinationSelected(navController)
                 true
             }
@@ -148,7 +148,7 @@ class MainActivity : AppCompatActivity() {
         //toolbar
         initToolBarMenu()
         appBarConfiguration= AppBarConfiguration(
-            setOf(R.id.discoverFragment, R.id.cookbook, R.id.create, R.id.community)
+            setOf(R.id.discoverFragment, R.id.cookbookFragment, R.id.createFragment, R.id.communityFragment)
         )
         //appBarConfiguration = AppBarConfiguration(navController.graph)
         binding.toolbar.setupWithNavController(navController, appBarConfiguration)

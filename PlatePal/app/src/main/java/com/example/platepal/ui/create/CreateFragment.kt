@@ -104,9 +104,12 @@ class CreateFragment : Fragment() {
                 return@setOnClickListener
             }
 
+            val photo_uuid = "no_recipe_photo.jpg"
+
             // Create Recipe
             oneRecipeViewModel.createRecipe(
                 recipeTitle.text.toString(),
+                photo_uuid,
                 ingredientsBinding.ingredientsEditText.text.toString(),
                 directionsBinding.directionsEditText.text.toString(),
                 notesBinding?.notesEditText?.text.toString() ?: "",

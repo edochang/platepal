@@ -86,7 +86,7 @@ class OnePostFragment : Fragment() {
 
         // Set main information
         binding.onePostTitle.text = recipe.title
-        Glide.glideFetch(recipe.image, recipe.image, binding.onePostImage)
+        viewModel.fetchRecipePhoto(recipe.image, recipe.createdBy, binding.onePostImage)
 
         // Favorites
         setupFavorites(recipe)

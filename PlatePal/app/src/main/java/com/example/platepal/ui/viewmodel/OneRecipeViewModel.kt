@@ -101,6 +101,7 @@ class OneRecipeViewModel: ViewModel() {
     }
 
     fun createRecipe(title: String,
+                     image: String,
                      ingredients: String,
                      directions: String,
                      notes: String,
@@ -110,8 +111,8 @@ class OneRecipeViewModel: ViewModel() {
         val createdRecipeMeta = RecipeMeta(
                 "",
                 title,
-                "",
-                "",
+                image,
+                "image/jpg",
                 createdBy
             )
 
