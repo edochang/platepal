@@ -48,8 +48,12 @@ class UserViewModel: ViewModel() {
         return dbFavList.value?.contains(recipe)
     }
 
-    fun fetchInitialFavRecipes(){
-        dbHelper.fetchInitialFavRecipes(dbFavList)
+    fun fetchInitialFavRecipes(callback: ()-> Unit){
+        dbHelper.fetchInitialFavRecipes {
+            dbFavList.postValue(it)
+            callback.invoke()
+            Log.d(TAG, "dbFavList postvalue")
+        }
     }
 
     fun observeDbFavList(): LiveData<List<RecipeMeta>>{
@@ -57,10 +61,14 @@ class UserViewModel: ViewModel() {
     }
 
     private fun addFavRecipe(recipe: RecipeMeta) {
-        dbHelper.addFavRecipe(recipe, dbFavList)
+        dbHelper.addFavRecipe(recipe){
+            dbFavList.postValue(it)
+        }
     }
 
     private fun removeFavRecipe(recipe: RecipeMeta) {
-        dbHelper.removeFavRecipe(recipe, dbFavList)
+        dbHelper.removeFavRecipe(recipe){
+            dbFavList.postValue(it)
+        }
     }
 }

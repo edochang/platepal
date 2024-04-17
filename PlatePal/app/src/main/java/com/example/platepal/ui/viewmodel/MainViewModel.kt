@@ -39,11 +39,6 @@ class MainViewModel: ViewModel() {
     //title of the fragment
     private var randomSpotlightRecipe = MutableLiveData<RecipeMeta>()
 
-    //favorite (cookbook)
-    private val favList = MutableLiveData<List<RecipeMeta>>().apply{
-        postValue(mutableListOf())
-    }
-
     fun observeRecipeList(): LiveData<List<RecipeMeta>> {
         return recipeList
     }
@@ -52,45 +47,12 @@ class MainViewModel: ViewModel() {
         return recipeList.value ?: emptyList()
     }
 
-    // Getters
-    fun getFavList(): MutableList<RecipeMeta>? {
-        return favList.value?.toMutableList()
-    }
-
-    // Observers
-    fun observeFavListLive(): LiveData<List<RecipeMeta>> {
-        return favList
-    }
-
     fun observeRandomSpotlightRecipe(): LiveData<RecipeMeta> {
         return randomSpotlightRecipe
     }
 
     fun observeTitle(): LiveData<String> {
         return title
-    }
-
-    // Setters
-    fun setFavoriteRecipe(recipe: RecipeMeta, isFavorite: Boolean){
-        if (isFavorite){
-            //add favorite recipe
-            favList.apply{
-                this.value?.let{
-                    val tempFavList = it.toMutableList()
-                    tempFavList.add(recipe)
-                    this.value = tempFavList
-                }
-            }
-        } else {
-            //remove favorite recipe
-            favList.apply{
-                this.value?.let{
-                    val tempFavList = it.toMutableList()
-                    tempFavList.remove(recipe)
-                    this.value = tempFavList
-                }
-            }
-        }
     }
 
     fun setRandomRecipe() {
@@ -167,10 +129,6 @@ class MainViewModel: ViewModel() {
             recipeList.postValue(it)
             resultListener.invoke()
         }
-    }
-
-    fun isFavoriteRecipe(recipe: RecipeMeta): Boolean? {
-        return favList.value?.contains(recipe)
     }
 
     // Private helper functions

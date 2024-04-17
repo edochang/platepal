@@ -16,6 +16,7 @@ import com.example.platepal.databinding.OnePostFragmentBinding
 import com.example.platepal.ui.viewmodel.MainViewModel
 import com.example.platepal.ui.ViewPagerAdapter
 import com.example.platepal.ui.viewmodel.OneRecipeViewModel
+import com.example.platepal.ui.viewmodel.UserViewModel
 import com.google.android.material.tabs.TabLayoutMediator
 import edu.cs371m.reddit.glide.Glide
 
@@ -27,6 +28,7 @@ class OnePostFragment : Fragment() {
     private val binding get() = _binding!!
     private val viewModel: MainViewModel by activityViewModels()
     private val oneRecipeViewModel: OneRecipeViewModel by activityViewModels()
+    private val userViewModel: UserViewModel by activityViewModels()
     private val args: OnePostFragmentArgs by navArgs()
     private lateinit var mainActivity: MainActivity
 
@@ -39,20 +41,20 @@ class OnePostFragment : Fragment() {
     }
 
     private fun setupFavorites(recipe: RecipeMeta) {
-        viewModel.isFavoriteRecipe(recipe)?.let {
+        userViewModel.isFavoriteRecipe(recipe)?.let {
             if (it) binding.onePostHeart.setImageResource(R.drawable.ic_heart_filled)
             else binding.onePostHeart.setImageResource(R.drawable.ic_heart_empty)
         }
 
         binding.onePostHeart.setOnClickListener {
             Log.d(javaClass.simpleName, "heart clicklistener")
-            viewModel.isFavoriteRecipe(recipe)?.let {
+            userViewModel.isFavoriteRecipe(recipe)?.let {
                 if (it) {
-                    viewModel.setFavoriteRecipe(recipe, false)
+                    userViewModel.setFavoriteRecipe(recipe, false)
                     binding.onePostHeart.setImageResource(R.drawable.ic_heart_empty)
                     Log.d(javaClass.simpleName, "set heart to empty")
                 } else {
-                    viewModel.setFavoriteRecipe(recipe, true)
+                    userViewModel.setFavoriteRecipe(recipe, true)
                     binding.onePostHeart.setImageResource(R.drawable.ic_heart_filled)
                     Log.d(javaClass.simpleName, "set heart to filled")
                 }

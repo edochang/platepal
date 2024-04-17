@@ -42,7 +42,7 @@ class UserDBHelper: DBHelper<UserMeta>(
             }
     }
 
-    private fun dbFetchFavRecipes(favList: MutableLiveData<List<RecipeMeta>>){
+    private fun dbFetchFavRecipes(callback: (list: List<RecipeMeta>) -> Unit){
         getCurrentUserDocID { userDocID ->
             db.collection(rootCollection)
                 .document(userDocID)
@@ -51,7 +51,7 @@ class UserDBHelper: DBHelper<UserMeta>(
                 .addOnSuccessListener { result ->
                     Log.d(TAG, "all favorite recipes fetch ${result!!.documents.size}")
                     // done on a background thread
-                    favList.postValue(result.documents.mapNotNull {
+                    callback(result.documents.mapNotNull {
                         it.toObject(RecipeMeta::class.java)
                     })
                 }
@@ -61,12 +61,12 @@ class UserDBHelper: DBHelper<UserMeta>(
         }
     }
 
-    fun fetchInitialFavRecipes(favList: MutableLiveData<List<RecipeMeta>>) {
-        dbFetchFavRecipes(favList)
+    fun fetchInitialFavRecipes(callback: (list: List<RecipeMeta>) -> Unit) {
+        dbFetchFavRecipes(callback)
     }
 
     fun addFavRecipe(recipe: RecipeMeta,
-                     favList: MutableLiveData<List<RecipeMeta>>) {
+                     callback: (list: List<RecipeMeta>) -> Unit) {
         getCurrentUserDocID {userDocID ->
             db.collection(rootCollection)
                 .document(userDocID)
@@ -76,7 +76,7 @@ class UserDBHelper: DBHelper<UserMeta>(
                 .addOnSuccessListener {
                     Log.d(TAG, "recipe added with doc id: ${recipe.firestoreId}"
                     )
-                    dbFetchFavRecipes(favList)
+                    dbFetchFavRecipes(callback)
                 }
                 .addOnFailureListener { e ->
                     Log.d(TAG, "Recipe addition FAILED")
@@ -87,7 +87,7 @@ class UserDBHelper: DBHelper<UserMeta>(
 
 
     fun removeFavRecipe(recipe: RecipeMeta,
-                        favList: MutableLiveData<List<RecipeMeta>>){
+                        callback: (list: List<RecipeMeta>) -> Unit){
         getCurrentUserDocID { userDocID ->
             db.collection(rootCollection)
                 .document(userDocID)
@@ -99,7 +99,7 @@ class UserDBHelper: DBHelper<UserMeta>(
                     Log.d(TAG,
                         "Recipe deleted sucessfully id: ${recipe.firestoreId}"
                     )
-                    dbFetchFavRecipes(favList)
+                    dbFetchFavRecipes(callback)
                 }
                 .addOnFailureListener { e ->
                     Log.d(TAG, "Recipe deleting FAILED")

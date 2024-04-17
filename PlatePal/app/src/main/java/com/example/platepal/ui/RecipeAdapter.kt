@@ -11,8 +11,11 @@ import com.example.platepal.data.RecipeMeta
 import com.example.platepal.databinding.RecipeCardBinding
 import com.example.platepal.ui.viewmodel.MainViewModel
 import com.example.platepal.ui.viewmodel.UserViewModel
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import edu.cs371m.reddit.glide.Glide
 
+private const val TAG = "RecipeAdapter"
 class RecipeAdapter(private val userViewModel: UserViewModel,
                     private val navigateToOneRecipe: (RecipeMeta)->Unit)
     : ListAdapter<RecipeMeta, RecipeAdapter.VH>(RecipeDiff())
@@ -24,6 +27,7 @@ class RecipeAdapter(private val userViewModel: UserViewModel,
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
         val cardBinding = RecipeCardBinding.inflate(LayoutInflater.from(parent.context),
             parent, false)
+
         return VH(cardBinding)
     }
 
@@ -36,11 +40,19 @@ class RecipeAdapter(private val userViewModel: UserViewModel,
         Glide.glideFetch(item.image, item.image, cardBinding.recipeImage)
         Log.d(javaClass.simpleName, "onBindViewHolder")
 
-        //userViewModel.fetchInitialFavRecipes()
+        /*
+        userViewModel.fetchInitialFavRecipes{
+            notifyItemChanged(position)
+            Log.d(TAG, "favorite recipe list listener invoked")
+        }
+
+         */
+
 
         userViewModel.isFavoriteRecipe(item)?.let{
             if (it) cardBinding.heart.setImageResource(R.drawable.ic_heart_filled)
             else cardBinding.heart.setImageResource(R.drawable.ic_heart_empty)
+            Log.d(TAG, "set favorite icon")
         }
 
         cardBinding.heart.setOnClickListener{

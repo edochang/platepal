@@ -31,6 +31,7 @@ class DiscoverFragment: Fragment() {
     ): View {
         // Inflate the layout for this fragment
         _binding = DiscoverFragmentBinding.inflate(inflater, container, false)
+
         return binding.root
     }
 
@@ -50,7 +51,10 @@ class DiscoverFragment: Fragment() {
         val layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         binding.discoverRv.layoutManager = layoutManager
 
-        userViewModel.fetchInitialFavRecipes()
+        //userViewModel.fetchInitialFavRecipes{
+          //  Log.d(TAG, "favorite recipe list listener invoked")
+        //}
+
 
         //populate recipe list
         viewModel.observeRecipeList().observe(viewLifecycleOwner) {

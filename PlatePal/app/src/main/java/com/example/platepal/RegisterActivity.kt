@@ -59,12 +59,12 @@ class RegisterActivity : AppCompatActivity() {
                             val intent = Intent(this, SignInActivity::class.java)
                             startActivity(intent)
                         }else{
-                            Toast.makeText(baseContext,"Cannot register account. Please try again.",Toast.LENGTH_SHORT).show()
+                            Toast.makeText(baseContext,"Password must be at least 6 characters long. Please try again.",Toast.LENGTH_SHORT).show()
                             progressbar.visibility = View.GONE
                         }
                     }
                 }else{
-                    Toast.makeText(baseContext,"Password does not matched",Toast.LENGTH_SHORT).show()
+                    Toast.makeText(baseContext,"Passwords do not matched",Toast.LENGTH_SHORT).show()
                     progressbar.visibility = View.GONE
                 }
             }else{
@@ -81,22 +81,3 @@ class RegisterActivity : AppCompatActivity() {
     }
 }
 
-/*
-                           val user = auth.currentUser
-                           val profileUpdates = UserProfileChangeRequest.Builder()
-                               .setDisplayName(username) // Set the name
-                               //can also set photourl?
-                               .build()
-                           user?.updateProfile(profileUpdates)
-                               ?.addOnCompleteListener { task ->
-                                   if (task.isSuccessful) {
-                                       // Name updated successfully
-                                       val intent = Intent(this, MainActivity::class.java)
-                                       startActivity(intent)
-                                   } else {
-                                       // Name update failed
-                                       Log.d("name update", "failed")
-                                   }
-                               }
-
-                            */

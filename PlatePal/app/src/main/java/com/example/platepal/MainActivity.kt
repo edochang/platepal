@@ -126,7 +126,9 @@ class MainActivity : AppCompatActivity() {
         initRecipeList()
 
         //fetch initial favorite recipe list for user
-        userViewModel.fetchInitialFavRecipes()
+        userViewModel.fetchInitialFavRecipes{
+            Log.d(TAG, "favorite recipe list listener invoked")
+        }
 
         //observe top bar title
         initTitleObservers()

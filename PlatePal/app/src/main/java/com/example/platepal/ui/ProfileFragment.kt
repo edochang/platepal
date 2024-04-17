@@ -24,7 +24,6 @@ class ProfileFragment : Fragment() {
     private val viewModel: MainViewModel by activityViewModels()
     private val userViewModel: UserViewModel by activityViewModels()
     private lateinit var mainActivity: MainActivity
-    private val dbHelper = UserDBHelper()
     private val db = FirebaseFirestore.getInstance()
     private lateinit var listenerRegistration: ListenerRegistration
 
@@ -66,9 +65,7 @@ class ProfileFragment : Fragment() {
                     }
                 }
             }
-
         }
-
 
         binding.profileLogout.setOnClickListener{
             mainActivity.logout()
@@ -77,7 +74,7 @@ class ProfileFragment : Fragment() {
     }
     override fun onDestroyView() {
         _binding = null
-        //listenerRegistration.remove()
+        listenerRegistration.remove()
         super.onDestroyView()
     }
 
