@@ -121,6 +121,10 @@ class CreateFragment : Fragment() {
                 findNavController().navigate(action)
             }
         }
+
+        binding.createCancel.setOnClickListener {
+            findNavController().navigateUp()
+        }
     }
 
 }

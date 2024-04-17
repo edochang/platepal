@@ -12,7 +12,7 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/one_post_title"
+        android:id="@+id/one_recipe_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Recipe Title"
@@ -29,7 +29,7 @@
         >
 
         <ImageView
-            android:id="@+id/one_post_image"
+            android:id="@+id/one_recipe_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
@@ -41,11 +41,11 @@
             />
 
         <ImageButton
-            android:id="@+id/one_post_heart"
+            android:id="@+id/one_recipe_heart"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/one_post_image"
-            android:layout_alignEnd="@+id/one_post_image"
+            android:layout_alignTop="@+id/one_recipe_image"
+            android:layout_alignEnd="@+id/one_recipe_image"
             android:src="@drawable/ic_heart_empty"
             android:backgroundTint="@android:color/transparent"
             android:contentDescription="Recipe Image" />

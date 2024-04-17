@@ -5,6 +5,7 @@
     android:id="@+id/nav_graph"
     app:startDestination="@id/discoverFragment">
 
+    <!-- Main Fragments -->
     <fragment
         android:id="@+id/discoverFragment"
         android:name="com.example.platepal.ui.DiscoverFragment"
@@ -16,30 +17,41 @@
 
         <action
             android:id="@+id/action_discover_to_one_post"
-            app:destination="@id/onePostFragment">
+            app:destination="@id/oneRecipeFragment">
             <argument
                 android:name="recipe"
                 app:argType="com.example.platepal.data.RecipeMeta" />
         </action>
     </fragment>
 
+    <fragment
+        android:id="@+id/cookbookFragment"
+        android:name="com.example.platepal.ui.CookbookFragment"
+        android:label="Cookbook">
+        <action
+            android:id="@+id/action_cookbook_to_one_post"
+            app:destination="@id/oneRecipeFragment">
+            <argument
+                android:name="recipe"
+                app:argType="com.example.platepal.data.RecipeMeta" />
+        </action>
+    </fragment>
+
+    <fragment
+        android:id="@+id/createFragment"
+        android:name="com.example.platepal.ui.create.CreateFragment"
+        android:label="Create" />
+
+    <fragment
+        android:id="@+id/communityFragment"
+        android:name="com.example.platepal.ui.community.CommunityFragment"
+        android:label="Community" />
+
+    <!-- User Fragment -->
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.example.platepal.ui.ProfileFragment"
         android:label="Profile" />
-
-    <fragment
-        android:id="@+id/searchFragment"
-        android:name="com.example.platepal.ui.SearchFragment"
-        android:label="Search">
-        <action
-            android:id="@+id/action_search_to_one_post"
-            app:destination="@id/onePostFragment">
-            <argument
-                android:name="recipe"
-                app:argType="com.example.platepal.data.RecipeMeta" />
-        </action>
-    </fragment>
 
     <fragment
         android:id="@+id/inboxFragment"
@@ -61,42 +73,34 @@
         android:name="com.example.platepal.ui.ProfileFragment"
         android:label="Profile" />
 
+    <!-- Search Fragment -->
     <fragment
-        android:id="@+id/cookbookFragment"
-        android:name="com.example.platepal.ui.CookbookFragment"
-        android:label="Cookbook">
+        android:id="@+id/searchFragment"
+        android:name="com.example.platepal.ui.SearchFragment"
+        android:label="Search">
         <action
-            android:id="@+id/action_cookbook_to_one_post"
-            app:destination="@id/onePostFragment">
+            android:id="@+id/action_search_to_one_post"
+            app:destination="@id/oneRecipeFragment">
             <argument
                 android:name="recipe"
                 app:argType="com.example.platepal.data.RecipeMeta" />
         </action>
     </fragment>
 
+    <!-- Recipe and Post Fragment -->
     <fragment
-        android:id="@+id/createFragment"
-        android:name="com.example.platepal.ui.create.CreateFragment"
-        android:label="Create" />
-
-    <fragment
-        android:id="@+id/communityFragment"
-        android:name="com.example.platepal.ui.CommunityFragment"
-        android:label="Community" />
-
-    <fragment
-        android:id="@+id/onePostFragment"
-        android:name="com.example.platepal.ui.onepost.OnePostFragment"
+        android:id="@+id/oneRecipeFragment"
+        android:name="com.example.platepal.ui.recipe.OneRecipeFragment"
         android:label="OnePost">
-
         <argument
             android:name="recipe"
             app:argType="com.example.platepal.data.RecipeMeta" />
     </fragment>
 
+    <!-- Global Actions -->
     <action
         android:id="@+id/action_cookbook_to_one_post"
-        app:destination="@id/onePostFragment">
+        app:destination="@id/oneRecipeFragment">
         <argument
             android:name="recipe"
             app:argType="com.example.platepal.data.RecipeMeta" />
@@ -104,7 +108,7 @@
 
     <action
         android:id="@+id/action_create_recipe_to_one_post"
-        app:destination="@id/onePostFragment">
+        app:destination="@id/oneRecipeFragment">
         <argument
             android:name="recipe"
             app:argType="com.example.platepal.data.RecipeMeta" />
