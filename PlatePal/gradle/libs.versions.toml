@@ -25,15 +25,15 @@ logging-interceptor = "4.12.0"
 coroutines-core = "1.8.0"
 coroutines-android = "1.8.0"
 coroutines-test = "1.8.0"
-firebase-bom = "32.8.0"
+firebase-bom = "32.8.1"
 mockwebserver = "4.12.0"
 googleServices = "4.4.1"
-services-auth = "20.7.0"
+services-auth = "21.1.0"
 credential = "1.2.2"
 googleid = "1.1.0"
 firebase-ui = "8.0.2"
 appcompat = "1.6.1"
-activity = "1.8.0"
+activity = "1.8.2"
 
 [libraries]
 androidx-constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "constraintlayout" }

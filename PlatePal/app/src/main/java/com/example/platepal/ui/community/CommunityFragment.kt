@@ -1,4 +1,4 @@
-package com.example.platepal.ui
+package com.example.platepal.ui.community
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment

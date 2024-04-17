@@ -48,6 +48,10 @@ class MainViewModel: ViewModel() {
         postValue(mutableListOf())
     }
 
+    // Photo Metadata
+    var pictureNameByUser = "" // String provided by the user
+    private var pictureUUID = ""
+
     fun observeRecipeList(): LiveData<List<RecipeMeta>> {
         return recipeList
     }
@@ -198,5 +202,9 @@ class MainViewModel: ViewModel() {
             spoonacularRecipe.imageType,
             createdBy
         )
+    }
+
+    fun takePictureUUID(uuid: String) {
+        pictureUUID = uuid
     }
 }
