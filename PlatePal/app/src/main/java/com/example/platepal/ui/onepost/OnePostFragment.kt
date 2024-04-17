@@ -35,6 +35,7 @@ class OnePostFragment : Fragment() {
         Log.d(TAG, "Retrieving recipe info from Repo...")
         oneRecipeViewModel.fetchReposRecipeInfo {
             Log.d(TAG, "Recipe info retrieval listener invoked.")
+            // mainActivity.progressBarOff() // Note: This is done on the observer below.
         }
     }
 
@@ -77,13 +78,15 @@ class OnePostFragment : Fragment() {
 
         viewModel.setTitle("Recipe")
         val recipe = args.recipe
+
+        oneRecipeViewModel.setRecipe(recipe)
         oneRecipeViewModel.setRecipeSourceId(recipe.sourceId)
 
         getRecipeInfo()
 
         // Set main information
         binding.onePostTitle.text = recipe.title
-        Glide.glideFetch(recipe.image, recipe.image, binding.onePostImage)
+        viewModel.fetchRecipePhoto(recipe.image, recipe.createdBy, binding.onePostImage)
 
         // Favorites
         setupFavorites(recipe)

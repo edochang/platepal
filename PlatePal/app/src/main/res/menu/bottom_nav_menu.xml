@@ -7,17 +7,17 @@
         android:title="@string/nav_discover" />
 
     <item
-        android:id="@+id/cookbook"
+        android:id="@+id/cookbookFragment"
         android:icon="@drawable/ic_cookbook"
         android:title="@string/nav_cookbook" />
 
     <item
-        android:id="@+id/create"
+        android:id="@+id/createFragment"
         android:icon="@drawable/ic_create"
         android:title="@string/nav_create" />
 
     <item
-        android:id="@+id/community"
+        android:id="@+id/communityFragment"
         android:icon="@drawable/ic_community"
         android:title="@string/nav_community" />
 

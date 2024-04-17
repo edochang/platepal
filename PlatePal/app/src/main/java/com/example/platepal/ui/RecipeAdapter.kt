@@ -32,7 +32,7 @@ class RecipeAdapter(private val viewModel: MainViewModel,
 
         //bind the post title & likes and comment counts
         cardBinding.recipeTitle.text = item.title
-        Glide.glideFetch(item.image, item.image, cardBinding.recipeImage)
+        viewModel.fetchRecipePhoto(item.image, item.createdBy, cardBinding.recipeImage)
         Log.d(javaClass.simpleName, "onBindViewHolder")
 
         //favorites for discover RV
@@ -56,7 +56,7 @@ class RecipeAdapter(private val viewModel: MainViewModel,
             }
         }
 
-        cardBinding.recipeImage.setOnClickListener {
+        cardBinding.root.setOnClickListener {
             navigateToOneRecipe(item)
         }
 

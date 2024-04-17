@@ -17,12 +17,27 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.onNavDestinationSelected
 import androidx.navigation.ui.setupWithNavController
 import com.example.platepal.ui.viewmodel.MainViewModel
+import com.google.android.material.snackbar.Snackbar
 
 private const val TAG = "MainActivity"
 
 class MainActivity : AppCompatActivity() {
     companion object {
+        // Constants
+        const val SPOONACULAR_API_NAME = "SpoonacularApi"
+
+        // Variables
         var globalDebug = false
+
+
+        fun showSnackbarMessage(view: View, message: String) {
+            Snackbar
+                .make(
+                    view,
+                    message,
+                    Snackbar.LENGTH_SHORT)
+                .show()
+        }
     }
     private lateinit var binding : ActivityMainBinding
     private lateinit var navController : NavController
@@ -51,15 +66,15 @@ class MainActivity : AppCompatActivity() {
                 item.onNavDestinationSelected(navController)
                 true
             }
-            R.id.cookbook -> {
+            R.id.cookbookFragment -> {
                 item.onNavDestinationSelected(navController)
                 true
             }
-            R.id.create -> {
+            R.id.createFragment -> {
                 item.onNavDestinationSelected(navController)
                 true
             }
-            R.id.community -> {
+            R.id.communityFragment -> {
                 item.onNavDestinationSelected(navController)
                 true
             }
@@ -98,7 +113,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun initRecipeList() {
+    fun initRecipeList() {
         Log.d(TAG, "Retrieving recipes from Repo...")
         progressBarOn()
         viewModel.fetchReposRecipeList {
@@ -133,7 +148,7 @@ class MainActivity : AppCompatActivity() {
         //toolbar
         initToolBarMenu()
         appBarConfiguration= AppBarConfiguration(
-            setOf(R.id.discoverFragment, R.id.cookbook, R.id.create, R.id.community)
+            setOf(R.id.discoverFragment, R.id.cookbookFragment, R.id.createFragment, R.id.communityFragment)
         )
         //appBarConfiguration = AppBarConfiguration(navController.graph)
         binding.toolbar.setupWithNavController(navController, appBarConfiguration)

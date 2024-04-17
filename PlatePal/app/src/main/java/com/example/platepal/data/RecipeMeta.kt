@@ -17,6 +17,7 @@ data class RecipeMeta (
     var title: String = "",
     var image: String = "",
     var imageType: String = "",
+    var createdBy: String = "",
     @ServerTimestamp
     val timeStamp: Timestamp? = null,
     @DocumentId

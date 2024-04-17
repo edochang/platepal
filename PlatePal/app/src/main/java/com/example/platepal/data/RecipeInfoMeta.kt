@@ -13,6 +13,7 @@ data class RecipeInfoMeta (
     var ingredientList: List<Any> = emptyList(),
     var directions: String = "",
     var notes: String = "",
+    var createdBy: String = "",
     @ServerTimestamp
     val timeStamp: Timestamp? = null,
     @DocumentId
