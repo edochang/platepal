@@ -52,7 +52,7 @@
             android:background="@android:color/transparent"
             android:scaleType="fitCenter"
             android:layout_gravity="center_vertical"
-            />
+            android:contentDescription="Camera Button" />
 
     </LinearLayout>
 
