@@ -12,7 +12,7 @@
         android:title="@string/nav_cookbook" />
 
     <item
-        android:id="@+id/createFragment"
+        android:id="@+id/createRecipeFragment"
         android:icon="@drawable/ic_create"
         android:title="@string/nav_create" />
 

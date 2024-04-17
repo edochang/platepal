@@ -70,7 +70,7 @@ class MainActivity : AppCompatActivity() {
                 item.onNavDestinationSelected(navController)
                 true
             }
-            R.id.createFragment -> {
+            R.id.createRecipeFragment -> {
                 item.onNavDestinationSelected(navController)
                 true
             }
@@ -148,14 +148,25 @@ class MainActivity : AppCompatActivity() {
         //toolbar
         initToolBarMenu()
         appBarConfiguration= AppBarConfiguration(
-            setOf(R.id.discoverFragment, R.id.cookbookFragment, R.id.createFragment, R.id.communityFragment)
+            setOf(R.id.discoverFragment, R.id.cookbookFragment, R.id.createRecipeFragment, R.id.communityFragment)
         )
         //appBarConfiguration = AppBarConfiguration(navController.graph)
         binding.toolbar.setupWithNavController(navController, appBarConfiguration)
         //setupActionBarWithNavController(navController, appBarConfiguration)
 
-    }
+        navHostFragment.navController.addOnDestinationChangedListener { navController,
+                                                                        destination,
+                                                                        arguments ->
+            val fragmentId = destination.id
 
+            if (fragmentId == R.id.createOnePostFragment) {
+                binding.toolbar.setNavigationIcon(null)
+                binding.navView.visibility = View.GONE
+            } else {
+                binding.navView.visibility = View.VISIBLE
+            }
+        }
+    }
 
     // navigateUp:
     // If we came here from within the app, pop the back stack

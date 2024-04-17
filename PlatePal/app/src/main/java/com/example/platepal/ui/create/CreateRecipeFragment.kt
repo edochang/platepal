@@ -6,13 +6,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.get
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.platepal.MainActivity
 import com.example.platepal.data.CreateRecipeValidations
-import com.example.platepal.databinding.CreateFragmentBinding
-import com.example.platepal.ui.DiscoverFragmentDirections
+import com.example.platepal.databinding.CreateRecipeFragmentBinding
 import com.example.platepal.ui.viewmodel.MainViewModel
 import com.example.platepal.ui.ViewPagerAdapter
 import com.example.platepal.ui.viewmodel.OneRecipeViewModel
@@ -20,8 +18,8 @@ import com.google.android.material.tabs.TabLayoutMediator
 
 private const val TAG = "CreateFragment"
 
-class CreateFragment : Fragment() {
-    private var _binding: CreateFragmentBinding? = null
+class CreateRecipeFragment : Fragment() {
+    private var _binding: CreateRecipeFragmentBinding? = null
     private val binding get() = _binding!!
     private val viewModel: MainViewModel by activityViewModels()
     private val oneRecipeViewModel: OneRecipeViewModel by activityViewModels()
@@ -46,7 +44,7 @@ class CreateFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         // Inflate the layout for this fragment
-        _binding = CreateFragmentBinding.inflate(inflater, container, false)
+        _binding = CreateRecipeFragmentBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -60,7 +58,7 @@ class CreateFragment : Fragment() {
         val fragmentsList = arrayListOf(Ingredients(), Directions(), Notes())
 
         binding.apply {
-            viewPager.adapter = ViewPagerAdapter(fragmentsList, this@CreateFragment.childFragmentManager, lifecycle)
+            viewPager.adapter = ViewPagerAdapter(fragmentsList, this@CreateRecipeFragment.childFragmentManager, lifecycle)
 
             TabLayoutMediator(tabView, viewPager) { tab, position ->
                 when (position) {
@@ -117,7 +115,7 @@ class CreateFragment : Fragment() {
             ) {
                 mainActivity.initRecipeList()
 
-                val action = CreateFragmentDirections.actionCreateRecipeToOnePost(it)
+                val action = CreateRecipeFragmentDirections.actionCreateRecipeToOneRecipe(it)
                 findNavController().navigate(action)
             }
         }
