@@ -1,7 +1,6 @@
-package com.example.platepal.ui.onepost
+package com.example.platepal.ui.recipe
 
 import android.os.Bundle
-import android.text.Html
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -12,24 +11,23 @@ import androidx.navigation.fragment.navArgs
 import com.example.platepal.MainActivity
 import com.example.platepal.R
 import com.example.platepal.data.RecipeMeta
-import com.example.platepal.databinding.OnePostFragmentBinding
+import com.example.platepal.databinding.OneRecipeFragmentBinding
 import com.example.platepal.ui.viewmodel.MainViewModel
 import com.example.platepal.ui.ViewPagerAdapter
 import com.example.platepal.ui.viewmodel.OneRecipeViewModel
 import com.example.platepal.ui.viewmodel.UserViewModel
 import com.google.android.material.tabs.TabLayoutMediator
-import edu.cs371m.reddit.glide.Glide
 
-private const val TAG = "OnePostFragment"
+private const val TAG = "OneRecipeFragment"
 
-class OnePostFragment : Fragment() {
+class OneRecipeFragment : Fragment() {
 
-    private var _binding: OnePostFragmentBinding? = null
+    private var _binding: OneRecipeFragmentBinding? = null
     private val binding get() = _binding!!
     private val viewModel: MainViewModel by activityViewModels()
     private val oneRecipeViewModel: OneRecipeViewModel by activityViewModels()
     private val userViewModel: UserViewModel by activityViewModels()
-    private val args: OnePostFragmentArgs by navArgs()
+    private val args: OneRecipeFragmentArgs by navArgs()
     private lateinit var mainActivity: MainActivity
 
     private fun getRecipeInfo() {
@@ -37,25 +35,26 @@ class OnePostFragment : Fragment() {
         Log.d(TAG, "Retrieving recipe info from Repo...")
         oneRecipeViewModel.fetchReposRecipeInfo {
             Log.d(TAG, "Recipe info retrieval listener invoked.")
+            // mainActivity.progressBarOff() // Note: This is done on the observer below.
         }
     }
 
     private fun setupFavorites(recipe: RecipeMeta) {
         userViewModel.isFavoriteRecipe(recipe)?.let {
-            if (it) binding.onePostHeart.setImageResource(R.drawable.ic_heart_filled)
-            else binding.onePostHeart.setImageResource(R.drawable.ic_heart_empty)
+            if (it) binding.oneRecipeHeart.setImageResource(R.drawable.ic_heart_filled)
+            else binding.oneRecipeHeart.setImageResource(R.drawable.ic_heart_empty)
         }
 
-        binding.onePostHeart.setOnClickListener {
+        binding.oneRecipeHeart.setOnClickListener {
             Log.d(javaClass.simpleName, "heart clicklistener")
             userViewModel.isFavoriteRecipe(recipe)?.let {
                 if (it) {
                     userViewModel.setFavoriteRecipe(recipe, false)
-                    binding.onePostHeart.setImageResource(R.drawable.ic_heart_empty)
+                    binding.oneRecipeHeart.setImageResource(R.drawable.ic_heart_empty)
                     Log.d(javaClass.simpleName, "set heart to empty")
                 } else {
                     userViewModel.setFavoriteRecipe(recipe, true)
-                    binding.onePostHeart.setImageResource(R.drawable.ic_heart_filled)
+                    binding.oneRecipeHeart.setImageResource(R.drawable.ic_heart_filled)
                     Log.d(javaClass.simpleName, "set heart to filled")
                 }
             }
@@ -68,7 +67,7 @@ class OnePostFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         // Inflate the layout for this fragment
-        _binding = OnePostFragmentBinding.inflate(inflater, container, false)
+        _binding = OneRecipeFragmentBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -79,23 +78,25 @@ class OnePostFragment : Fragment() {
 
         viewModel.setTitle("Recipe")
         val recipe = args.recipe
+
+        oneRecipeViewModel.setRecipe(recipe)
         oneRecipeViewModel.setRecipeSourceId(recipe.sourceId)
 
         getRecipeInfo()
 
         // Set main information
-        binding.onePostTitle.text = recipe.title
-        Glide.glideFetch(recipe.image, recipe.image, binding.onePostImage)
+        binding.oneRecipeTitle.text = recipe.title
+        viewModel.fetchRecipePhoto(recipe.image, recipe.createdBy, binding.oneRecipeImage)
 
         // Favorites
         setupFavorites(recipe)
 
-        val fragmentsList = arrayListOf(PostIngredients(), PostDirections(), PostNotes())
+        val fragmentsList = arrayListOf(OneRecipeIngredients(), OneRecipeDirections(), OneRecipeNotes())
 
         binding.apply {
             viewPager.adapter = ViewPagerAdapter(
                 fragmentsList,
-                this@OnePostFragment.childFragmentManager,
+                this@OneRecipeFragment.childFragmentManager,
                 lifecycle
             )
 

@@ -52,16 +52,30 @@ abstract class DBHelper<Any : kotlin.Any> (
             }
     }
 
-    open fun createDocuments(
+    open fun createDocument(
         meta: Any,
-        resultListener: (List<Any>)->Unit
+        resultListener: (id: String)->Unit
     ) {
         db.collection(rootCollection)
             .add(meta)
             .addOnSuccessListener {
                 Log.d(TAG, "DocumentSnapshot successfully written with ID: ${it.id}")
+                resultListener(it.id)
             }
             .addOnFailureListener { e -> Log.w(TAG, "Error writing document.", e) }
+    }
+
+    open fun updateDocument(
+        documentId: String,
+        data: Map<String, kotlin.Any>,
+        resultListener: () -> Unit
+    ) {
+        db.collection(rootCollection).document(documentId).update(data)
+            .addOnSuccessListener {
+                Log.d(TAG, "Document successfully updated with ID: $documentId")
+                resultListener()
+            }
+            .addOnFailureListener { e -> Log.w(TAG, "Error updating document ($documentId).", e) }
     }
 
     open fun removeDocument(

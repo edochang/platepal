@@ -38,8 +38,8 @@ class CookbookFragment : Fragment() {
 
         viewModel.setTitle("PlatePal")
 
-        val adapter = RecipeAdapter(userViewModel){
-            val action = CookbookFragmentDirections.actionCookbookToOnePost(it)
+        val adapter = RecipeAdapter(viewModel, userViewModel){
+            val action = CookbookFragmentDirections.actionCookbookToOneRecipe(it)
             findNavController().navigate(action)
         }
         binding.cookbookRv.adapter = adapter

@@ -1,6 +1,7 @@
 package com.example.platepal.ui.viewmodel
 
 import android.util.Log
+import android.widget.ImageView
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -12,7 +13,9 @@ import com.example.platepal.data.RecipeMeta
 import com.example.platepal.data.SpoonacularRecipe
 import com.example.platepal.repository.RecipesDBHelper
 import com.example.platepal.repository.SpoonacularRecipeRepository
+import com.example.platepal.repository.Storage
 import com.google.firebase.Timestamp
+import edu.cs371m.reddit.glide.Glide
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.time.Duration
@@ -29,6 +32,7 @@ class MainViewModel: ViewModel() {
 
     // Repositories
     private val spoonacularRecipeRepository = SpoonacularRecipeRepository(spoonacularApi)
+    private val storage = Storage()
 
     // Maintain a list of all Recipe items
     private var recipeList = MutableLiveData<List<RecipeMeta>>()
@@ -38,6 +42,10 @@ class MainViewModel: ViewModel() {
 
     //title of the fragment
     private var randomSpotlightRecipe = MutableLiveData<RecipeMeta>()
+
+    // Photo Metadata
+    var pictureNameByUser = "" // String provided by the user
+    private var pictureUUID = ""
 
     fun observeRecipeList(): LiveData<List<RecipeMeta>> {
         return recipeList
@@ -73,6 +81,14 @@ class MainViewModel: ViewModel() {
     }
 
     // Public helper functions
+    fun fetchRecipePhoto(image: String, createdBy: String, imageView: ImageView) {
+        if (createdBy == MainActivity.SPOONACULAR_API_NAME) {
+            Glide.glideFetch(image, image, imageView)
+        } else {
+            Glide.fetchFromStorage(storage.uuid2StorageReference(image), imageView)
+        }
+    }
+
     fun fetchReposRecipeList(resultListener:() -> Unit) {
         recipesDBHelper.getRecipes {
             if(it.isEmpty()) {
@@ -80,6 +96,7 @@ class MainViewModel: ViewModel() {
                     val spoonacularRecipes = if(MainActivity.globalDebug) {
                         DummyRepository().fetchData() // Used for testing
                     } else {
+                        Log.d(TAG, "Get recipes from Spoonacular")
                         spoonacularRecipeRepository.getRecipes()
                     }
 
@@ -109,6 +126,7 @@ class MainViewModel: ViewModel() {
                         val spoonacularRecipes = if(MainActivity.globalDebug) {
                             DummyRepository().secondFetchData() // Used for testing
                         } else {
+                            Log.d(TAG, "Recipes are more than a day created.  Check Spoonacular for changes...")
                             spoonacularRecipeRepository.getRecipes()
                         }
 
@@ -133,11 +151,18 @@ class MainViewModel: ViewModel() {
 
     // Private helper functions
     private fun convertSpoonacularRecipeToRecipeMeta(spoonacularRecipe: SpoonacularRecipe): RecipeMeta {
+        val createdBy = MainActivity.SPOONACULAR_API_NAME
+
         return RecipeMeta(
             spoonacularRecipe.id.toString(),
             spoonacularRecipe.title,
             spoonacularRecipe.image,
-            spoonacularRecipe.imageType
+            spoonacularRecipe.imageType,
+            createdBy
         )
+    }
+
+    fun takePictureUUID(uuid: String) {
+        pictureUUID = uuid
     }
 }

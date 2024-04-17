@@ -16,7 +16,8 @@ import com.google.firebase.firestore.FirebaseFirestore
 import edu.cs371m.reddit.glide.Glide
 
 private const val TAG = "RecipeAdapter"
-class RecipeAdapter(private val userViewModel: UserViewModel,
+class RecipeAdapter(private val viewModel: MainViewModel,
+                    private val userViewModel: UserViewModel,
                     private val navigateToOneRecipe: (RecipeMeta)->Unit)
     : ListAdapter<RecipeMeta, RecipeAdapter.VH>(RecipeDiff())
 {
@@ -37,7 +38,7 @@ class RecipeAdapter(private val userViewModel: UserViewModel,
 
         //bind the post title & likes and comment counts
         cardBinding.recipeTitle.text = item.title
-        Glide.glideFetch(item.image, item.image, cardBinding.recipeImage)
+        viewModel.fetchRecipePhoto(item.image, item.createdBy, cardBinding.recipeImage)
         Log.d(javaClass.simpleName, "onBindViewHolder")
 
         /*
@@ -72,7 +73,7 @@ class RecipeAdapter(private val userViewModel: UserViewModel,
             }
         }
 
-        cardBinding.recipeImage.setOnClickListener {
+        cardBinding.root.setOnClickListener {
             navigateToOneRecipe(item)
         }
 

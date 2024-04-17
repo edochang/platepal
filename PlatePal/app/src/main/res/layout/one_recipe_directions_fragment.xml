@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/one_post_ingredients_fragment"
+    android:id="@+id/one_recipe_directions_fragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
     <androidx.cardview.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/one_post_ingredients_card_view"
+        android:id="@+id/one_recipe_directions_card_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
@@ -27,14 +27,13 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/one_post_ingredients_edit_text"
+                    android:id="@+id/one_recipe_directions_edit_text"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_margin="10dp"
                     android:background="@android:color/transparent"
                     android:gravity="top|start"
-                    android:text="Add one post ingredients here" />
-
+                    android:text="Add one post directions here" />
             </LinearLayout>
         </ScrollView>
     </androidx.cardview.widget.CardView>

@@ -34,7 +34,7 @@ class SearchFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         viewModel.setTitle("Search")
 
-        val adapter = RecipeAdapter(userViewModel){
+        val adapter = RecipeAdapter(viewModel, userViewModel){
             val action = SearchFragmentDirections.actionSearchToOnePost(it)
             findNavController().navigate(action)
         }

@@ -12,12 +12,11 @@ class RecipeInfoDBHelper: DBHelper<RecipeInfoMeta>(
         getDocuments(query, RecipeInfoMeta::class.java, resultListener)
     }
 
-    override fun createDocuments(
+    fun createAndRetrieveDocument(
         meta: RecipeInfoMeta,
         resultListener: (List<RecipeInfoMeta>) -> Unit
     ) {
-        super.createDocuments(meta, resultListener)
-
+        super.createDocument(meta) {}
         getRecipeInfo(meta.sourceId, resultListener)
     }
 }

@@ -1,4 +1,4 @@
-package com.example.platepal.ui.onepost
+package com.example.platepal.ui.recipe
 
 import android.os.Bundle
 import android.text.Html
@@ -7,12 +7,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
-import com.example.platepal.R
-import com.example.platepal.databinding.PostNotesFragmentBinding
+import com.example.platepal.databinding.OneRecipeNotesFragmentBinding
 import com.example.platepal.ui.viewmodel.OneRecipeViewModel
 
-class PostNotes : Fragment() {
-    private var _binding: PostNotesFragmentBinding? = null
+class OneRecipeNotes : Fragment() {
+    private var _binding: OneRecipeNotesFragmentBinding? = null
     private val binding get() = _binding!!
     private val oneRecipeViewModel: OneRecipeViewModel by activityViewModels()
 
@@ -22,14 +21,14 @@ class PostNotes : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         // Inflate the layout for this fragment
-        _binding = PostNotesFragmentBinding.inflate(inflater, container, false)
+        _binding = OneRecipeNotesFragmentBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         oneRecipeViewModel.observeRecipeInfo().observe(viewLifecycleOwner) {
-            binding.onePostNotesEditText.text = Html.fromHtml(it.notes, Html.FROM_HTML_MODE_COMPACT)
+            binding.oneRecipeNotesEditText.text = Html.fromHtml(it.notes, Html.FROM_HTML_MODE_COMPACT)
         }
     }
 }

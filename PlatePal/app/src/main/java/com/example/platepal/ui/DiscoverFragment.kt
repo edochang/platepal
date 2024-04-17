@@ -41,7 +41,7 @@ class DiscoverFragment: Fragment() {
         viewModel.setTitle("PlatePal")
 
         //bind adapter
-        val adapter = RecipeAdapter(userViewModel){
+        val adapter = RecipeAdapter(viewModel, userViewModel){
             val action = DiscoverFragmentDirections.actionDiscoverToOnePost(it)
             findNavController().navigate(action)
         }

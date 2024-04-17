@@ -1,4 +1,4 @@
-package com.example.platepal.ui
+package com.example.platepal.ui.community
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import com.example.platepal.databinding.CommunityFragmentBinding
 import com.example.platepal.ui.viewmodel.MainViewModel
 
@@ -31,7 +32,10 @@ class CommunityFragment : Fragment() {
 
         viewModel.setTitle("PlatePal")
 
-
+        binding.communityPost.setOnClickListener {
+            val action = CommunityFragmentDirections.actionCommunityToCreateOnePost()
+            findNavController().navigate(action)
+        }
     }
 
     override fun onDestroyView() {

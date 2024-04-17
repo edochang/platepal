@@ -20,12 +20,27 @@ import com.example.platepal.ui.viewmodel.MainViewModel
 import com.google.firebase.auth.FirebaseAuth
 import android.content.Intent
 import com.example.platepal.ui.viewmodel.UserViewModel
+import com.google.android.material.snackbar.Snackbar
 
 private const val TAG = "MainActivity"
 
 class MainActivity : AppCompatActivity() {
     companion object {
+        // Constants
+        const val SPOONACULAR_API_NAME = "SpoonacularApi"
+
+        // Variables
         var globalDebug = false
+
+
+        fun showSnackbarMessage(view: View, message: String) {
+            Snackbar
+                .make(
+                    view,
+                    message,
+                    Snackbar.LENGTH_SHORT)
+                .show()
+        }
     }
     private lateinit var binding : ActivityMainBinding
     private lateinit var navController : NavController
@@ -55,15 +70,15 @@ class MainActivity : AppCompatActivity() {
                 item.onNavDestinationSelected(navController)
                 true
             }
-            R.id.cookbook -> {
+            R.id.cookbookFragment -> {
                 item.onNavDestinationSelected(navController)
                 true
             }
-            R.id.create -> {
+            R.id.createRecipeFragment -> {
                 item.onNavDestinationSelected(navController)
                 true
             }
-            R.id.community -> {
+            R.id.communityFragment -> {
                 item.onNavDestinationSelected(navController)
                 true
             }
@@ -102,7 +117,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun initRecipeList() {
+    fun initRecipeList() {
         Log.d(TAG, "Retrieving recipes from Repo...")
         progressBarOn()
         viewModel.fetchReposRecipeList {
@@ -143,12 +158,24 @@ class MainActivity : AppCompatActivity() {
         //toolbar
         initToolBarMenu()
         appBarConfiguration= AppBarConfiguration(
-            setOf(R.id.discoverFragment, R.id.cookbook, R.id.create, R.id.community)
+            setOf(R.id.discoverFragment, R.id.cookbookFragment, R.id.createRecipeFragment, R.id.communityFragment)
         )
         //appBarConfiguration = AppBarConfiguration(navController.graph)
         binding.toolbar.setupWithNavController(navController, appBarConfiguration)
         //setupActionBarWithNavController(navController, appBarConfiguration)
 
+        navHostFragment.navController.addOnDestinationChangedListener { navController,
+                                                                        destination,
+                                                                        arguments ->
+            val fragmentId = destination.id
+
+            if (fragmentId == R.id.createOnePostFragment) {
+                binding.toolbar.setNavigationIcon(null)
+                binding.navView.visibility = View.GONE
+            } else {
+                binding.navView.visibility = View.VISIBLE
+            }
+        }
     }
 
     //log out current user, go back to sign in page
