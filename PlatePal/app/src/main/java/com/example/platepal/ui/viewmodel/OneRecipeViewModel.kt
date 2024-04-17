@@ -10,19 +10,20 @@ import com.example.platepal.api.SpoonacularApi
 import com.example.platepal.data.DummyRepository
 import com.example.platepal.data.RecipeInfoMeta
 import com.example.platepal.data.RecipeMeta
-import com.example.platepal.data.SpoonacularRecipe
 import com.example.platepal.data.SpoonacularRecipeInfo
+import com.example.platepal.databinding.DirectionsFragmentBinding
+import com.example.platepal.databinding.IngredientsFragmentBinding
+import com.example.platepal.databinding.NotesFragmentBinding
 import com.example.platepal.repository.RecipeInfoDBHelper
 import com.example.platepal.repository.RecipesDBHelper
 import com.example.platepal.repository.SpoonacularRecipeRepository
-import com.google.firebase.Timestamp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.time.Duration
 
 private const val TAG = "OneRecipeViewModel"
 class OneRecipeViewModel: ViewModel() {
     // DBHelpers
+    private val recipesDBHelper = RecipesDBHelper()
     private val recipeInfoDBHelper = RecipeInfoDBHelper()
 
     // API Interfaces
@@ -31,12 +32,32 @@ class OneRecipeViewModel: ViewModel() {
     // Repositories
     private val spoonacularRecipeRepository = SpoonacularRecipeRepository(spoonacularApi)
 
+    // Recipes
+    private var recipe: RecipeMeta? = null
     private val recipeInfo = MutableLiveData<RecipeInfoMeta>()
     private var recipeSourceId = ""
+
+    // tabView Fragment Bindings
+    private var ingredientFragmentBinding: IngredientsFragmentBinding? = null
+    private var directionsFragmentBinding: DirectionsFragmentBinding? = null
+    private var notesFragmentBinding: NotesFragmentBinding? = null
 
     // Observers
     fun observeRecipeInfo(): LiveData<RecipeInfoMeta> {
         return recipeInfo
+    }
+
+    // Getters
+    fun getIngredientFragmentBinding(): IngredientsFragmentBinding? {
+        return ingredientFragmentBinding
+    }
+
+    fun getDirectionsFragmentBinding(): DirectionsFragmentBinding? {
+        return directionsFragmentBinding
+    }
+
+    fun getNotesFragmentBinding(): NotesFragmentBinding? {
+        return notesFragmentBinding
     }
 
     // Setters
@@ -44,29 +65,91 @@ class OneRecipeViewModel: ViewModel() {
         recipeSourceId = sourceId
     }
 
+    fun setRecipe(recipeMeta: RecipeMeta) {
+        recipe = recipeMeta
+    }
+
     // Public helper functions
     fun fetchReposRecipeInfo(resultListener:() -> Unit) {
-        recipeInfoDBHelper.getRecipeInfo(recipeSourceId) {
-            if(it.isEmpty()) {
-                viewModelScope.launch(Dispatchers.IO) {
-                    val spoonacularRecipeInfo = if(MainActivity.globalDebug) {
-                        DummyRepository().fetchRecipeInfoData() // Used for testing
-                    } else {
-                        spoonacularRecipeRepository.getRecipeInfo(recipeSourceId)
-                    }
+        Log.d(TAG, "recipeSourceId: $recipeSourceId ; recipeInfo.sourceId: ${recipeInfo.value?.sourceId}")
+        if (recipeSourceId != recipeInfo.value?.sourceId) {
+            recipeInfoDBHelper.getRecipeInfo(recipeSourceId) {
+                if(it.isEmpty()) {
+                    Log.d(TAG, "No recipe info in DB.")
+                    viewModelScope.launch(Dispatchers.IO) {
+                        val spoonacularRecipeInfo = if(MainActivity.globalDebug) {
+                            DummyRepository().fetchRecipeInfoData() // Used for testing
+                        } else {
+                            spoonacularRecipeRepository.getRecipeInfo(recipeSourceId)
+                        }
 
-                    val recipeInfoMeta = convertSpoonacularRecipeToRecipeMeta(spoonacularRecipeInfo)
+                        val recipeInfoMeta = convertSpoonacularRecipeToRecipeMeta(spoonacularRecipeInfo)
 
-                    recipeInfoDBHelper.createDocuments(recipeInfoMeta) { createdRecipeInfoMeta ->
-                        recipeInfo.postValue(createdRecipeInfoMeta.first())
+                        recipeInfoDBHelper.createAndRetrieveDocument(recipeInfoMeta) { createdRecipeInfoMeta ->
+                            recipeInfo.postValue(createdRecipeInfoMeta.first())
+                        }
                     }
+                } else {
+                    recipeInfo.postValue(it.first())
                 }
-            } else {
-                recipeInfo.postValue(it.first())
-            }
 
-            resultListener.invoke()
+                resultListener.invoke()
+            }
+        } else {
+            Log.d(TAG, "Navigated from recipe creation.  No need to fetch Recipe Info.")
         }
+    }
+
+    fun createRecipe(title: String,
+                     ingredients: String,
+                     directions: String,
+                     notes: String,
+                     createdBy: String,
+                     navigateToOneRecipe: (RecipeMeta)->Unit) {
+        // TODO(Add image and ImageType)  // will do this when working on community post
+        val createdRecipeMeta = RecipeMeta(
+                "",
+                title,
+                "",
+                "",
+                createdBy
+            )
+
+        val createdRecipeInfoMeta = RecipeInfoMeta(
+                "",
+                ingredients,
+                emptyList<Any>(),
+                directions,
+                notes,
+                createdBy
+            )
+
+        recipesDBHelper.createAndRetrieveDocumentId(createdRecipeMeta) { id ->
+            val updateCreatedRecipe = hashMapOf(
+                "sourceId" to id
+            )
+            recipesDBHelper.updateDocument(id, updateCreatedRecipe as Map<String, kotlin.Any>) {
+                createdRecipeInfoMeta.sourceId = id
+                recipeInfoDBHelper.createAndRetrieveDocument(createdRecipeInfoMeta) { createdRecipeInfoMeta ->
+                    recipeInfo.postValue(createdRecipeInfoMeta.first())
+                    createdRecipeMeta.sourceId = id
+                    createdRecipeMeta.firestoreId = id
+                    navigateToOneRecipe(createdRecipeMeta)
+                }
+            }
+        }
+    }
+
+    fun initIngredientFragmentBinding(binding: IngredientsFragmentBinding) {
+        ingredientFragmentBinding = binding
+    }
+
+    fun initDirectionsFragmentBinding(binding: DirectionsFragmentBinding) {
+        directionsFragmentBinding = binding
+    }
+
+    fun initNotesFragmentBinding(binding: NotesFragmentBinding) {
+        notesFragmentBinding = binding
     }
 
     // Private helper functions
@@ -85,13 +168,15 @@ class OneRecipeViewModel: ViewModel() {
                     "(url: ${spoonacularRecipeInfo.sourceUrl})<br/>"
 
         val instruction = spoonacularRecipeInfo.instructions ?: "Be creative, no directions!"
+        val createdBy = MainActivity.SPOONACULAR_API_NAME
 
         return RecipeInfoMeta(
             spoonacularRecipeInfo.id.toString(),
             ingredients,
             spoonacularRecipeInfo.ingredients,
             instruction,
-            notes
+            notes,
+            createdBy
         )
     }
 }

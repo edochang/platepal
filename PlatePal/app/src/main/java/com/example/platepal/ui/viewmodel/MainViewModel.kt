@@ -118,6 +118,7 @@ class MainViewModel: ViewModel() {
                     val spoonacularRecipes = if(MainActivity.globalDebug) {
                         DummyRepository().fetchData() // Used for testing
                     } else {
+                        Log.d(TAG, "Get recipes from Spoonacular")
                         spoonacularRecipeRepository.getRecipes()
                     }
 
@@ -147,6 +148,7 @@ class MainViewModel: ViewModel() {
                         val spoonacularRecipes = if(MainActivity.globalDebug) {
                             DummyRepository().secondFetchData() // Used for testing
                         } else {
+                            Log.d(TAG, "Recipes are more than a day created.  Check Spoonacular for changes...")
                             spoonacularRecipeRepository.getRecipes()
                         }
 
@@ -175,11 +177,14 @@ class MainViewModel: ViewModel() {
 
     // Private helper functions
     private fun convertSpoonacularRecipeToRecipeMeta(spoonacularRecipe: SpoonacularRecipe): RecipeMeta {
+        val createdBy = MainActivity.SPOONACULAR_API_NAME
+
         return RecipeMeta(
             spoonacularRecipe.id.toString(),
             spoonacularRecipe.title,
             spoonacularRecipe.image,
-            spoonacularRecipe.imageType
+            spoonacularRecipe.imageType,
+            createdBy
         )
     }
 }

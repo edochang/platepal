@@ -56,7 +56,7 @@ class RecipeAdapter(private val viewModel: MainViewModel,
             }
         }
 
-        cardBinding.recipeImage.setOnClickListener {
+        cardBinding.root.setOnClickListener {
             navigateToOneRecipe(item)
         }
 

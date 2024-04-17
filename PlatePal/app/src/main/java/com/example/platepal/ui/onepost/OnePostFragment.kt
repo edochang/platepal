@@ -35,6 +35,7 @@ class OnePostFragment : Fragment() {
         Log.d(TAG, "Retrieving recipe info from Repo...")
         oneRecipeViewModel.fetchReposRecipeInfo {
             Log.d(TAG, "Recipe info retrieval listener invoked.")
+            // mainActivity.progressBarOff() // Note: This is done on the observer below.
         }
     }
 
@@ -77,6 +78,8 @@ class OnePostFragment : Fragment() {
 
         viewModel.setTitle("Recipe")
         val recipe = args.recipe
+
+        oneRecipeViewModel.setRecipe(recipe)
         oneRecipeViewModel.setRecipeSourceId(recipe.sourceId)
 
         getRecipeInfo()
