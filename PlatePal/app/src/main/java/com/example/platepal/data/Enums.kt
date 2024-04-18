@@ -5,3 +5,8 @@ enum class CreateRecipeValidations {
     INGREDIENTS,
     DIRECTIONS
 }
+
+enum class CreatePostValidations {
+    RECIPE,
+    PICTURE
+}

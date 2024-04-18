@@ -25,6 +25,8 @@ class MainActivity : AppCompatActivity() {
     companion object {
         // Constants
         const val SPOONACULAR_API_NAME = "SpoonacularApi"
+        const val SEARCH_FROM_ADDR_ONEPOST = "ONEPOST"
+        const val SEARCH_FROM_ADDR_DISCOVER = "DISCOVER"
 
         // Variables
         var globalDebug = false
@@ -154,7 +156,8 @@ class MainActivity : AppCompatActivity() {
         binding.toolbar.setupWithNavController(navController, appBarConfiguration)
         //setupActionBarWithNavController(navController, appBarConfiguration)
 
-        navHostFragment.navController.addOnDestinationChangedListener { navController,
+        // Control which fragments will not have the bottom navigation
+        navController.addOnDestinationChangedListener { navController,
                                                                         destination,
                                                                         arguments ->
             val fragmentId = destination.id
