@@ -1,5 +1,7 @@
 package com.example.platepal.ui.community
 
+import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -31,16 +33,23 @@ class CreateOnePostFragment: Fragment() {
     private val cameraLauncher = registerForActivityResult(
         ActivityResultContracts.TakePicture()) { success ->
         if (success) {
-            onePostViewModel.pictureSuccess() {
-                setPhoto()
+            onePostViewModel.getPhotoFile()?.let {
+                if (it.exists()) {
+                    onePostViewModel.pictureReplace()
+                }
             }
+            setPhoto()
         } else {
-            onePostViewModel.pictureReset()
+            onePostViewModel.getPhotoFile()?.let {
+                onePostViewModel.setPictureUUID(it.nameWithoutExtension)
+            } ?: onePostViewModel.pictureReset()
         }
     }
 
     private fun setPhoto() {
-        onePostViewModel.fetchPostPhoto(onePostViewModel.getPictureUUID(), binding.postImage)
+        val pictureUUID = onePostViewModel.getPictureUUID()
+        onePostViewModel.setPhotoFile(TakePictureWrapper.fileNameToFile(pictureUUID))
+        onePostViewModel.fetchLocalPostPhoto(binding.postImage)
     }
 
     private fun showValidationSnackbarMessage(validation: CreatePostValidations) {
@@ -58,7 +67,11 @@ class CreateOnePostFragment: Fragment() {
     private fun takePicture(user: String) {
         val pictureName = "Dish Post by $user"
         context?.let {
-            TakePictureWrapper.takePictureOnePost(pictureName, it, onePostViewModel, cameraLauncher)
+            TakePictureWrapper.takePictureOnePost(
+                pictureName,
+                it,
+                onePostViewModel,
+                cameraLauncher)
         } ?: Log.e(TAG, "Failed to launch Camera")
     }
 
@@ -89,7 +102,7 @@ class CreateOnePostFragment: Fragment() {
         }
 
         binding.postCloseButton.setOnClickListener {
-            if (onePostViewModel.getPictureUUID().isNotEmpty()) onePostViewModel.deletePicture()
+            if (onePostViewModel.getPictureUUID().isNotEmpty()) onePostViewModel.pictureReset()
             findNavController().navigateUp()
         }
 
@@ -99,10 +112,7 @@ class CreateOnePostFragment: Fragment() {
         }
 
         binding.postCameraButton.setOnClickListener {
-            val pictureName = "Dish Post by $user"
-            context?.let {
-                TakePictureWrapper.takePictureOnePost(pictureName, it, onePostViewModel, cameraLauncher)
-            } ?: Log.e(TAG, "Failed to launch Camera")
+            takePicture(user)
         }
 
         if (trigger == MainActivity.ONEPOST_TRIGGER_CAMERA) {
@@ -114,6 +124,19 @@ class CreateOnePostFragment: Fragment() {
                 showValidationSnackbarMessage(CreatePostValidations.RECIPE)
                 return@setOnClickListener
             }
+
+            val pFile = onePostViewModel.getPhotoFile()
+            if (pFile == null) {
+                showValidationSnackbarMessage(CreatePostValidations.PICTURE)
+                return@setOnClickListener
+            } else {
+                if (!pFile.exists()) {
+                    showValidationSnackbarMessage(CreatePostValidations.PICTURE)
+                    return@setOnClickListener
+                }
+            }
+
+            // Create metadata and store picture in storage
         }
     }
 }

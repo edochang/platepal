@@ -34,7 +34,7 @@ class TakePictureWrapper {
         ) {
             viewModel.pictureNameByUser = pictureName
             val uuid = generateFileName()
-            viewModel.takePictureUUID(uuid)
+            viewModel.setPictureUUID(uuid)
             val localPhotoFile = fileNameToFile(uuid)
             val uri = FileProvider.getUriForFile(
                 context, context.applicationInfo.packageName, localPhotoFile)
