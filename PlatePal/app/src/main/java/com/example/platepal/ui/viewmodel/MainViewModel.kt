@@ -19,7 +19,6 @@ import edu.cs371m.reddit.glide.Glide
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.time.Duration
-import java.time.Instant
 
 private const val TAG = "MainViewModel"
 

@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import com.example.platepal.MainActivity
 import com.example.platepal.databinding.CommunityFragmentBinding
 import com.example.platepal.ui.viewmodel.MainViewModel
 
@@ -34,9 +35,17 @@ class CommunityFragment : Fragment() {
         _binding = CommunityFragmentBinding.bind(view)
         viewModel.setTitle("PlatePal")
 
-
         binding.communityPost.setOnClickListener {
-            val action = CommunityFragmentDirections.actionCommunityToCreateOnePost(null)
+            val action = CommunityFragmentDirections.actionCommunityToCreateOnePost(
+                null,
+                MainActivity.ONEPOST_TRIGGER_TEXTVIEW)
+            findNavController().navigate(action)
+        }
+
+        binding.communityPostPicture.setOnClickListener {
+            val action = CommunityFragmentDirections.actionCommunityToCreateOnePost(
+                null,
+                MainActivity.ONEPOST_TRIGGER_CAMERA)
             findNavController().navigate(action)
         }
     }

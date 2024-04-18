@@ -104,6 +104,8 @@ class CreateRecipeFragment : Fragment() {
 
             val photo_uuid = "no_recipe_photo.jpg"
 
+            val user = "DummyUser" // TODO: Need the authenticated user's username
+
             // Create Recipe
             oneRecipeViewModel.createRecipe(
                 recipeTitle.text.toString(),
@@ -111,7 +113,7 @@ class CreateRecipeFragment : Fragment() {
                 ingredientsBinding.ingredientsEditText.text.toString(),
                 directionsBinding.directionsEditText.text.toString(),
                 notesBinding?.notesEditText?.text.toString() ?: "",
-                "FakeUser"
+                user
             ) {
                 mainActivity.initRecipeList()
 
