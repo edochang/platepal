@@ -85,7 +85,6 @@
             app:exitAnim="@anim/fui_slide_out_left"
             app:popEnterAnim="@anim/fui_slide_in_right"
             app:popExitAnim="@anim/fui_slide_out_left"
-            app:popUpTo="@id/communityFragment"
             app:popUpToInclusive="true" />
     </fragment>
 
@@ -126,9 +125,24 @@
         android:name="com.example.platepal.ui.SearchFragment"
         android:label="Search"
         tools:layout="@layout/search_fragment">
+        <argument
+            android:name="fromAddress"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_search_to_one_recipe"
+            app:destination="@id/oneRecipeFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"
+            app:popUpToInclusive="true">
+            <argument
+                android:name="recipe"
+                app:argType="com.example.platepal.data.RecipeMeta" />
+        </action>
         <action
             android:id="@+id/action_search_to_one_post"
-            app:destination="@id/oneRecipeFragment"
+            app:destination="@id/createOnePostFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
@@ -156,7 +170,20 @@
         android:id="@+id/createOnePostFragment"
         android:name="com.example.platepal.ui.community.CreateOnePostFragment"
         android:label="CreateOnePost"
-        tools:layout="@layout/community_create_fragment" />
+        tools:layout="@layout/community_create_fragment" >
+        <argument
+            android:name="recipe"
+            app:argType="com.example.platepal.data.RecipeMeta"
+            app:nullable="true" />
+        <action
+            android:id="@+id/action_create_one_post_to_search"
+            app:destination="@id/searchFragment"
+            app:enterAnim="@anim/fui_slide_in_right"
+            app:exitAnim="@anim/fui_slide_out_left"
+            app:popEnterAnim="@anim/fui_slide_in_right"
+            app:popExitAnim="@anim/fui_slide_out_left"
+            app:popUpToInclusive="true" />
+    </fragment>
 
     <!-- Global Actions -->
 </navigation>

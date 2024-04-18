@@ -1,6 +1,7 @@
 package com.example.platepal.ui.community
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +10,8 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.platepal.databinding.CommunityFragmentBinding
 import com.example.platepal.ui.viewmodel.MainViewModel
+
+private const val TAG = "CommunityFragment"
 
 class CommunityFragment : Fragment() {
     private var _binding: CommunityFragmentBinding? = null
@@ -26,14 +29,14 @@ class CommunityFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        //Log.d(javaClass.simpleName, "onViewCreated")
-        _binding = CommunityFragmentBinding.bind(view)
+        Log.d(TAG, "onViewCreated")
         super.onViewCreated(view, savedInstanceState)
-
+        _binding = CommunityFragmentBinding.bind(view)
         viewModel.setTitle("PlatePal")
 
+
         binding.communityPost.setOnClickListener {
-            val action = CommunityFragmentDirections.actionCommunityToCreateOnePost()
+            val action = CommunityFragmentDirections.actionCommunityToCreateOnePost(null)
             findNavController().navigate(action)
         }
     }

@@ -12,6 +12,7 @@ import com.example.platepal.R
 import com.example.platepal.databinding.DiscoverFragmentBinding
 import edu.cs371m.reddit.glide.Glide
 import androidx.navigation.fragment.findNavController
+import com.example.platepal.MainActivity
 import com.example.platepal.ui.viewmodel.MainViewModel
 
 private const val TAG = "DiscoverFragment"
@@ -97,7 +98,7 @@ class DiscoverFragment: Fragment() {
 
         //click into search page
         binding.discoverActionSearch.setOnClickListener{
-            val action = DiscoverFragmentDirections.actionDiscoverToSearch()
+            val action = DiscoverFragmentDirections.actionDiscoverToSearch(MainActivity.SEARCH_FROM_ADDR_DISCOVER)
             findNavController().navigate(action)
         }
     }
