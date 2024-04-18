@@ -27,6 +27,9 @@ class MainActivity : AppCompatActivity() {
         const val SPOONACULAR_API_NAME = "SpoonacularApi"
         const val SEARCH_FROM_ADDR_ONEPOST = "ONEPOST"
         const val SEARCH_FROM_ADDR_DISCOVER = "DISCOVER"
+        const val ONEPOST_TRIGGER_TEXTVIEW = "TEXTVIEW"
+        const val ONEPOST_TRIGGER_CAMERA = "CAMERA"
+        const val ONEPOST_TRIGGER_SEARCH = "SEARCH"
 
         // Variables
         var globalDebug = false

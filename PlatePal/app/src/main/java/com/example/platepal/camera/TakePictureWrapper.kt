@@ -6,9 +6,11 @@ import android.os.Environment
 import android.util.Log
 import androidx.activity.result.ActivityResultLauncher
 import androidx.core.content.FileProvider
-import com.example.platepal.ui.viewmodel.MainViewModel
+import com.example.platepal.ui.viewmodel.OnePostViewModel
 import java.io.File
 import java.util.UUID
+
+private const val TAG = "TakePictureWrapper"
 
 class TakePictureWrapper {
     companion object {
@@ -24,20 +26,19 @@ class TakePictureWrapper {
             Log.d("TakePictureWrapper", "photo path ${localPhotoFile.absolutePath}")
             return localPhotoFile
         }
-        fun takePicture(userName: String,
+        fun takePictureOnePost(
+                        pictureName: String,
                         context: Context,
-                        viewModel: MainViewModel,
+                        viewModel: OnePostViewModel,
                         takePictureLauncher : ActivityResultLauncher<Uri>
         ) {
-            viewModel.pictureNameByUser = userName
+            viewModel.pictureNameByUser = pictureName
             val uuid = generateFileName()
-            // We need to remember the picture's file name for the callback,
-            // so put it in the view model
-            viewModel.takePictureUUID(uuid)
+            viewModel.setPictureUUID(uuid)
             val localPhotoFile = fileNameToFile(uuid)
             val uri = FileProvider.getUriForFile(
                 context, context.applicationInfo.packageName, localPhotoFile)
-            Log.d("TakePictureWrapper", "photo uri $uri")
+            Log.d(TAG, "photo uri $uri")
             takePictureLauncher.launch(uri)
         }
     }

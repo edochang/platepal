@@ -68,8 +68,13 @@ class SearchFragment : Fragment() {
         val fromAddress = requireArguments().getString("fromAddress")
 
         val adapter = RecipeAdapter(viewModel){
-            val action = if (fromAddress == MainActivity.SEARCH_FROM_ADDR_DISCOVER) SearchFragmentDirections.actionSearchToOnePost(it)
-                else SearchFragmentDirections.actionSearchToOnePost(it)
+            val action = if (fromAddress == MainActivity.SEARCH_FROM_ADDR_DISCOVER)
+                    SearchFragmentDirections.actionSearchToOnePost(
+                        it,
+                        MainActivity.ONEPOST_TRIGGER_SEARCH)
+                else SearchFragmentDirections.actionSearchToOnePost(
+                    it,
+                    MainActivity.ONEPOST_TRIGGER_SEARCH)
             findNavController().navigate(action)
         }
         binding.searchRv.adapter = adapter
