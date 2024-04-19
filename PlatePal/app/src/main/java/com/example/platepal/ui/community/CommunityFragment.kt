@@ -37,14 +37,12 @@ class CommunityFragment : Fragment() {
 
         binding.communityPost.setOnClickListener {
             val action = CommunityFragmentDirections.actionCommunityToCreateOnePost(
-                null,
                 MainActivity.ONEPOST_TRIGGER_TEXTVIEW)
             findNavController().navigate(action)
         }
 
         binding.communityPostPicture.setOnClickListener {
             val action = CommunityFragmentDirections.actionCommunityToCreateOnePost(
-                null,
                 MainActivity.ONEPOST_TRIGGER_CAMERA)
             findNavController().navigate(action)
         }

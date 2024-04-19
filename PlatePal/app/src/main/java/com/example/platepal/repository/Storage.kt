@@ -2,6 +2,7 @@ package com.example.platepal.repository
 
 import android.net.Uri
 import android.util.Log
+import com.example.platepal.data.StorageDirectory
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageMetadata
 import com.google.firebase.storage.StorageReference
@@ -10,15 +11,20 @@ import java.io.File
 class Storage {
     private val recipePhotoStorage: StorageReference =
         FirebaseStorage.getInstance().reference.child("recipe_img")
+    private val postPhotoStorage: StorageReference =
+        FirebaseStorage.getInstance().reference.child("post_img")
 
-    fun uploadImage(localFile: File, uuid: String, uploadSuccess:(Long)->Unit) {
+    fun uploadImage(localFile: File, uuid: String, directory: StorageDirectory, uploadSuccess:(Long)->Unit) {
         Log.d(javaClass.simpleName, ">>>>>>>> Uploading Image!")
         val metadata = StorageMetadata.Builder()
             .setContentType("image/jpg")
             .build()
 
         val file = Uri.fromFile(localFile)
-        val imageRef = recipePhotoStorage.child(uuid)
+        val imageRef = when(directory) {
+            StorageDirectory.RECIPE -> recipePhotoStorage.child(uuid)
+            StorageDirectory.POST -> postPhotoStorage.child(uuid)
+        }
 
         val uploadTask = imageRef.putFile(file, metadata)
 

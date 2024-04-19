@@ -17,7 +17,6 @@ import com.example.platepal.databinding.NotesFragmentBinding
 import com.example.platepal.repository.RecipeInfoDBHelper
 import com.example.platepal.repository.RecipesDBHelper
 import com.example.platepal.repository.SpoonacularRecipeRepository
-import com.google.firebase.firestore.proto.Mutation
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
