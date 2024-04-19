@@ -1,7 +1,5 @@
 package com.example.platepal.ui.community
 
-import android.graphics.BitmapFactory
-import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -15,10 +13,9 @@ import androidx.navigation.fragment.navArgs
 import com.example.platepal.MainActivity
 import com.example.platepal.camera.TakePictureWrapper
 import com.example.platepal.data.CreatePostValidations
-import com.example.platepal.data.CreateRecipeValidations
+import com.example.platepal.data.PostMeta
 import com.example.platepal.data.RecipeMeta
 import com.example.platepal.databinding.CommunityCreateFragmentBinding
-import com.example.platepal.ui.recipe.OneRecipeFragmentArgs
 import com.example.platepal.ui.viewmodel.OnePostViewModel
 
 private const val TAG = "CreateOnePostFragment"
@@ -27,9 +24,7 @@ class CreateOnePostFragment: Fragment() {
     private var _binding: CommunityCreateFragmentBinding? = null
     private val binding get() = _binding!!
     private val onePostViewModel: OnePostViewModel by activityViewModels()
-    private val args: CreateOnePostFragmentArgs by navArgs()
 
-    private var pictureSize = 0L
     private val cameraLauncher = registerForActivityResult(
         ActivityResultContracts.TakePicture()) { success ->
         if (success) {
@@ -89,10 +84,11 @@ class CreateOnePostFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
         Log.d(javaClass.simpleName, "onViewCreated")
 
-        val recipeMeta: RecipeMeta? = args.recipe
+        val recipeMeta: RecipeMeta? = onePostViewModel.recipeMeta
         val trigger = requireArguments().getString("trigger")
         val user = "DummyUser" // TODO: Need the authenticated user's username
 
+        Log.d(TAG, "recipeMeta:$recipeMeta")
         recipeMeta?.let {
             binding.postRecipe.text = recipeMeta.title
         }
@@ -102,7 +98,7 @@ class CreateOnePostFragment: Fragment() {
         }
 
         binding.postCloseButton.setOnClickListener {
-            if (onePostViewModel.getPictureUUID().isNotEmpty()) onePostViewModel.pictureReset()
+            onePostViewModel.pictureReset()
             findNavController().navigateUp()
         }
 
@@ -137,6 +133,18 @@ class CreateOnePostFragment: Fragment() {
             }
 
             // Create metadata and store picture in storage
+            val postMeta = PostMeta(
+                recipeMeta.sourceId,
+                recipeMeta.title,
+                binding.postEditText.text.toString(),
+                onePostViewModel.pictureNameByUser,
+                pFile.nameWithoutExtension,
+                "image/jpg",
+                user
+            )
+
+            onePostViewModel.savePost(postMeta)
+            findNavController().navigateUp()
         }
     }
 }

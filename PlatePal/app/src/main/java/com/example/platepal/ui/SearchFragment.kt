@@ -9,20 +9,20 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.platepal.MainActivity
 import com.example.platepal.data.RecipeMeta
 import com.example.platepal.databinding.SearchFragmentBinding
 import com.example.platepal.ui.viewmodel.MainViewModel
+import com.example.platepal.ui.viewmodel.OnePostViewModel
 
 private const val TAG = "SearchFragment"
 
 class SearchFragment : Fragment() {
-    private val viewModel: MainViewModel by activityViewModels()
     private var _binding: SearchFragmentBinding? = null
     private val binding get() = _binding!!
-    private val args: SearchFragmentArgs by navArgs()
+    private val viewModel: MainViewModel by activityViewModels()
+    private val onePostViewModel: OnePostViewModel by activityViewModels()
 
     //search
     private fun filterList(query: String?, adapter: RecipeAdapter, view: View){
@@ -68,13 +68,13 @@ class SearchFragment : Fragment() {
         val fromAddress = requireArguments().getString("fromAddress")
 
         val adapter = RecipeAdapter(viewModel){
-            val action = if (fromAddress == MainActivity.SEARCH_FROM_ADDR_DISCOVER)
-                    SearchFragmentDirections.actionSearchToOnePost(
-                        it,
-                        MainActivity.ONEPOST_TRIGGER_SEARCH)
-                else SearchFragmentDirections.actionSearchToOnePost(
-                    it,
-                    MainActivity.ONEPOST_TRIGGER_SEARCH)
+            val action = if (fromAddress == MainActivity.SEARCH_FROM_ADDR_DISCOVER) {
+                SearchFragmentDirections.actionSearchToOneRecipe(it)
+            } else {
+                onePostViewModel.recipeMeta = it
+                SearchFragmentDirections.actionSearchToOnePost(MainActivity.ONEPOST_TRIGGER_SEARCH)
+            }
+
             findNavController().navigate(action)
         }
         binding.searchRv.adapter = adapter
