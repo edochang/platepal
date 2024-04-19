@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.navArgs
 import com.example.platepal.MainActivity
@@ -26,14 +27,12 @@ class OneRecipeFragment : Fragment() {
     private val viewModel: MainViewModel by activityViewModels()
     private val oneRecipeViewModel: OneRecipeViewModel by activityViewModels()
     private val args: OneRecipeFragmentArgs by navArgs()
-    private lateinit var mainActivity: MainActivity
 
     private fun getRecipeInfo() {
-        mainActivity.progressBarOn()
-        Log.d(TAG, "Retrieving recipe info from Repo...")
+        Log.d(TAG, "Turned on progress bar and retrieving recipe info from Repo...")
         oneRecipeViewModel.fetchReposRecipeInfo {
             Log.d(TAG, "Recipe info retrieval listener invoked.")
-            // mainActivity.progressBarOff() // Note: This is done on the observer below.
+            // Note: Turning off the progress bar will be done in the Ingredient fragment.
         }
     }
 
@@ -72,15 +71,31 @@ class OneRecipeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         //Log.d(javaClass.simpleName, "onViewCreated")
         super.onViewCreated(view, savedInstanceState)
-        mainActivity = (requireActivity() as MainActivity)
+
+        val mainActivity = (requireActivity() as MainActivity)
+        oneRecipeViewModel.fetchDone.value = false
+        Log.d(TAG,"set fetchDone false (value: ${oneRecipeViewModel.fetchDone.value})")
+        mainActivity.progressBarOn()
+
+        oneRecipeViewModel.fetchDone.observe(viewLifecycleOwner) {
+            Log.d(TAG,"Observer fetchDone: ${oneRecipeViewModel.fetchDone.value}")
+            if (it) {
+                mainActivity.progressBarOff()
+            }
+        }
 
         viewModel.setTitle("Recipe")
         val recipe = args.recipe
 
-        oneRecipeViewModel.setRecipe(recipe)
-        oneRecipeViewModel.setRecipeSourceId(recipe.sourceId)
-
-        getRecipeInfo()
+        if (recipe.sourceId != oneRecipeViewModel.getRecipeSourceId()) {
+            oneRecipeViewModel.setRecipe(recipe)
+            oneRecipeViewModel.setRecipeSourceId(recipe.sourceId)
+            getRecipeInfo()
+        } else {
+            Log.d(TAG, "Navigated from recipe creation or revisited the same recipe.  " +
+                    "No need to fetch Recipe Info.")
+            mainActivity.progressBarOff()
+        }
 
         // Set main information
         binding.oneRecipeTitle.text = recipe.title
@@ -106,11 +121,6 @@ class OneRecipeFragment : Fragment() {
                 }
             }.attach()
         }
-
-        oneRecipeViewModel.observeRecipeInfo().observe(viewLifecycleOwner) {
-            mainActivity.progressBarOff()
-        }
-
     }
 
     override fun onDestroyView() {
