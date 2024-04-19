@@ -150,6 +150,7 @@
                 android:layout_height="match_parent"
                 android:layout_margin="10dp"
                 android:autofillHints=""
+                android:background="@android:color/transparent"
                 android:gravity="top|start"
                 android:hint="What's on your plate?"
                 android:inputType="textLongMessage|textMultiLine"

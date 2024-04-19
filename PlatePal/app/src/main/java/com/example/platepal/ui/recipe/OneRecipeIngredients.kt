@@ -3,13 +3,16 @@ package com.example.platepal.ui.recipe
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.text.Html
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import com.example.platepal.MainActivity
 import com.example.platepal.databinding.OneRecipeIngredientsFragmentBinding
 import com.example.platepal.ui.viewmodel.OneRecipeViewModel
 
+private const val TAG = "OneRecipeIngredients"
 
 class OneRecipeIngredients : Fragment() {
 
@@ -33,6 +36,4 @@ class OneRecipeIngredients : Fragment() {
             binding.oneRecipeIngredientsEditText.text = Html.fromHtml(it.ingredients, Html.FROM_HTML_MODE_COMPACT)
         }
     }
-
-
 }

@@ -48,15 +48,16 @@ class MainActivity : AppCompatActivity() {
     private lateinit var navController : NavController
     private lateinit var appBarConfiguration: AppBarConfiguration
 
-
     private val viewModel: MainViewModel by viewModels()
 
     fun progressBarOn() {
         binding.indeterminateBar.visibility = View.VISIBLE
+        Log.d(TAG, "Progress Bar turned on")
     }
 
     fun progressBarOff() {
         binding.indeterminateBar.visibility = View.GONE
+        Log.d(TAG, "Progress Bar turned off")
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

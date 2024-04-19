@@ -17,19 +17,19 @@ import com.example.platepal.databinding.NotesFragmentBinding
 import com.example.platepal.repository.RecipeInfoDBHelper
 import com.example.platepal.repository.RecipesDBHelper
 import com.example.platepal.repository.SpoonacularRecipeRepository
+import com.google.firebase.firestore.proto.Mutation
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 private const val TAG = "OneRecipeViewModel"
-class OneRecipeViewModel: ViewModel() {
-    // DBHelpers
-    private val recipesDBHelper = RecipesDBHelper()
-    private val recipeInfoDBHelper = RecipeInfoDBHelper()
 
+class OneRecipeViewModel: ViewModel() {
     // API Interfaces
     private val spoonacularApi = SpoonacularApi.create()
 
-    // Repositories
+    // DBHelpers and Repositories
+    private val recipesDBHelper = RecipesDBHelper()
+    private val recipeInfoDBHelper = RecipeInfoDBHelper()
     private val spoonacularRecipeRepository = SpoonacularRecipeRepository(spoonacularApi)
 
     // Recipes
@@ -41,6 +41,8 @@ class OneRecipeViewModel: ViewModel() {
     private var ingredientFragmentBinding: IngredientsFragmentBinding? = null
     private var directionsFragmentBinding: DirectionsFragmentBinding? = null
     private var notesFragmentBinding: NotesFragmentBinding? = null
+
+    var fetchDone = MutableLiveData<Boolean>(false)
 
     // Observers
     fun observeRecipeInfo(): LiveData<RecipeInfoMeta> {
@@ -60,6 +62,10 @@ class OneRecipeViewModel: ViewModel() {
         return notesFragmentBinding
     }
 
+    fun getRecipeSourceId(): String {
+        return recipeSourceId
+    }
+
     // Setters
     fun setRecipeSourceId(sourceId: String) {
         recipeSourceId = sourceId
@@ -72,31 +78,31 @@ class OneRecipeViewModel: ViewModel() {
     // Public helper functions
     fun fetchReposRecipeInfo(resultListener:() -> Unit) {
         Log.d(TAG, "recipeSourceId: $recipeSourceId ; recipeInfo.sourceId: ${recipeInfo.value?.sourceId}")
-        if (recipeSourceId != recipeInfo.value?.sourceId) {
-            recipeInfoDBHelper.getRecipeInfo(recipeSourceId) {
-                if(it.isEmpty()) {
-                    Log.d(TAG, "No recipe info in DB.")
-                    viewModelScope.launch(Dispatchers.IO) {
-                        val spoonacularRecipeInfo = if(MainActivity.globalDebug) {
-                            DummyRepository().fetchRecipeInfoData() // Used for testing
-                        } else {
-                            spoonacularRecipeRepository.getRecipeInfo(recipeSourceId)
-                        }
-
-                        val recipeInfoMeta = convertSpoonacularRecipeToRecipeMeta(spoonacularRecipeInfo)
-
-                        recipeInfoDBHelper.createAndRetrieveDocument(recipeInfoMeta) { createdRecipeInfoMeta ->
-                            recipeInfo.postValue(createdRecipeInfoMeta.first())
-                        }
+        recipeInfoDBHelper.getRecipeInfo(recipeSourceId) {
+            if(it.isEmpty()) {
+                Log.d(TAG, "No recipe info in DB.")
+                viewModelScope.launch(Dispatchers.IO) {
+                    val spoonacularRecipeInfo = if(MainActivity.globalDebug) {
+                        DummyRepository().fetchRecipeInfoData() // Used for testing
+                    } else {
+                        spoonacularRecipeRepository.getRecipeInfo(recipeSourceId)
                     }
-                } else {
-                    recipeInfo.postValue(it.first())
-                }
 
-                resultListener.invoke()
+                    val recipeInfoMeta = convertSpoonacularRecipeToRecipeMeta(spoonacularRecipeInfo)
+
+                    recipeInfoDBHelper.createAndRetrieveDocument(recipeInfoMeta) { createdRecipeInfoMeta ->
+                        Log.d(TAG, "DB List is empty.  Pulled info from Spoonacular and saved to DB.  " +
+                                "Post Recipe Info")
+                        recipeInfo.postValue(createdRecipeInfoMeta.first())
+                        fetchDoneTrue()
+                    }
+                }
+            } else {
+                Log.d(TAG, "DB List is not empty.  Post Recipe Info")
+                recipeInfo.postValue(it.first())
+                fetchDoneTrue()
             }
-        } else {
-            Log.d(TAG, "Navigated from recipe creation.  No need to fetch Recipe Info.")
+            resultListener.invoke()
         }
     }
 
@@ -179,5 +185,10 @@ class OneRecipeViewModel: ViewModel() {
             notes,
             createdBy
         )
+    }
+
+    private fun fetchDoneTrue() {
+        Log.d(TAG, "Recipe info received.  Turn off progress bar.")
+        fetchDone.postValue(true)
     }
 }
