@@ -51,8 +51,8 @@ class Storage {
             }
     }
 
-    fun deleteImage(pictureUUID: String) {
-        val imageRef = uuid2StorageReference(pictureUUID)
+    fun deleteImage(pictureUUID: String, directory: StorageDirectory) {
+        val imageRef = uuid2StorageReference(pictureUUID, directory)
         Log.d(javaClass.simpleName, "Image Path to be removed: ${imageRef.path}")
         imageRef.delete()
             .addOnSuccessListener {
@@ -63,7 +63,10 @@ class Storage {
             }
     }
 
-    fun uuid2StorageReference(uuid: String): StorageReference {
-        return recipePhotoStorage.child(uuid)
+    fun uuid2StorageReference(uuid: String, directory: StorageDirectory): StorageReference {
+        return when(directory) {
+            StorageDirectory.RECIPE -> recipePhotoStorage.child(uuid)
+            StorageDirectory.POST -> postPhotoStorage.child(uuid)
+        }
     }
 }

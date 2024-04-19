@@ -8,9 +8,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.platepal.MainActivity
 import com.example.platepal.databinding.CommunityFragmentBinding
 import com.example.platepal.ui.viewmodel.MainViewModel
+import com.example.platepal.ui.viewmodel.PostViewModel
 
 private const val TAG = "CommunityFragment"
 
@@ -18,6 +22,7 @@ class CommunityFragment : Fragment() {
     private var _binding: CommunityFragmentBinding? = null
     private val binding get() = _binding!!
     private val viewModel: MainViewModel by activityViewModels()
+    private val postViewModel: PostViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -30,10 +35,32 @@ class CommunityFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        Log.d(TAG, "onViewCreated")
         super.onViewCreated(view, savedInstanceState)
+        Log.d(TAG, "onViewCreated")
         _binding = CommunityFragmentBinding.bind(view)
         viewModel.setTitle("PlatePal")
+
+        postViewModel.fetchPosts()
+
+        // Init and bind adapter
+        val adapter = PostAdapter(postViewModel) {
+
+        }
+        val communityRV = binding.communityRv
+        communityRV.adapter = adapter
+        // grid layout for RecyclerView
+        val layoutManager = LinearLayoutManager(requireContext())
+        communityRV.adapter = adapter
+        communityRV.layoutManager = layoutManager
+
+        val dividerItemDecoration = DividerItemDecoration(
+            communityRV.context, LinearLayoutManager.VERTICAL
+        )
+        communityRV.addItemDecoration(dividerItemDecoration)
+
+        postViewModel.observePosts().observe(viewLifecycleOwner) {
+            adapter.submitList(it)
+        }
 
         binding.communityPost.setOnClickListener {
             val action = CommunityFragmentDirections.actionCommunityToCreateOnePost(

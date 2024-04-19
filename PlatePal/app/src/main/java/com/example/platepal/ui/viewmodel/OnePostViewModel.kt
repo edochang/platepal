@@ -2,6 +2,7 @@ package com.example.platepal.ui.viewmodel
 
 import android.util.Log
 import android.widget.ImageView
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.platepal.data.PostMeta
 import com.example.platepal.data.RecipeMeta
@@ -46,14 +47,14 @@ class OnePostViewModel: ViewModel() {
         pictureUUID = uuid
     }
 
-    // Public helper functions
+    // Public functions
     fun deletePicture() {
-        storage.deleteImage(pictureUUID)
+        storage.deleteImage(pictureUUID, StorageDirectory.POST)
         pictureReset()
     }
 
     fun fetchPostPhoto(image: String, imageView: ImageView) {
-        Glide.fetchFromStorage(storage.uuid2StorageReference(image), imageView)
+        Glide.fetchFromStorage(storage.uuid2StorageReference(image, StorageDirectory.POST), imageView)
     }
 
     fun fetchLocalPostPhoto(imageView: ImageView) {

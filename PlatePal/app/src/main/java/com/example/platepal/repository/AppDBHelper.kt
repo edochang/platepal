@@ -1,16 +1,27 @@
 package com.example.platepal.repository
 
 import android.util.Log
+import com.example.platepal.data.AppMeta
 import com.example.platepal.data.PostMeta
-import com.example.platepal.data.RecipeMeta
 
-class PostsDBHelper: DBHelper<PostMeta>(
-    "Posts"
+class AppDBHelper: DBHelper<AppMeta>(
+    "ApplicationMeta"
 ) {
     companion object {
-        const val TAG = "Posts"
+        const val TAG = "ApplicationMeta"
     }
-    fun realTimeReadPosts(resultListener: (List<PostMeta>) -> Unit) {
+
+    override val limit: Long = 1L
+
+    fun getAppMeta(resultListener: (AppMeta) -> Unit) {
+        val query = db.collection(rootCollection)
+
+        super.getAndLimitDocuments(query, AppMeta::class.java) {
+            resultListener(it.first())
+        }
+    }
+
+    fun realTimeReadAppMeta(resultListener: (AppMeta) -> Unit) {
         val query = db.collection(rootCollection)
         query.addSnapshotListener { snapshot, e ->
             if (e != null) {
@@ -20,9 +31,7 @@ class PostsDBHelper: DBHelper<PostMeta>(
 
             if (snapshot != null && !snapshot.isEmpty) {
                 Log.d(TAG, "Current documents size: ${snapshot.size()}")
-                resultListener(snapshot.documents.mapNotNull {
-                    it.toObject(PostMeta::class.java)
-                })
+                snapshot.documents.first().toObject(AppMeta::class.java)?.let { resultListener(it) }
             } else {
                 Log.d(TAG, "Current documents: null")
             }
