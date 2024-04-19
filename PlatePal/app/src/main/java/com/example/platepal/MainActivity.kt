@@ -118,10 +118,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun initRecipeList() {
-        Log.d(TAG, "Retrieving recipes from Repo...")
+        //Log.d(TAG, "Retrieving recipes from Repo...")
         progressBarOn()
         viewModel.fetchReposRecipeList {
-            Log.d(TAG, "Recipes retrieval listener invoked.")
+            //Log.d(TAG, "Recipes retrieval listener invoked.")
             progressBarOff()
         }
     }
@@ -142,7 +142,7 @@ class MainActivity : AppCompatActivity() {
 
         //fetch initial favorite recipe list for user
         userViewModel.fetchInitialFavRecipes{
-            Log.d(TAG, "favorite recipe list listener invoked")
+            //Log.d(TAG, "favorite recipe list listener invoked")
         }
 
         //observe top bar title

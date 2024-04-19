@@ -37,8 +37,11 @@ class DiscoverFragment: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.d(javaClass.simpleName, "onViewCreated")
+        //Log.d(javaClass.simpleName, "onViewCreated")
         viewModel.setTitle("PlatePal")
+
+        Log.d(TAG, "current profile UUID is ${userViewModel.getProfilePhotoUUID()}")
+        Log.d(TAG, "current profile FILE exists?${userViewModel.getProfilePhotoFile()?.exists()}: ${userViewModel.getProfilePhotoFile()}")
 
         //bind adapter
         val adapter = RecipeAdapter(viewModel, userViewModel){
@@ -64,7 +67,7 @@ class DiscoverFragment: Fragment() {
 
         //populate spotlight
         viewModel.observeRandomSpotlightRecipe().observe(viewLifecycleOwner) { recipeSpotlight ->
-            Log.d(TAG, "Observed random recipe: $recipeSpotlight")
+            //Log.d(TAG, "Observed random recipe: $recipeSpotlight")
             if (recipeSpotlight == null) {
                 binding.spotlightText.visibility = View.GONE
                 binding.spotlightCardView.visibility = View.GONE
@@ -81,16 +84,16 @@ class DiscoverFragment: Fragment() {
                 }
 
                 binding.spotlightHeart.setOnClickListener{
-                    Log.d(javaClass.simpleName, "heart clicklistener")
+                    //Log.d(javaClass.simpleName, "heart clicklistener")
                     userViewModel.isFavoriteRecipe(recipeSpotlight)?.let{
                         if(it){
                             userViewModel.setFavoriteRecipe(recipeSpotlight, false)
                             binding.spotlightHeart.setImageResource(R.drawable.ic_heart_empty)
-                            Log.d(javaClass.simpleName, "set heart to empty")
+                            //Log.d(javaClass.simpleName, "set heart to empty")
                         } else{
                             userViewModel.setFavoriteRecipe(recipeSpotlight, true)
                             binding.spotlightHeart.setImageResource(R.drawable.ic_heart_filled)
-                            Log.d(javaClass.simpleName, "set heart to filled")
+                            //Log.d(javaClass.simpleName, "set heart to filled")
                         }
                     }
                 }

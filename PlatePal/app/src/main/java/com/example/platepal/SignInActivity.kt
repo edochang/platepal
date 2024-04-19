@@ -78,11 +78,6 @@ class SignInActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
         }
-
-
-
     }
-
-
 
 }

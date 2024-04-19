@@ -17,7 +17,8 @@ class UserDBHelper: DBHelper<UserMeta>(
 ){
     //private val user = FirebaseAuth.getInstance().currentUser
     private val subCollection = "FavRecipes"
-    private val userID = FirebaseAuth.getInstance().currentUser?.uid
+    private val currentUser = FirebaseAuth.getInstance().currentUser
+    private val userID = currentUser?.uid
 
     fun createUser(user: UserMeta) {
         db.collection(rootCollection)

@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.platepal.MainActivity
 import com.example.platepal.api.SpoonacularApi
+import com.example.platepal.camera.TakePictureWrapper
 import com.example.platepal.data.DummyRepository
 import com.example.platepal.data.RecipeMeta
 import com.example.platepal.data.SpoonacularRecipe
@@ -46,6 +47,7 @@ class MainViewModel: ViewModel() {
     // Photo Metadata
     var pictureNameByUser = "" // String provided by the user
     private var pictureUUID = ""
+
 
     fun observeRecipeList(): LiveData<List<RecipeMeta>> {
         return recipeList
@@ -165,4 +167,5 @@ class MainViewModel: ViewModel() {
     fun takePictureUUID(uuid: String) {
         pictureUUID = uuid
     }
+
 }

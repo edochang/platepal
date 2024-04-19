@@ -16,6 +16,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.firebase.ui.storage.images.FirebaseImageLoader
 import com.example.platepal.R
 import com.google.firebase.storage.StorageReference
+import java.io.File
 import java.io.InputStream
 
 
@@ -85,4 +86,15 @@ object Glide {
             .override(width, height)
             .into(imageView)
     }
+
+    fun fetchFromLocal(photoFile: File, imageView: ImageView) {
+        GlideApp.with(imageView.context)
+            .asBitmap() // Try to display animated Gifs and video still
+            .load(photoFile.path)
+            .apply(glideOptions)
+            .error(android.R.color.holo_red_dark)
+            .override(width, height)
+            .into(imageView)
+    }
+
 }

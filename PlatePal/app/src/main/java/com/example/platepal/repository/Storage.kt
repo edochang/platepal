@@ -60,4 +60,50 @@ class Storage {
     fun uuid2StorageReference(uuid: String): StorageReference {
         return recipePhotoStorage.child(uuid)
     }
+
+
+
+    // For user profile
+    private val profilePhotoStorage: StorageReference =
+        FirebaseStorage.getInstance().reference.child("profile_img")
+
+    fun uploadProfileImage(localFile: File, uuid: String, uploadSuccess:()->Unit) {
+        Log.d(javaClass.simpleName, ">>>>>>>> Uploading Image!")
+        val metadata = StorageMetadata.Builder()
+            .setContentType("image/jpg")
+            .build()
+
+        val file = Uri.fromFile(localFile)
+        val imageRef = profilePhotoStorage.child(uuid)
+
+        val uploadTask = imageRef.putFile(file, metadata)
+
+        // Register observers to listen for when the download is done or if it fails
+        uploadTask
+            .addOnFailureListener {
+                Log.d(javaClass.simpleName, "Storage.uploadProfileIMage Upload FAILED $uuid")
+            }
+            .addOnSuccessListener {
+                Log.d(javaClass.simpleName, "Storage.uploadProfileIMage Upload succeeded $uuid")
+                uploadSuccess()
+            }
+    }
+
+    fun deleteProfileImage(pictureUUID: String) {
+        val imageRef = uuid2StorageReferenceProfile(pictureUUID)
+        Log.d(javaClass.simpleName, "Image Path to be removed: ${imageRef.path}")
+        imageRef.delete()
+            .addOnSuccessListener {
+                Log.d(javaClass.simpleName, "$pictureUUID has been successfully deleted!")
+            }
+            .addOnFailureListener {
+                Log.d(javaClass.simpleName, "$pictureUUID has failed to be deleted!")
+            }
+    }
+
+    fun uuid2StorageReferenceProfile(uuid: String): StorageReference {
+        return profilePhotoStorage.child(uuid)
+    }
+
+
 }
