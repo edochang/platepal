@@ -1,6 +1,7 @@
 package com.example.platepal.ui.viewmodel
 
 import android.util.Log
+import android.widget.ImageView
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -8,17 +9,22 @@ import androidx.lifecycle.viewModelScope
 import com.example.platepal.MainActivity
 import com.example.platepal.api.SpoonacularApi
 import com.example.platepal.data.DummyRepository
+import com.example.platepal.data.PostMeta
 import com.example.platepal.data.RecipeInfoMeta
 import com.example.platepal.data.RecipeMeta
 import com.example.platepal.data.SpoonacularRecipeInfo
+import com.example.platepal.data.StorageDirectory
 import com.example.platepal.databinding.DirectionsFragmentBinding
 import com.example.platepal.databinding.IngredientsFragmentBinding
 import com.example.platepal.databinding.NotesFragmentBinding
 import com.example.platepal.repository.RecipeInfoDBHelper
 import com.example.platepal.repository.RecipesDBHelper
 import com.example.platepal.repository.SpoonacularRecipeRepository
+import com.example.platepal.repository.Storage
+import edu.cs371m.reddit.glide.Glide
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.io.File
 
 private const val TAG = "OneRecipeViewModel"
 
@@ -30,11 +36,17 @@ class OneRecipeViewModel: ViewModel() {
     private val recipesDBHelper = RecipesDBHelper()
     private val recipeInfoDBHelper = RecipeInfoDBHelper()
     private val spoonacularRecipeRepository = SpoonacularRecipeRepository(spoonacularApi)
+    private val storage = Storage()
 
     // Recipes
     private var recipe: RecipeMeta? = null
     private val recipeInfo = MutableLiveData<RecipeInfoMeta>()
     private var recipeSourceId = ""
+
+    // Photo Metadata
+    var pictureNameByUser = ""
+    private var pictureUUID = ""
+    private var photoFile: File? = null
 
     // tabView Fragment Bindings
     private var ingredientFragmentBinding: IngredientsFragmentBinding? = null
@@ -49,6 +61,15 @@ class OneRecipeViewModel: ViewModel() {
     }
 
     // Getters
+    fun getPictureUUID(): String {
+        return pictureUUID
+    }
+
+    fun getPhotoFile(): File? {
+        return photoFile
+    }
+
+    // Getters Tab
     fun getIngredientFragmentBinding(): IngredientsFragmentBinding? {
         return ingredientFragmentBinding
     }
@@ -59,6 +80,15 @@ class OneRecipeViewModel: ViewModel() {
 
     fun getNotesFragmentBinding(): NotesFragmentBinding? {
         return notesFragmentBinding
+    }
+
+    fun setPhotoFile(file: File) {
+        Log.d(TAG, "photoFile set and exists ($file.exists()}: $file")
+        photoFile = file
+    }
+
+    fun setPictureUUID(uuid: String) {
+        pictureUUID = uuid
     }
 
     fun getRecipeSourceId(): String {
@@ -74,7 +104,55 @@ class OneRecipeViewModel: ViewModel() {
         recipe = recipeMeta
     }
 
-    // Public helper functions
+    // Public functions
+    fun createRecipe(title: String,
+                     image: String,
+                     ingredients: String,
+                     directions: String,
+                     notes: String,
+                     createdBy: String,
+                     navigateToOneRecipe: (RecipeMeta)->Unit) {
+        // TODO(Add image and ImageType)  // will do this when working on community post
+        val createdRecipeMeta = RecipeMeta(
+            "",
+            title,
+            image,
+            "image/jpg",
+            createdBy
+        )
+
+        val createdRecipeInfoMeta = RecipeInfoMeta(
+            "",
+            ingredients,
+            emptyList<Any>(),
+            directions,
+            notes,
+            createdBy
+        )
+
+        recipesDBHelper.createAndRetrieveDocumentId(createdRecipeMeta) { id ->
+            val updateCreatedRecipe = hashMapOf(
+                "sourceId" to id
+            )
+            recipesDBHelper.updateDocument(id, updateCreatedRecipe as Map<String, kotlin.Any>) {
+                createdRecipeInfoMeta.sourceId = id
+                recipeInfoDBHelper.createAndRetrieveDocument(createdRecipeInfoMeta) { createdRecipeInfoMeta ->
+                    recipeInfo.postValue(createdRecipeInfoMeta.first())
+                    createdRecipeMeta.sourceId = id
+                    createdRecipeMeta.firestoreId = id
+                    navigateToOneRecipe(createdRecipeMeta)
+                }
+            }
+        }
+    }
+
+    fun fetchLocalPostPhoto(imageView: ImageView) {
+        photoFile?.let {
+            Log.d(TAG, "Glide Local Fetch")
+            Glide.fetchFromLocal(it, imageView)
+        }
+    }
+
     fun fetchReposRecipeInfo(resultListener:() -> Unit) {
         Log.d(TAG, "recipeSourceId: $recipeSourceId ; recipeInfo.sourceId: ${recipeInfo.value?.sourceId}")
         recipeInfoDBHelper.getRecipeInfo(recipeSourceId) {
@@ -105,47 +183,47 @@ class OneRecipeViewModel: ViewModel() {
         }
     }
 
-    fun createRecipe(title: String,
-                     image: String,
-                     ingredients: String,
-                     directions: String,
-                     notes: String,
-                     createdBy: String,
-                     navigateToOneRecipe: (RecipeMeta)->Unit) {
-        // TODO(Add image and ImageType)  // will do this when working on community post
-        val createdRecipeMeta = RecipeMeta(
-                "",
-                title,
-                image,
-                "image/jpg",
-                createdBy
-            )
-
-        val createdRecipeInfoMeta = RecipeInfoMeta(
-                "",
-                ingredients,
-                emptyList<Any>(),
-                directions,
-                notes,
-                createdBy
-            )
-
-        recipesDBHelper.createAndRetrieveDocumentId(createdRecipeMeta) { id ->
-            val updateCreatedRecipe = hashMapOf(
-                "sourceId" to id
-            )
-            recipesDBHelper.updateDocument(id, updateCreatedRecipe as Map<String, kotlin.Any>) {
-                createdRecipeInfoMeta.sourceId = id
-                recipeInfoDBHelper.createAndRetrieveDocument(createdRecipeInfoMeta) { createdRecipeInfoMeta ->
-                    recipeInfo.postValue(createdRecipeInfoMeta.first())
-                    createdRecipeMeta.sourceId = id
-                    createdRecipeMeta.firestoreId = id
-                    navigateToOneRecipe(createdRecipeMeta)
-                }
+    fun pictureReplace() {
+        photoFile?.let {
+            if (it.delete()) {
+                Log.d(javaClass.simpleName, "Local file deleted for replacement.")
+                photoFile = null
+            } else {
+                Log.d(javaClass.simpleName, "Local file delete FAILED for replacement.")
             }
         }
     }
 
+    fun pictureReset() {
+        pictureUUID = ""
+        pictureNameByUser = ""
+        photoFile?.let {
+            if (it.delete()) {
+                Log.d(javaClass.simpleName, "Local file deleted.")
+                photoFile = null
+            } else {
+                Log.d(javaClass.simpleName, "Local file delete FAILED")
+            }
+        }
+    }
+
+    fun saveRecipePhoto(resultListener: () -> Unit) {
+        val pFile = photoFile
+        pFile?.let {
+            Log.d(javaClass.simpleName, "photoFile name: ${pFile.nameWithoutExtension}")
+            storage.uploadImage(pFile, pFile.nameWithoutExtension, StorageDirectory.RECIPE) {
+                if (it > 0L) {
+                    Log.d(TAG, "sizeBytes returned: $it")
+                    resultListener.invoke()
+                } else {
+                    Log.d(TAG, "Failed to upload image!")
+                }
+                pictureReset()
+            }
+        }
+    }
+
+    // Public functions fragment binding
     fun initIngredientFragmentBinding(binding: IngredientsFragmentBinding) {
         ingredientFragmentBinding = binding
     }
