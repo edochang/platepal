@@ -16,9 +16,11 @@ import com.example.platepal.databinding.CommunityFragmentBinding
 import com.example.platepal.ui.viewmodel.MainViewModel
 import com.example.platepal.ui.viewmodel.PostViewModel
 
-private const val TAG = "CommunityFragment"
-
 class CommunityFragment : Fragment() {
+    companion object {
+        const val TAG = "CommunityFragment"
+    }
+
     private var _binding: CommunityFragmentBinding? = null
     private val binding get() = _binding!!
     private val viewModel: MainViewModel by activityViewModels()
@@ -64,13 +66,15 @@ class CommunityFragment : Fragment() {
 
         binding.communityPost.setOnClickListener {
             val action = CommunityFragmentDirections.actionCommunityToCreateOnePost(
-                MainActivity.ONEPOST_TRIGGER_TEXTVIEW)
+                MainActivity.ONEPOST_TRIGGER_TEXTVIEW
+            )
             findNavController().navigate(action)
         }
 
         binding.communityPostPicture.setOnClickListener {
             val action = CommunityFragmentDirections.actionCommunityToCreateOnePost(
-                MainActivity.ONEPOST_TRIGGER_CAMERA)
+                MainActivity.ONEPOST_TRIGGER_CAMERA
+            )
             findNavController().navigate(action)
         }
     }

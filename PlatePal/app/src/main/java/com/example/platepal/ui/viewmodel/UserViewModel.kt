@@ -16,12 +16,13 @@ import com.google.firebase.firestore.FirebaseFirestore
 import edu.cs371m.reddit.glide.Glide
 import java.io.File
 
-private const val TAG = "UserViewModel"
-
-class UserViewModel: ViewModel() {
+class UserViewModel : ViewModel() {
+    companion object {
+        const val TAG = "UserViewModel"
+    }
 
     private val dbHelper = UserDBHelper()
-    private var dbFavList = MutableLiveData<List<RecipeMeta>>().apply{
+    private var dbFavList = MutableLiveData<List<RecipeMeta>>().apply {
         postValue(mutableListOf())
     }
 
@@ -32,7 +33,7 @@ class UserViewModel: ViewModel() {
 
     //for user profile picture
     // Getter
-    fun getProfilePhotoUUID(): String{
+    fun getProfilePhotoUUID(): String {
         return profilePhotoUUID
     }
 
@@ -45,6 +46,7 @@ class UserViewModel: ViewModel() {
         profilePhotoFile = file
         Log.d(TAG, "profile picture file set and exists (${file.exists()}: $file")
     }
+
     fun setProfilePhotoUUID(uuid: String) {
         profilePhotoUUID = uuid
     }
@@ -86,7 +88,7 @@ class UserViewModel: ViewModel() {
 
 
     fun profilePhotoSuccess() {
-        profilePhotoFile?.let{
+        profilePhotoFile?.let {
             storage.uploadProfileImage(it, profilePhotoUUID) {
                 //profilePhotoUUID = ""
                 Log.d(TAG, "profilePhotoSuccess - profile photo upload to storage")
@@ -102,6 +104,7 @@ class UserViewModel: ViewModel() {
 
          */
     }
+
     fun profilePhotoFailure() {
         // Note, the camera intent will only create the file if the user hits accept
         // so I've never seen this called
@@ -110,7 +113,7 @@ class UserViewModel: ViewModel() {
 
 
     //create new user
-    fun createUserMeta(name: String, email: String, uid: String){
+    fun createUserMeta(name: String, email: String, uid: String) {
         val userMeta = UserMeta(
             fullName = name,
             email = email,
@@ -128,7 +131,7 @@ class UserViewModel: ViewModel() {
     }
 
     //setters -favorite, using db
-    fun setFavoriteRecipe(recipe: RecipeMeta, isFavorite: Boolean){
+    fun setFavoriteRecipe(recipe: RecipeMeta, isFavorite: Boolean) {
         if (isFavorite) addFavRecipe(recipe)
         else removeFavRecipe(recipe)
     }
@@ -137,7 +140,7 @@ class UserViewModel: ViewModel() {
         return dbFavList.value?.contains(recipe)
     }
 
-    fun fetchInitialFavRecipes(callback: ()-> Unit){
+    fun fetchInitialFavRecipes(callback: () -> Unit) {
         dbHelper.fetchInitialFavRecipes {
             dbFavList.postValue(it)
             callback.invoke()
@@ -145,18 +148,18 @@ class UserViewModel: ViewModel() {
         }
     }
 
-    fun observeDbFavList(): LiveData<List<RecipeMeta>>{
+    fun observeDbFavList(): LiveData<List<RecipeMeta>> {
         return dbFavList
     }
 
     private fun addFavRecipe(recipe: RecipeMeta) {
-        dbHelper.addFavRecipe(recipe){
+        dbHelper.addFavRecipe(recipe) {
             dbFavList.postValue(it)
         }
     }
 
     private fun removeFavRecipe(recipe: RecipeMeta) {
-        dbHelper.removeFavRecipe(recipe){
+        dbHelper.removeFavRecipe(recipe) {
             dbFavList.postValue(it)
         }
     }

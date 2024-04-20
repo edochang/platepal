@@ -12,9 +12,11 @@ import com.example.platepal.repository.Storage
 import edu.cs371m.reddit.glide.Glide
 import java.io.File
 
-private const val TAG = "OnePostViewModel"
+class OnePostViewModel : ViewModel() {
+    companion object {
+        const val TAG = "OnePostViewModel"
+    }
 
-class OnePostViewModel: ViewModel() {
     // DBHelpers
     private val postsDBHelper = PostsDBHelper()
 
@@ -54,7 +56,10 @@ class OnePostViewModel: ViewModel() {
     }
 
     fun fetchPostPhoto(image: String, imageView: ImageView) {
-        Glide.fetchFromStorage(storage.uuid2StorageReference(image, StorageDirectory.POST), imageView)
+        Glide.fetchFromStorage(
+            storage.uuid2StorageReference(image, StorageDirectory.POST),
+            imageView
+        )
     }
 
     fun fetchLocalPostPhoto(imageView: ImageView) {

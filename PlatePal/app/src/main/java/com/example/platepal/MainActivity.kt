@@ -22,11 +22,10 @@ import android.content.Intent
 import com.example.platepal.ui.viewmodel.UserViewModel
 import com.google.android.material.snackbar.Snackbar
 
-private const val TAG = "MainActivity"
-
 class MainActivity : AppCompatActivity() {
     companion object {
         // Constants
+        const val TAG = "MainActivity"
         const val SPOONACULAR_API_NAME = "SpoonacularApi"
         const val SEARCH_FROM_ADDR_ONEPOST = "ONEPOST"
         const val SEARCH_FROM_ADDR_DISCOVER = "DISCOVER"
@@ -43,12 +42,14 @@ class MainActivity : AppCompatActivity() {
                 .make(
                     view,
                     message,
-                    Snackbar.LENGTH_SHORT)
+                    Snackbar.LENGTH_SHORT
+                )
                 .show()
         }
     }
-    private lateinit var binding : ActivityMainBinding
-    private lateinit var navController : NavController
+
+    private lateinit var binding: ActivityMainBinding
+    private lateinit var navController: NavController
     private lateinit var appBarConfiguration: AppBarConfiguration
 
     private val viewModel: MainViewModel by viewModels()
@@ -71,24 +72,30 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when(item.itemId){
+        return when (item.itemId) {
             R.id.discoverFragment -> {
                 item.onNavDestinationSelected(navController)
                 true
             }
+
             R.id.cookbookFragment -> {
                 item.onNavDestinationSelected(navController)
                 true
             }
+
             R.id.createRecipeFragment -> {
                 item.onNavDestinationSelected(navController)
                 true
             }
+
             R.id.communityFragment -> {
                 item.onNavDestinationSelected(navController)
                 true
             }
-            else -> {false}
+
+            else -> {
+                false
+            }
         }
     }
 
@@ -97,6 +104,7 @@ class MainActivity : AppCompatActivity() {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                 menuInflater.inflate(R.menu.menu_main, menu)
             }
+
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 // This could be replaced with return false, but I wanted to show
                 // the usual structure for a menu item
@@ -105,10 +113,12 @@ class MainActivity : AppCompatActivity() {
                         menuItem.onNavDestinationSelected(navController)
                         true
                     }
+
                     R.id.inboxFragment -> {
                         menuItem.onNavDestinationSelected(navController)
                         true
                     }
+
                     else -> false
                 }
             }
@@ -117,7 +127,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun initTitleObservers() {
         // Observe title changes
-        viewModel.observeTitle().observe(this){
+        viewModel.observeTitle().observe(this) {
             binding.barTitle.text = it
             Log.d(javaClass.simpleName, it)
         }
@@ -147,14 +157,15 @@ class MainActivity : AppCompatActivity() {
         initRecipeList()
 
         //fetch initial favorite recipe list for user
-        userViewModel.fetchInitialFavRecipes{
+        userViewModel.fetchInitialFavRecipes {
             //Log.d(TAG, "favorite recipe list listener invoked")
         }
 
         //observe top bar title
         initTitleObservers()
 
-        val navHostFragment = supportFragmentManager.findFragmentById(R.id.main_frame) as NavHostFragment
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.main_frame) as NavHostFragment
         navController = navHostFragment.navController
 
         //bottom navigation
@@ -163,17 +174,23 @@ class MainActivity : AppCompatActivity() {
 
         //toolbar
         initToolBarMenu()
-        appBarConfiguration= AppBarConfiguration(
-            setOf(R.id.discoverFragment, R.id.cookbookFragment, R.id.createRecipeFragment, R.id.communityFragment)
+        appBarConfiguration = AppBarConfiguration(
+            setOf(
+                R.id.discoverFragment,
+                R.id.cookbookFragment,
+                R.id.createRecipeFragment,
+                R.id.communityFragment
+            )
         )
         //appBarConfiguration = AppBarConfiguration(navController.graph)
         binding.toolbar.setupWithNavController(navController, appBarConfiguration)
         //setupActionBarWithNavController(navController, appBarConfiguration)
 
         // Control which fragments will not have the bottom navigation
-        navController.addOnDestinationChangedListener { navController,
-                                                                        destination,
-                                                                        arguments ->
+        // Listener parameters are navController, destination, arguments
+        navController.addOnDestinationChangedListener { _,
+                                                        destination,
+                                                        _ ->
             val fragmentId = destination.id
 
             if (fragmentId == R.id.createOnePostFragment) {
@@ -186,7 +203,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     //log out current user, go back to sign in page
-    fun logout(){
+    fun logout() {
         FirebaseAuth.getInstance().signOut()
         val intent = Intent(this, SignInActivity::class.java)
         startActivity(intent)

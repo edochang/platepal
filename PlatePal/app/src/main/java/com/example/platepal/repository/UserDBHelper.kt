@@ -10,11 +10,13 @@ import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.Query
 
-private const val TAG = "UserDBHelper"
-
-class UserDBHelper: DBHelper<UserMeta>(
+class UserDBHelper : DBHelper<UserMeta>(
     rootCollection = "Users"
-){
+) {
+    companion object {
+        const val TAG = "UserDBHelper"
+    }
+
     //private val user = FirebaseAuth.getInstance().currentUser
     private val subCollection = "FavRecipes"
     private val currentUser = FirebaseAuth.getInstance().currentUser
@@ -29,11 +31,11 @@ class UserDBHelper: DBHelper<UserMeta>(
             .addOnFailureListener { e -> Log.w(TAG, "Error writing document.", e) }
     }
 
-    private fun getCurrentUserDocID(resultListener: (id: String)->Unit){
+    private fun getCurrentUserDocID(resultListener: (id: String) -> Unit) {
         db.collection(rootCollection)
             .whereEqualTo("uid", userID)
             .get()
-            .addOnSuccessListener {result->
+            .addOnSuccessListener { result ->
                 Log.d(TAG, "doc id retrieval success: ${result.documents[0].id}")
                 resultListener(result.documents[0].id)
             }
@@ -43,7 +45,7 @@ class UserDBHelper: DBHelper<UserMeta>(
             }
     }
 
-    private fun dbFetchFavRecipes(callback: (list: List<RecipeMeta>) -> Unit){
+    private fun dbFetchFavRecipes(callback: (list: List<RecipeMeta>) -> Unit) {
         getCurrentUserDocID { userDocID ->
             db.collection(rootCollection)
                 .document(userDocID)
@@ -66,16 +68,19 @@ class UserDBHelper: DBHelper<UserMeta>(
         dbFetchFavRecipes(callback)
     }
 
-    fun addFavRecipe(recipe: RecipeMeta,
-                     callback: (list: List<RecipeMeta>) -> Unit) {
-        getCurrentUserDocID {userDocID ->
+    fun addFavRecipe(
+        recipe: RecipeMeta,
+        callback: (list: List<RecipeMeta>) -> Unit
+    ) {
+        getCurrentUserDocID { userDocID ->
             db.collection(rootCollection)
                 .document(userDocID)
                 .collection(subCollection)
                 .document(recipe.firestoreId)
                 .set(recipe)
                 .addOnSuccessListener {
-                    Log.d(TAG, "recipe added with doc id: ${recipe.firestoreId}"
+                    Log.d(
+                        TAG, "recipe added with doc id: ${recipe.firestoreId}"
                     )
                     dbFetchFavRecipes(callback)
                 }
@@ -87,8 +92,10 @@ class UserDBHelper: DBHelper<UserMeta>(
     }
 
 
-    fun removeFavRecipe(recipe: RecipeMeta,
-                        callback: (list: List<RecipeMeta>) -> Unit){
+    fun removeFavRecipe(
+        recipe: RecipeMeta,
+        callback: (list: List<RecipeMeta>) -> Unit
+    ) {
         getCurrentUserDocID { userDocID ->
             db.collection(rootCollection)
                 .document(userDocID)
@@ -97,7 +104,8 @@ class UserDBHelper: DBHelper<UserMeta>(
                 .delete()
 
                 .addOnSuccessListener {
-                    Log.d(TAG,
+                    Log.d(
+                        TAG,
                         "Recipe deleted sucessfully id: ${recipe.firestoreId}"
                     )
                     dbFetchFavRecipes(callback)

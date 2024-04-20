@@ -26,9 +26,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.File
 
-private const val TAG = "OneRecipeViewModel"
+class OneRecipeViewModel : ViewModel() {
+    companion object {
+        const val TAG = "OneRecipeViewModel"
+    }
 
-class OneRecipeViewModel: ViewModel() {
     // API Interfaces
     private val spoonacularApi = SpoonacularApi.create()
 
@@ -105,13 +107,15 @@ class OneRecipeViewModel: ViewModel() {
     }
 
     // Public functions
-    fun createRecipe(title: String,
-                     image: String,
-                     ingredients: String,
-                     directions: String,
-                     notes: String,
-                     createdBy: String,
-                     navigateToOneRecipe: (RecipeMeta)->Unit) {
+    fun createRecipe(
+        title: String,
+        image: String,
+        ingredients: String,
+        directions: String,
+        notes: String,
+        createdBy: String,
+        navigateToOneRecipe: (RecipeMeta) -> Unit
+    ) {
         // TODO(Add image and ImageType)  // will do this when working on community post
         val createdRecipeMeta = RecipeMeta(
             "",
@@ -153,13 +157,16 @@ class OneRecipeViewModel: ViewModel() {
         }
     }
 
-    fun fetchReposRecipeInfo(resultListener:() -> Unit) {
-        Log.d(TAG, "recipeSourceId: $recipeSourceId ; recipeInfo.sourceId: ${recipeInfo.value?.sourceId}")
+    fun fetchReposRecipeInfo(resultListener: () -> Unit) {
+        Log.d(
+            TAG,
+            "recipeSourceId: $recipeSourceId ; recipeInfo.sourceId: ${recipeInfo.value?.sourceId}"
+        )
         recipeInfoDBHelper.getRecipeInfo(recipeSourceId) {
-            if(it.isEmpty()) {
+            if (it.isEmpty()) {
                 Log.d(TAG, "No recipe info in DB.")
                 viewModelScope.launch(Dispatchers.IO) {
-                    val spoonacularRecipeInfo = if(MainActivity.globalDebug) {
+                    val spoonacularRecipeInfo = if (MainActivity.globalDebug) {
                         DummyRepository().fetchRecipeInfoData() // Used for testing
                     } else {
                         spoonacularRecipeRepository.getRecipeInfo(recipeSourceId)
@@ -168,8 +175,11 @@ class OneRecipeViewModel: ViewModel() {
                     val recipeInfoMeta = convertSpoonacularRecipeToRecipeMeta(spoonacularRecipeInfo)
 
                     recipeInfoDBHelper.createAndRetrieveDocument(recipeInfoMeta) { createdRecipeInfoMeta ->
-                        Log.d(TAG, "DB List is empty.  Pulled info from Spoonacular and saved to DB.  " +
-                                "Post Recipe Info")
+                        Log.d(
+                            TAG,
+                            "DB List is empty.  Pulled info from Spoonacular and saved to DB.  " +
+                                    "Post Recipe Info"
+                        )
                         recipeInfo.postValue(createdRecipeInfoMeta.first())
                         fetchDoneTrue()
                     }
@@ -249,7 +259,7 @@ class OneRecipeViewModel: ViewModel() {
                 "Servings: ${spoonacularRecipeInfo.servings}<br/>" +
                 "Ready in Minutes: ${spoonacularRecipeInfo.readyInMinutes}<br/>" +
                 "Recipe Sourced From: ${spoonacularRecipeInfo.sourceName} " +
-                    "(url: ${spoonacularRecipeInfo.sourceUrl})<br/>"
+                "(url: ${spoonacularRecipeInfo.sourceUrl})<br/>"
 
         val instruction = spoonacularRecipeInfo.instructions ?: "Be creative, no directions!"
         val createdBy = MainActivity.SPOONACULAR_API_NAME

@@ -18,15 +18,18 @@ import com.example.platepal.data.RecipeMeta
 import com.example.platepal.databinding.CommunityCreateFragmentBinding
 import com.example.platepal.ui.viewmodel.OnePostViewModel
 
-private const val TAG = "CreateOnePostFragment"
+class CreateOnePostFragment : Fragment() {
+    companion object {
+        const val TAG = "CreateOnePostFragment"
+    }
 
-class CreateOnePostFragment: Fragment() {
     private var _binding: CommunityCreateFragmentBinding? = null
     private val binding get() = _binding!!
     private val onePostViewModel: OnePostViewModel by activityViewModels()
 
     private val cameraLauncher = registerForActivityResult(
-        ActivityResultContracts.TakePicture()) { success ->
+        ActivityResultContracts.TakePicture()
+    ) { success ->
         if (success) {
             onePostViewModel.getPhotoFile()?.let {
                 if (it.exists()) {
@@ -66,7 +69,8 @@ class CreateOnePostFragment: Fragment() {
                 pictureName,
                 it,
                 onePostViewModel,
-                cameraLauncher)
+                cameraLauncher
+            )
         } ?: Log.e(TAG, "Failed to launch Camera")
     }
 
@@ -103,7 +107,8 @@ class CreateOnePostFragment: Fragment() {
         }
 
         binding.postRecipe.setOnClickListener {
-            val action = CreateOnePostFragmentDirections.actionCreateOnePostToSearch(MainActivity.SEARCH_FROM_ADDR_ONEPOST)
+            val action =
+                CreateOnePostFragmentDirections.actionCreateOnePostToSearch(MainActivity.SEARCH_FROM_ADDR_ONEPOST)
             findNavController().navigate(action)
         }
 

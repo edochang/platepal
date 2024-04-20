@@ -10,9 +10,11 @@ import com.example.platepal.repository.PostsDBHelper
 import com.example.platepal.repository.Storage
 import edu.cs371m.reddit.glide.Glide
 
-private const val TAG = "PostViewModel"
+class PostViewModel : ViewModel() {
+    companion object {
+        const val TAG = "PostViewModel"
+    }
 
-class PostViewModel: ViewModel() {
     // DBHelpers
     private val postsDBHelper = PostsDBHelper()
     private var posts = MutableLiveData<List<PostMeta>>()
@@ -33,6 +35,9 @@ class PostViewModel: ViewModel() {
     }
 
     fun fetchPostPhoto(image: String, imageView: ImageView) {
-        Glide.fetchFromStorage(storage.uuid2StorageReference(image, StorageDirectory.POST), imageView)
+        Glide.fetchFromStorage(
+            storage.uuid2StorageReference(image, StorageDirectory.POST),
+            imageView
+        )
     }
 }

@@ -17,11 +17,11 @@ import com.example.platepal.ui.viewmodel.MainViewModel
 import com.example.platepal.ui.viewmodel.OnePostViewModel
 import com.example.platepal.ui.viewmodel.UserViewModel
 
-private const val TAG = "SearchFragment"
-
-
 class SearchFragment : Fragment() {
-    private val viewModel: MainViewModel by activityViewModels()
+    companion object {
+        const val TAG = "SearchFragment"
+    }
+
     private var _binding: SearchFragmentBinding? = null
     private val binding get() = _binding!!
     private val viewModel: MainViewModel by activityViewModels()
@@ -29,7 +29,7 @@ class SearchFragment : Fragment() {
     private val onePostViewModel: OnePostViewModel by activityViewModels()
 
     //search
-    private fun filterList(query: String?, adapter: RecipeAdapter, view: View){
+    private fun filterList(query: String?, adapter: RecipeAdapter, view: View) {
         Log.d(TAG, "Enter filterList with query: $query")
         var recipeList: List<RecipeMeta> = emptyList()
         viewModel.observeRecipeList().observe(viewLifecycleOwner) {
@@ -38,13 +38,13 @@ class SearchFragment : Fragment() {
 
         query?.let {
             if (it.isNotEmpty()) {
-                val filteredList =  mutableListOf<RecipeMeta>()
-                for (i in recipeList){
+                val filteredList = mutableListOf<RecipeMeta>()
+                for (i in recipeList) {
                     if (i.title.lowercase().contains(query)) {
                         filteredList.add(i)
                     }
                 }
-                if (filteredList.isEmpty()){
+                if (filteredList.isEmpty()) {
                     //Toast.makeText(activity, "No data found", Toast.LENGTH_SHORT).show()
                     view.visibility = View.GONE // remove recycler view list
                 } else {
@@ -71,7 +71,7 @@ class SearchFragment : Fragment() {
 
         val fromAddress = requireArguments().getString("fromAddress")
 
-        val adapter = RecipeAdapter(viewModel, userViewModel){
+        val adapter = RecipeAdapter(viewModel, userViewModel) {
             val action = if (fromAddress == MainActivity.SEARCH_FROM_ADDR_DISCOVER) {
                 SearchFragmentDirections.actionSearchToOneRecipe(it)
             } else {
@@ -93,7 +93,7 @@ class SearchFragment : Fragment() {
         }
 
         //search
-        binding.search.setOnQueryTextListener(object: SearchView.OnQueryTextListener{
+        binding.search.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 //hides keyboard when submitted a query
                 //but does not hide keybarod when submitting empty query
@@ -106,7 +106,6 @@ class SearchFragment : Fragment() {
                 return true
             }
         })
-
 
 
     }

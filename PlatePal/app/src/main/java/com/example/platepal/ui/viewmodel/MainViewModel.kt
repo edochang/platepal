@@ -23,9 +23,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.time.Duration
 
-private const val TAG = "MainViewModel"
+class MainViewModel : ViewModel() {
+    companion object {
+        const val TAG = "MainViewModel"
+    }
 
-class MainViewModel: ViewModel() {
     // DBHelpers
     private val recipesDBHelper = RecipesDBHelper()
     private val appDBHelper = AppDBHelper()
@@ -33,12 +35,13 @@ class MainViewModel: ViewModel() {
     // API Interfaces
     private val spoonacularApi = SpoonacularApi.create()
     private var lastSpoonacularSearchApiCall: Timestamp? = null
-    private var appMetaDocumentId: String = "".apply{
+    private var appMetaDocumentId: String = "".apply {
         appDBHelper.getAppMeta {
             appMetaDocumentId = it.firestoreId
             lastSpoonacularSearchApiCall = Timestamp(
                 it.lastSpoonacularSearchApiCallTimestampSec,
-                it.lastSpoonacularSearchApiCallTimestampNanosec)
+                it.lastSpoonacularSearchApiCallTimestampNanosec
+            )
         }
     }
 
@@ -83,7 +86,7 @@ class MainViewModel: ViewModel() {
         val recipesSize = recipes?.size ?: 0
         recipes?.let {
             if (recipesSize > 0) {
-                val rand = (0..< recipesSize).random()
+                val rand = (0..<recipesSize).random()
                 randomSpotlightRecipe.value = recipes[rand]
             }
         }
@@ -98,22 +101,25 @@ class MainViewModel: ViewModel() {
         if (createdBy == MainActivity.SPOONACULAR_API_NAME) {
             Glide.glideFetch(image, image, imageView)
         } else {
-            Glide.fetchFromStorage(storage.uuid2StorageReference(image, StorageDirectory.RECIPE), imageView)
+            Glide.fetchFromStorage(
+                storage.uuid2StorageReference(image, StorageDirectory.RECIPE),
+                imageView
+            )
         }
     }
 
-    fun fetchReposRecipeList(resultListener:() -> Unit) {
+    fun fetchReposRecipeList(resultListener: () -> Unit) {
         recipesDBHelper.getRecipes {
-            if(it.isEmpty()) {
+            if (it.isEmpty()) {
                 viewModelScope.launch(Dispatchers.IO) {
-                    val spoonacularRecipes = if(MainActivity.globalDebug) {
+                    val spoonacularRecipes = if (MainActivity.globalDebug) {
                         DummyRepository().fetchData() // Used for testing
                     } else {
                         Log.d(TAG, "Get recipes from Spoonacular")
                         spoonacularRecipeRepository.getRecipes()
                     }
 
-                    if(!MainActivity.globalDebug) {
+                    if (!MainActivity.globalDebug) {
                         val nowTimestamp = Timestamp.now()
                         val nowTimestampSec = nowTimestamp.seconds
                         val nowTimestampNanosec = nowTimestamp.nanoseconds
@@ -126,7 +132,8 @@ class MainViewModel: ViewModel() {
                             appMetaDocumentId,
                             updateAppMeta as Map<String, kotlin.Any>
                         ) {
-                            Log.d(TAG, "Set last call time for Spoonacular Search API"
+                            Log.d(
+                                TAG, "Set last call time for Spoonacular Search API"
                             )
                         }
                     }

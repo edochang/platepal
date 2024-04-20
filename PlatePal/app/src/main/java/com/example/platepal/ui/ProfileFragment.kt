@@ -23,9 +23,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-
-private const val TAG = "ProfileFragment"
 class ProfileFragment : Fragment() {
+    companion object {
+        const val TAG = "ProfileFragment"
+    }
+
     private var _binding: ProfileFragmentBinding? = null
     private val binding get() = _binding!!
     private val viewModel: MainViewModel by activityViewModels()
@@ -89,30 +91,39 @@ class ProfileFragment : Fragment() {
         val docRef = db.collection("Users").whereEqualTo("uid", userID)
         listenerRegistration1 = docRef.addSnapshotListener { value, error ->
             //Log.d(TAG, "length of ref query result is ${value?.size()}")
-            if (error != null){
+            if (error != null) {
                 Log.d(TAG, "snapshot listener failed: $error")
                 return@addSnapshotListener
             }
             if (value != null) {
-                for (doc in value){
+                for (doc in value) {
                     //Log.d(TAG, "this is the doc id ${doc.id}")
-                    if(doc.get("uid")?.toString() == userID){
+                    if (doc.get("uid")?.toString() == userID) {
                         binding.profileName.text = doc.get("fullName")?.toString()
                         binding.profileEmail.text = doc.get("email")?.toString()
 
-                        if(userViewModel.getProfilePhotoFile() != null){
+                        if (userViewModel.getProfilePhotoFile() != null) {
                             userViewModel.fetchLocalProfilePhoto(
                                 binding.profileImage
                             )
-                            Log.d(TAG, "First profile bind: from local file: ${userViewModel.getProfilePhotoUUID()}")
-                        }else if(doc.get("pictureUUID")?.toString()?.isNotEmpty() == true){
+                            Log.d(
+                                TAG,
+                                "First profile bind: from local file: ${userViewModel.getProfilePhotoUUID()}"
+                            )
+                        } else if (doc.get("pictureUUID")?.toString()?.isNotEmpty() == true) {
                             userViewModel.fetchProfilePhoto(
                                 doc.get("pictureUUID")?.toString()!!,
                                 binding.profileImage
                             )
-                            Log.d(TAG, "First profile bind: from cloud storage: ${doc.get("pictureUUID")}")
-                        }else{
-                            Log.d(TAG, "First profile bind: User currently doesn't have a profile pic")
+                            Log.d(
+                                TAG,
+                                "First profile bind: from cloud storage: ${doc.get("pictureUUID")}"
+                            )
+                        } else {
+                            Log.d(
+                                TAG,
+                                "First profile bind: User currently doesn't have a profile pic"
+                            )
                         }
                         break
                     }
@@ -135,15 +146,18 @@ class ProfileFragment : Fragment() {
             val data = hashMapOf<String, Any>("pictureUUID" to userViewModel.getProfilePhotoUUID())
             val query = db.collection("Users").whereEqualTo("uid", userID)
             listenerRegistration2 = query.addSnapshotListener { value, error ->
-                if (error != null){
+                if (error != null) {
                     Log.d(TAG, "snapshot listener failed: $error")
                     return@addSnapshotListener
                 }
                 if (value != null) {
-                    for (doc in value){
+                    for (doc in value) {
                         //update newest picture reference in user meta
                         doc.reference.set(data, SetOptions.merge())
-                        Log.d(TAG, "Click listener: added newest ${userViewModel.getProfilePhotoUUID()} in existing User meta")
+                        Log.d(
+                            TAG,
+                            "Click listener: added newest ${userViewModel.getProfilePhotoUUID()} in existing User meta"
+                        )
                         break
                     }
                 }
@@ -151,7 +165,7 @@ class ProfileFragment : Fragment() {
             removeListener = true
         }
 
-        binding.profileLogout.setOnClickListener{
+        binding.profileLogout.setOnClickListener {
             userViewModel.pictureReset()
             Log.d(TAG, "picture reset")
             mainActivity.logout()
@@ -165,7 +179,6 @@ class ProfileFragment : Fragment() {
         if (removeListener) listenerRegistration2.remove()
         super.onDestroyView()
     }
-
 
 
 }

@@ -19,9 +19,10 @@ import com.example.platepal.ui.viewmodel.OneRecipeViewModel
 import com.example.platepal.ui.viewmodel.UserViewModel
 import com.google.android.material.tabs.TabLayoutMediator
 
-private const val TAG = "OneRecipeFragment"
-
 class OneRecipeFragment : Fragment() {
+    companion object {
+        const val TAG = "OneRecipeFragment"
+    }
 
     private var _binding: OneRecipeFragmentBinding? = null
     private val binding get() = _binding!!
@@ -79,14 +80,14 @@ class OneRecipeFragment : Fragment() {
         val recipe = args.recipe
 
         oneRecipeViewModel.fetchDone.observe(viewLifecycleOwner) {
-            Log.d(TAG,"Observer fetchDone: ${oneRecipeViewModel.fetchDone.value}")
+            Log.d(TAG, "Observer fetchDone: ${oneRecipeViewModel.fetchDone.value}")
             if (it) {
                 mainActivity.progressBarOff()
             }
         }
 
         oneRecipeViewModel.fetchDone.value = false
-        Log.d(TAG,"set fetchDone false (value: ${oneRecipeViewModel.fetchDone.value})")
+        Log.d(TAG, "set fetchDone false (value: ${oneRecipeViewModel.fetchDone.value})")
         mainActivity.progressBarOn()
 
         if (recipe.sourceId != oneRecipeViewModel.getRecipeSourceId()) {
@@ -94,8 +95,10 @@ class OneRecipeFragment : Fragment() {
             oneRecipeViewModel.setRecipeSourceId(recipe.sourceId)
             getRecipeInfo()
         } else {
-            Log.d(TAG, "Navigated from recipe creation or revisited the same recipe.  " +
-                    "No need to fetch Recipe Info.")
+            Log.d(
+                TAG, "Navigated from recipe creation or revisited the same recipe.  " +
+                        "No need to fetch Recipe Info."
+            )
             oneRecipeViewModel.fetchDone.value = true
         }
 
@@ -106,7 +109,8 @@ class OneRecipeFragment : Fragment() {
         // Favorites
         setupFavorites(recipe)
 
-        val fragmentsList = arrayListOf(OneRecipeIngredients(), OneRecipeDirections(), OneRecipeNotes())
+        val fragmentsList =
+            arrayListOf(OneRecipeIngredients(), OneRecipeDirections(), OneRecipeNotes())
 
         binding.apply {
             viewPager.adapter = ViewPagerAdapter(
