@@ -29,6 +29,7 @@ class UserViewModel: ViewModel() {
     private val storage = Storage()
     private var profilePhotoUUID = ""
     private var profilePhotoFile: File? = null
+    private var previousUUID = ""
 
     //for user profile picture
     // Getter
@@ -40,6 +41,10 @@ class UserViewModel: ViewModel() {
         return profilePhotoFile
     }
 
+    fun getPreviousUUID(): String{
+        return previousUUID
+    }
+
     // Setter
     fun setProfilePhotoFile(file: File) {
         profilePhotoFile = file
@@ -47,6 +52,16 @@ class UserViewModel: ViewModel() {
     }
     fun setProfilePhotoUUID(uuid: String) {
         profilePhotoUUID = uuid
+    }
+
+    fun setPreviousUUID(uuid: String){
+        previousUUID = uuid
+        Log.d(TAG, "previous uuid has been set to $uuid")
+    }
+
+    fun resetPreviousUUID(){
+        previousUUID = ""
+        Log.d(TAG, "previous uuid has been reset")
     }
 
     fun fetchProfilePhoto(uuid: String, imageView: ImageView) {
@@ -84,7 +99,6 @@ class UserViewModel: ViewModel() {
         }
     }
 
-
     fun profilePhotoSuccess() {
         profilePhotoFile?.let{
             storage.uploadProfileImage(it, profilePhotoUUID) {
@@ -92,22 +106,11 @@ class UserViewModel: ViewModel() {
                 Log.d(TAG, "profilePhotoSuccess - profile photo upload to storage")
             }
         }
-
-        /*
-        val photoFile = TakePictureWrapper.fileNameToFile(profilePhotoUUID)
-        storage.uploadProfileImage(photoFile, profilePhotoUUID) {
-            //profilePhotoUUID = ""
-            Log.d(TAG, "profile photo upload to storage successfully")
-        }
-
-         */
-    }
-    fun profilePhotoFailure() {
-        // Note, the camera intent will only create the file if the user hits accept
-        // so I've never seen this called
-        profilePhotoUUID = ""
     }
 
+    fun deletePreviousProfile(previousUUID: String) {
+        storage.deleteProfileImage(previousUUID)
+    }
 
     //create new user
     fun createUserMeta(name: String, email: String, uid: String){

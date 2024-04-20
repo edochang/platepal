@@ -38,10 +38,8 @@ class TakePictureWrapper {
             viewModel.setProfilePhotoUUID(uuid)
 
             val localPhotoFile = fileNameToFile(uuid)
-            //viewModel.setProfilePhotoFile(fileNameToFile(uuid))
             val uri = FileProvider.getUriForFile(
                 context, context.applicationInfo.packageName, localPhotoFile)
-                //context, context.applicationInfo.packageName, viewModel.getProfilePhotoFile()!!)
             Log.d(TAG, "Before Camera launch: profile photo uri $uri")
             takePictureLauncher.launch(uri)
         }
