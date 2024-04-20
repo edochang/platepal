@@ -142,7 +142,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -153,20 +152,22 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.setDisplayShowTitleEnabled(false) //disable title in bar, didn't work
         supportActionBar?.setDisplayShowCustomEnabled(true)
 
-        // Retrieve Recipes
-        initRecipeList()
-
-        //fetch initial favorite recipe list for user
-        userViewModel.fetchInitialFavRecipes {
-            //Log.d(TAG, "favorite recipe list listener invoked")
-        }
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.main_frame) as NavHostFragment
+        navController = navHostFragment.navController
 
         //observe top bar title
         initTitleObservers()
 
-        val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.main_frame) as NavHostFragment
-        navController = navHostFragment.navController
+        // Retrieve Recipes
+        //initRecipeList()
+
+        progressBarOn()
+        //fetch initial favorite recipe list for user
+        userViewModel.fetchInitialFavRecipes {
+            //Log.d(TAG, "favorite recipe list listener invoked")
+            viewModel.setInitFavList(true)  // will update recipeList via this flag
+        }
 
         //bottom navigation
         val navView = binding.navView
@@ -188,9 +189,7 @@ class MainActivity : AppCompatActivity() {
 
         // Control which fragments will not have the bottom navigation
         // Listener parameters are navController, destination, arguments
-        navController.addOnDestinationChangedListener { _,
-                                                        destination,
-                                                        _ ->
+        navController.addOnDestinationChangedListener { _, destination, _ ->
             val fragmentId = destination.id
 
             if (fragmentId == R.id.createOnePostFragment) {

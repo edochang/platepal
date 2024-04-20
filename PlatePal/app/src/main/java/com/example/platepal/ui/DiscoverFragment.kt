@@ -50,6 +50,8 @@ class DiscoverFragment : Fragment() {
             }: ${userViewModel.getProfilePhotoFile()}"
         )
 
+        val mainActivity = (requireActivity() as MainActivity)
+
         //bind adapter
         val adapter = RecipeAdapter(viewModel, userViewModel) {
             val action = DiscoverFragmentDirections.actionDiscoverToOnePost(it)
@@ -70,6 +72,7 @@ class DiscoverFragment : Fragment() {
         viewModel.observeRecipeList().observe(viewLifecycleOwner) {
             adapter.submitList(it)
             viewModel.setRandomRecipe()
+            mainActivity.progressBarOff()
         }
 
         //populate spotlight

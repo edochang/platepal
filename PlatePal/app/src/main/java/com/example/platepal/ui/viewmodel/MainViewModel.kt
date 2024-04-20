@@ -3,12 +3,12 @@ package com.example.platepal.ui.viewmodel
 import android.util.Log
 import android.widget.ImageView
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.platepal.MainActivity
 import com.example.platepal.api.SpoonacularApi
-import com.example.platepal.camera.TakePictureWrapper
 import com.example.platepal.data.DummyRepository
 import com.example.platepal.data.RecipeMeta
 import com.example.platepal.data.SpoonacularRecipe
@@ -49,36 +49,30 @@ class MainViewModel : ViewModel() {
     private val spoonacularRecipeRepository = SpoonacularRecipeRepository(spoonacularApi)
     private val storage = Storage()
 
-    // Maintain a list of all Recipe items
-    private var recipeList = MutableLiveData<List<RecipeMeta>>()
-
-    //title of the fragment
-    private var title = MutableLiveData<String>()
-
-    //title of the fragment
-    private var randomSpotlightRecipe = MutableLiveData<RecipeMeta>()
-
-    // Photo Metadata
-    var pictureNameByUser = "" // String provided by the user
-    private var pictureUUID = ""
-
-
-    fun observeRecipeList(): LiveData<List<RecipeMeta>> {
-        return recipeList
+    private var initFavList = MutableLiveData<Boolean>().apply {
+        this.value = false
     }
 
+    // Maintain a list of all Recipe items
+    private var recipeList = MediatorLiveData<List<RecipeMeta>>().apply {
+        addSource(initFavList) {
+            if (it) {
+                fetchReposRecipeList {
+                    Log.d(TAG, "Initial Recipe List fetched after favlist")
+                }
+            }
+        }
+    }
+
+    private var title = MutableLiveData<String>()  // fragment title
+    private var randomSpotlightRecipe = MutableLiveData<RecipeMeta>()
+
+    // Getter
     fun getRecipeList(): List<RecipeMeta> {
         return recipeList.value ?: emptyList()
     }
 
-    fun observeRandomSpotlightRecipe(): LiveData<RecipeMeta> {
-        return randomSpotlightRecipe
-    }
-
-    fun observeTitle(): LiveData<String> {
-        return title
-    }
-
+    // Setter
     fun setRandomRecipe() {
         Log.d(TAG, "Setting random recipe...")
         val recipes = recipeList.value
@@ -92,11 +86,28 @@ class MainViewModel : ViewModel() {
         }
     }
 
+    fun setInitFavList(flag: Boolean) {
+        initFavList.value = flag
+    }
+
     fun setTitle(newTitle: String) {
         title.value = newTitle
     }
 
-    // Public helper functions
+    // Observers
+    fun observeRecipeList(): LiveData<List<RecipeMeta>> {
+        return recipeList
+    }
+
+    fun observeRandomSpotlightRecipe(): LiveData<RecipeMeta> {
+        return randomSpotlightRecipe
+    }
+
+    fun observeTitle(): LiveData<String> {
+        return title
+    }
+
+    // Public functions
     fun fetchRecipePhoto(image: String, createdBy: String, imageView: ImageView) {
         if (createdBy == MainActivity.SPOONACULAR_API_NAME) {
             Glide.glideFetch(image, image, imageView)
@@ -217,9 +228,4 @@ class MainViewModel : ViewModel() {
             createdBy
         )
     }
-
-    fun takePictureUUID(uuid: String) {
-        pictureUUID = uuid
-    }
-
 }
