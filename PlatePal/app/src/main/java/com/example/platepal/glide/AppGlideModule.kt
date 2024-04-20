@@ -96,5 +96,4 @@ object Glide {
             .override(width, height)
             .into(imageView)
     }
-
 }

@@ -1,6 +1,7 @@
 package com.example.platepal.ui
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -9,16 +10,50 @@ import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.platepal.MainActivity
 import com.example.platepal.data.RecipeMeta
 import com.example.platepal.databinding.SearchFragmentBinding
 import com.example.platepal.ui.viewmodel.MainViewModel
+import com.example.platepal.ui.viewmodel.OnePostViewModel
 import com.example.platepal.ui.viewmodel.UserViewModel
 
 class SearchFragment : Fragment() {
-    private val viewModel: MainViewModel by activityViewModels()
-    private val userViewModel: UserViewModel by activityViewModels()
+    companion object {
+        const val TAG = "SearchFragment"
+    }
+
     private var _binding: SearchFragmentBinding? = null
     private val binding get() = _binding!!
+    private val viewModel: MainViewModel by activityViewModels()
+    private val userViewModel: UserViewModel by activityViewModels()
+    private val onePostViewModel: OnePostViewModel by activityViewModels()
+
+    //search
+    private fun filterList(query: String?, adapter: RecipeAdapter, view: View) {
+        Log.d(TAG, "Enter filterList with query: $query")
+        var recipeList: List<RecipeMeta> = emptyList()
+        viewModel.observeRecipeList().observe(viewLifecycleOwner) {
+            recipeList = it
+        }
+
+        query?.let {
+            if (it.isNotEmpty()) {
+                val filteredList = mutableListOf<RecipeMeta>()
+                for (i in recipeList) {
+                    if (i.title.lowercase().contains(query)) {
+                        filteredList.add(i)
+                    }
+                }
+                if (filteredList.isEmpty()) {
+                    //Toast.makeText(activity, "No data found", Toast.LENGTH_SHORT).show()
+                    view.visibility = View.GONE // remove recycler view list
+                } else {
+                    view.visibility = View.VISIBLE  // put rv list back in
+                    adapter.submitList(filteredList)
+                }
+            }
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -34,8 +69,16 @@ class SearchFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         viewModel.setTitle("Search")
 
-        val adapter = RecipeAdapter(viewModel, userViewModel){
-            val action = SearchFragmentDirections.actionSearchToOnePost(it)
+        val fromAddress = requireArguments().getString("fromAddress")
+
+        val adapter = RecipeAdapter(viewModel, userViewModel) {
+            val action = if (fromAddress == MainActivity.SEARCH_FROM_ADDR_DISCOVER) {
+                SearchFragmentDirections.actionSearchToOneRecipe(it)
+            } else {
+                onePostViewModel.recipeMeta = it
+                SearchFragmentDirections.actionSearchToOnePost(MainActivity.ONEPOST_TRIGGER_SEARCH)
+            }
+
             findNavController().navigate(action)
         }
         binding.searchRv.adapter = adapter
@@ -50,7 +93,7 @@ class SearchFragment : Fragment() {
         }
 
         //search
-        binding.search.setOnQueryTextListener(object: SearchView.OnQueryTextListener{
+        binding.search.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 //hides keyboard when submitted a query
                 //but does not hide keybarod when submitting empty query
@@ -64,31 +107,7 @@ class SearchFragment : Fragment() {
             }
         })
 
-    }
 
-    //search
-    private fun filterList(query: String?, adapter: RecipeAdapter, view: View){
-
-        var recipeList: List<RecipeMeta> = emptyList()
-        viewModel.observeRecipeList().observe(viewLifecycleOwner) {
-            recipeList = it
-        }
-
-        if (query != null){
-            val filteredList =  mutableListOf<RecipeMeta>()
-            for (i in recipeList){
-                if (i.title.lowercase().contains(query)) {
-                    filteredList.add(i)
-                }
-            }
-            if (filteredList.isEmpty()){
-                //Toast.makeText(activity, "No data found", Toast.LENGTH_SHORT).show()
-                view.visibility = View.GONE // remove recycler view list
-            } else {
-                view.visibility = View.VISIBLE  // put rv list back in
-                adapter.submitList(filteredList)
-            }
-        }
     }
 
     override fun onDestroyView() {

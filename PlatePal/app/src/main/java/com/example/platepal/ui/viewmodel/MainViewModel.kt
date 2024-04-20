@@ -12,6 +12,8 @@ import com.example.platepal.camera.TakePictureWrapper
 import com.example.platepal.data.DummyRepository
 import com.example.platepal.data.RecipeMeta
 import com.example.platepal.data.SpoonacularRecipe
+import com.example.platepal.data.StorageDirectory
+import com.example.platepal.repository.AppDBHelper
 import com.example.platepal.repository.RecipesDBHelper
 import com.example.platepal.repository.SpoonacularRecipeRepository
 import com.example.platepal.repository.Storage
@@ -20,16 +22,28 @@ import edu.cs371m.reddit.glide.Glide
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.time.Duration
-import java.time.Instant
 
-private const val TAG = "MainViewModel"
+class MainViewModel : ViewModel() {
+    companion object {
+        const val TAG = "MainViewModel"
+    }
 
-class MainViewModel: ViewModel() {
     // DBHelpers
     private val recipesDBHelper = RecipesDBHelper()
+    private val appDBHelper = AppDBHelper()
 
     // API Interfaces
     private val spoonacularApi = SpoonacularApi.create()
+    private var lastSpoonacularSearchApiCall: Timestamp? = null
+    private var appMetaDocumentId: String = "".apply {
+        appDBHelper.getAppMeta {
+            appMetaDocumentId = it.firestoreId
+            lastSpoonacularSearchApiCall = Timestamp(
+                it.lastSpoonacularSearchApiCallTimestampSec,
+                it.lastSpoonacularSearchApiCallTimestampNanosec
+            )
+        }
+    }
 
     // Repositories
     private val spoonacularRecipeRepository = SpoonacularRecipeRepository(spoonacularApi)
@@ -72,7 +86,7 @@ class MainViewModel: ViewModel() {
         val recipesSize = recipes?.size ?: 0
         recipes?.let {
             if (recipesSize > 0) {
-                val rand = (0..< recipesSize).random()
+                val rand = (0..<recipesSize).random()
                 randomSpotlightRecipe.value = recipes[rand]
             }
         }
@@ -87,19 +101,41 @@ class MainViewModel: ViewModel() {
         if (createdBy == MainActivity.SPOONACULAR_API_NAME) {
             Glide.glideFetch(image, image, imageView)
         } else {
-            Glide.fetchFromStorage(storage.uuid2StorageReference(image), imageView)
+            Glide.fetchFromStorage(
+                storage.uuid2StorageReference(image, StorageDirectory.RECIPE),
+                imageView
+            )
         }
     }
 
-    fun fetchReposRecipeList(resultListener:() -> Unit) {
+    fun fetchReposRecipeList(resultListener: () -> Unit) {
         recipesDBHelper.getRecipes {
-            if(it.isEmpty()) {
+            if (it.isEmpty()) {
                 viewModelScope.launch(Dispatchers.IO) {
-                    val spoonacularRecipes = if(MainActivity.globalDebug) {
+                    val spoonacularRecipes = if (MainActivity.globalDebug) {
                         DummyRepository().fetchData() // Used for testing
                     } else {
                         Log.d(TAG, "Get recipes from Spoonacular")
                         spoonacularRecipeRepository.getRecipes()
+                    }
+
+                    if (!MainActivity.globalDebug) {
+                        val nowTimestamp = Timestamp.now()
+                        val nowTimestampSec = nowTimestamp.seconds
+                        val nowTimestampNanosec = nowTimestamp.nanoseconds
+
+                        val updateAppMeta = hashMapOf(
+                            "lastSpoonacularSearchApiCallTimestampSec" to nowTimestampSec,
+                            "lastSpoonacularSearchApiCallTimestampNanosec" to nowTimestampNanosec
+                        )
+                        appDBHelper.updateDocument(
+                            appMetaDocumentId,
+                            updateAppMeta as Map<String, kotlin.Any>
+                        ) {
+                            Log.d(
+                                TAG, "Set last call time for Spoonacular Search API"
+                            )
+                        }
                     }
 
                     val recipeMetas = List(spoonacularRecipes.size) { index ->
@@ -118,28 +154,46 @@ class MainViewModel: ViewModel() {
                 Log.d(TAG, "Most Recent Recipe: $mostRecentRecipe")
                 val nowTimestampSeconds = Timestamp.now().seconds
                 val dayDuration = Duration.ofDays(1).seconds
-                val minStaleTimestamp = nowTimestampSeconds - dayDuration
+                val minRecipeStaleTimestamp = nowTimestampSeconds - dayDuration
                 Log.d(
                     TAG,
-                    "recentDuration: ${mostRecentRecipe.timeStamp?.seconds}, minStaleDuration: $minStaleTimestamp"
+                    "recentDuration: ${mostRecentRecipe.timeStamp?.seconds}, minStaleDuration: $minRecipeStaleTimestamp"
                 )
-                if(minStaleTimestamp > mostRecentRecipe.timeStamp!!.seconds) {
-                    viewModelScope.launch(Dispatchers.IO) {
-                        val spoonacularRecipes = if(MainActivity.globalDebug) {
-                            DummyRepository().secondFetchData() // Used for testing
-                        } else {
-                            Log.d(TAG, "Recipes are more than a day created.  Check Spoonacular for changes...")
-                            spoonacularRecipeRepository.getRecipes()
-                        }
 
-                        val recipeMetas = List(spoonacularRecipes.size) { index ->
-                            convertSpoonacularRecipeToRecipeMeta(spoonacularRecipes[index])
-                        }
-                        val newRecipes = (recipeMetas.toSet() - it.toSet()).toList()
-                        if(newRecipes.isNotEmpty()) {
-                            Log.d(TAG, "New recipes received from Spoonacular: $newRecipes")
-                            recipesDBHelper.batchCreateDocuments(newRecipes) {
-                                fetchReposRecipeList(resultListener)
+                lastSpoonacularSearchApiCall?.let { lastCallTS ->
+                    val minCallStaleTimestamp = lastCallTS.seconds + dayDuration
+                    if (minRecipeStaleTimestamp > mostRecentRecipe.timeStamp!!.seconds && Timestamp.now().seconds > minCallStaleTimestamp) {
+                        viewModelScope.launch(Dispatchers.IO) {
+                            val spoonacularRecipes = if (MainActivity.globalDebug) {
+                                DummyRepository().secondFetchData() // Used for testing
+                            } else {
+                                //Log.d(TAG, "Recipes are more than a day created.  Check Spoonacular for changes...")
+                                Log.d(
+                                    TAG,
+                                    "Recipes are more than 99 calls stale.  Check Spoonacular for changes..."
+                                )
+                                spoonacularRecipeRepository.getRecipes()
+                            }
+
+                            val recipeMetas = List(spoonacularRecipes.size) { index ->
+                                convertSpoonacularRecipeToRecipeMeta(spoonacularRecipes[index])
+                            }
+                            val newRecipes = (recipeMetas.toSet() - it.toSet()).toList()
+                            if (newRecipes.isNotEmpty()) {
+                                Log.d(TAG, "New recipes received from Spoonacular: $newRecipes")
+                                recipesDBHelper.batchCreateDocuments(newRecipes) {
+                                    fetchReposRecipeList(resultListener)
+                                }
+                            }
+
+                            val updateAppMeta = hashMapOf(
+                                "spoonacularSearchRecipeApiCallCount" to 0
+                            )
+                            appDBHelper.updateDocument(
+                                appMetaDocumentId,
+                                updateAppMeta as Map<String, kotlin.Any>
+                            ) {
+                                Log.d(TAG, "spoonacularSearchRecipeApiCallCount reset to: 0")
                             }
                         }
                     }

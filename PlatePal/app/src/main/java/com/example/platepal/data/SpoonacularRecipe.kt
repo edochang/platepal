@@ -14,8 +14,7 @@ data class SpoonacularRecipe(
     val title: String,
     @Json(name="image")
     val image: String,
-    @Json(name="i" +
-            "mageType")
+    @Json(name="imageType")
     val imageType: String
 ): Serializable {
     override fun equals(other: Any?) : Boolean =

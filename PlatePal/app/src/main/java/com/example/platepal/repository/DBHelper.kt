@@ -4,11 +4,13 @@ import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 
-private const val TAG = "DBHelper"
-
-abstract class DBHelper<Any : kotlin.Any> (
-        protected val rootCollection: String
+abstract class DBHelper<Any : kotlin.Any>(
+    protected val rootCollection: String
 ) {
+    companion object {
+        const val TAG = "DBHelper"
+    }
+
     protected val db: FirebaseFirestore = FirebaseFirestore.getInstance()
 
     open val limit: Long = 100L
@@ -54,7 +56,7 @@ abstract class DBHelper<Any : kotlin.Any> (
 
     open fun createDocument(
         meta: Any,
-        resultListener: (id: String)->Unit
+        resultListener: (id: String) -> Unit
     ) {
         db.collection(rootCollection)
             .add(meta)
@@ -80,7 +82,7 @@ abstract class DBHelper<Any : kotlin.Any> (
 
     open fun removeDocument(
         documentId: String,
-        resultListener: (List<Class<Any>>)->Unit
+        resultListener: (List<Class<Any>>) -> Unit
     ) {
         db.collection(rootCollection).document(documentId)
             .delete()
@@ -106,8 +108,7 @@ abstract class DBHelper<Any : kotlin.Any> (
                 Log.d(TAG, "Batch documents successfully created.")
                 resultListener.invoke()
             }
-            .addOnFailureListener {
-                e ->
+            .addOnFailureListener { e ->
                 Log.w(TAG, "Error batch documents failed to be created.", e)
             }
     }

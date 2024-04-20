@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.navArgs
 import com.example.platepal.MainActivity
@@ -18,9 +19,10 @@ import com.example.platepal.ui.viewmodel.OneRecipeViewModel
 import com.example.platepal.ui.viewmodel.UserViewModel
 import com.google.android.material.tabs.TabLayoutMediator
 
-private const val TAG = "OneRecipeFragment"
-
 class OneRecipeFragment : Fragment() {
+    companion object {
+        const val TAG = "OneRecipeFragment"
+    }
 
     private var _binding: OneRecipeFragmentBinding? = null
     private val binding get() = _binding!!
@@ -28,14 +30,12 @@ class OneRecipeFragment : Fragment() {
     private val oneRecipeViewModel: OneRecipeViewModel by activityViewModels()
     private val userViewModel: UserViewModel by activityViewModels()
     private val args: OneRecipeFragmentArgs by navArgs()
-    private lateinit var mainActivity: MainActivity
 
     private fun getRecipeInfo() {
-        mainActivity.progressBarOn()
-        Log.d(TAG, "Retrieving recipe info from Repo...")
+        Log.d(TAG, "Turned on progress bar and retrieving recipe info from Repo...")
         oneRecipeViewModel.fetchReposRecipeInfo {
             Log.d(TAG, "Recipe info retrieval listener invoked.")
-            // mainActivity.progressBarOff() // Note: This is done on the observer below.
+            // Note: Turning off the progress bar will be done in the Ingredient fragment.
         }
     }
 
@@ -74,15 +74,33 @@ class OneRecipeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         //Log.d(javaClass.simpleName, "onViewCreated")
         super.onViewCreated(view, savedInstanceState)
-        mainActivity = (requireActivity() as MainActivity)
-
         viewModel.setTitle("Recipe")
+
+        val mainActivity = (requireActivity() as MainActivity)
         val recipe = args.recipe
 
-        oneRecipeViewModel.setRecipe(recipe)
-        oneRecipeViewModel.setRecipeSourceId(recipe.sourceId)
+        oneRecipeViewModel.fetchDone.observe(viewLifecycleOwner) {
+            Log.d(TAG, "Observer fetchDone: ${oneRecipeViewModel.fetchDone.value}")
+            if (it) {
+                mainActivity.progressBarOff()
+            }
+        }
 
-        getRecipeInfo()
+        oneRecipeViewModel.fetchDone.value = false
+        Log.d(TAG, "set fetchDone false (value: ${oneRecipeViewModel.fetchDone.value})")
+        mainActivity.progressBarOn()
+
+        if (recipe.sourceId != oneRecipeViewModel.getRecipeSourceId()) {
+            oneRecipeViewModel.setRecipe(recipe)
+            oneRecipeViewModel.setRecipeSourceId(recipe.sourceId)
+            getRecipeInfo()
+        } else {
+            Log.d(
+                TAG, "Navigated from recipe creation or revisited the same recipe.  " +
+                        "No need to fetch Recipe Info."
+            )
+            oneRecipeViewModel.fetchDone.value = true
+        }
 
         // Set main information
         binding.oneRecipeTitle.text = recipe.title
@@ -91,7 +109,8 @@ class OneRecipeFragment : Fragment() {
         // Favorites
         setupFavorites(recipe)
 
-        val fragmentsList = arrayListOf(OneRecipeIngredients(), OneRecipeDirections(), OneRecipeNotes())
+        val fragmentsList =
+            arrayListOf(OneRecipeIngredients(), OneRecipeDirections(), OneRecipeNotes())
 
         binding.apply {
             viewPager.adapter = ViewPagerAdapter(
@@ -108,11 +127,6 @@ class OneRecipeFragment : Fragment() {
                 }
             }.attach()
         }
-
-        oneRecipeViewModel.observeRecipeInfo().observe(viewLifecycleOwner) {
-            mainActivity.progressBarOff()
-        }
-
     }
 
     override fun onDestroyView() {

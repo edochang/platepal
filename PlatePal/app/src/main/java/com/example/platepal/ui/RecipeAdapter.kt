@@ -15,19 +15,23 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import edu.cs371m.reddit.glide.Glide
 
-private const val TAG = "RecipeAdapter"
-class RecipeAdapter(private val viewModel: MainViewModel,
-                    private val userViewModel: UserViewModel,
-                    private val navigateToOneRecipe: (RecipeMeta)->Unit)
-    : ListAdapter<RecipeMeta, RecipeAdapter.VH>(RecipeDiff())
-{
+class RecipeAdapter(
+    private val viewModel: MainViewModel,
+    private val userViewModel: UserViewModel,
+    private val navigateToOneRecipe: (RecipeMeta) -> Unit
+) : ListAdapter<RecipeMeta, RecipeAdapter.VH>(RecipeDiff()) {
+    companion object {
+        const val TAG = "RecipeAdapter"
+    }
 
-    inner class VH(val recipeCardBinding: RecipeCardBinding)
-        : RecyclerView.ViewHolder(recipeCardBinding.root)
+    inner class VH(val recipeCardBinding: RecipeCardBinding) :
+        RecyclerView.ViewHolder(recipeCardBinding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
-        val cardBinding = RecipeCardBinding.inflate(LayoutInflater.from(parent.context),
-            parent, false)
+        val cardBinding = RecipeCardBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent, false
+        )
 
         return VH(cardBinding)
     }
@@ -50,21 +54,21 @@ class RecipeAdapter(private val viewModel: MainViewModel,
          */
 
 
-        userViewModel.isFavoriteRecipe(item)?.let{
+        userViewModel.isFavoriteRecipe(item)?.let {
             if (it) cardBinding.heart.setImageResource(R.drawable.ic_heart_filled)
             else cardBinding.heart.setImageResource(R.drawable.ic_heart_empty)
             //Log.d(TAG, "set favorite icon")
         }
 
-        cardBinding.heart.setOnClickListener{
+        cardBinding.heart.setOnClickListener {
             //Log.d(javaClass.simpleName, "heart clicklistener")
-            userViewModel.isFavoriteRecipe(item)?.let{
-                if(it){
+            userViewModel.isFavoriteRecipe(item)?.let {
+                if (it) {
                     userViewModel.setFavoriteRecipe(item, false)
                     //userViewModel.removeFavRecipe(item)
                     cardBinding.heart.setImageResource(R.drawable.ic_heart_empty)
                     //Log.d(javaClass.simpleName, "set heart to empty")
-                } else{
+                } else {
                     userViewModel.setFavoriteRecipe(item, true)
                     //userViewModel.addFavRecipe(item)
                     cardBinding.heart.setImageResource(R.drawable.ic_heart_filled)
@@ -80,13 +84,13 @@ class RecipeAdapter(private val viewModel: MainViewModel,
     }
 
 
-
-    class RecipeDiff: DiffUtil.ItemCallback<RecipeMeta>() {
+    class RecipeDiff : DiffUtil.ItemCallback<RecipeMeta>() {
         // Item identity
         override fun areItemsTheSame(oldItem: RecipeMeta, newItem: RecipeMeta): Boolean {
             Log.d("RecipeDiff", "areItemsTheSame triggered")
             return oldItem.hashCode() == newItem.hashCode()
         }
+
         // Item contents are the same, but the object might have changed
         override fun areContentsTheSame(oldItem: RecipeMeta, newItem: RecipeMeta): Boolean {
             Log.d("RecipeDiff", "areContentsTheSame triggered")
