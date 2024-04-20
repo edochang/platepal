@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.activityViewModels
 import com.example.platepal.MainActivity
@@ -57,6 +58,7 @@ class ProfileFragment : Fragment() {
                 userViewModel.setProfilePhotoUUID(it.nameWithoutExtension)
             } ?: userViewModel.pictureReset()
             Log.d(TAG, "camera click failure - pic reset")
+            Log.d(TAG, "camera click failure - pic reset, current UUID: $")
         }
     }
 
@@ -106,11 +108,12 @@ class ProfileFragment : Fragment() {
                             userViewModel.fetchLocalProfilePhoto(
                                 binding.profileImage
                             )
-                            Log.d(
-                                TAG,
-                                "First profile bind: from local file: ${userViewModel.getProfilePhotoUUID()}"
-                            )
-                        } else if (doc.get("pictureUUID")?.toString()?.isNotEmpty() == true) {
+                            Log.d(TAG, "First profile bind: from local file: ${userViewModel.getProfilePhotoUUID()}")
+                        }else if(doc.get("pictureUUID")?.toString()?.isNotEmpty() == true){
+                            // first add the pictureUUID to UUID list
+                            userViewModel.setPreviousUUID(doc.get("pictureUUID")?.toString()!!)
+
+                            //fetch from storage & display
                             userViewModel.fetchProfilePhoto(
                                 doc.get("pictureUUID")?.toString()!!,
                                 binding.profileImage
@@ -132,16 +135,20 @@ class ProfileFragment : Fragment() {
         }
 
         binding.editPicture.setOnClickListener {
-            //try coroutine
             TakePictureWrapper.takeProfilePicture(mainActivity, userViewModel, cameraLauncher)
         }
 
 
         binding.savePicture.setOnClickListener {
-            //upload to storage
             Log.d(TAG, "Current pictureFILE: ${userViewModel.getProfilePhotoFile()}")
             Log.d(TAG, "Current pictureFILE: ${userViewModel.getProfilePhotoUUID()}")
-
+            //first delete the previous profile pic from storage, if there is one
+            if(userViewModel.getPreviousUUID().isNotEmpty()){
+                userViewModel.deletePreviousProfile(userViewModel.getPreviousUUID())
+            }
+            //then save the current uuid
+            userViewModel.setPreviousUUID(userViewModel.getProfilePhotoUUID())
+            //upload current profile to storage
             userViewModel.profilePhotoSuccess()
             val data = hashMapOf<String, Any>("pictureUUID" to userViewModel.getProfilePhotoUUID())
             val query = db.collection("Users").whereEqualTo("uid", userID)
@@ -162,11 +169,13 @@ class ProfileFragment : Fragment() {
                     }
                 }
             }
+            Toast.makeText(context, "Profile picture saved", Toast.LENGTH_SHORT).show()
             removeListener = true
         }
 
         binding.profileLogout.setOnClickListener {
             userViewModel.pictureReset()
+            userViewModel.setPreviousUUID("")
             Log.d(TAG, "picture reset")
             mainActivity.logout()
         }
