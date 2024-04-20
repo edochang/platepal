@@ -17,6 +17,9 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.onNavDestinationSelected
 import androidx.navigation.ui.setupWithNavController
 import com.example.platepal.ui.viewmodel.MainViewModel
+import com.google.firebase.auth.FirebaseAuth
+import android.content.Intent
+import com.example.platepal.ui.viewmodel.UserViewModel
 import com.google.android.material.snackbar.Snackbar
 
 private const val TAG = "MainActivity"
@@ -49,6 +52,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var appBarConfiguration: AppBarConfiguration
 
     private val viewModel: MainViewModel by viewModels()
+    private val userViewModel: UserViewModel by viewModels()
 
     fun progressBarOn() {
         binding.indeterminateBar.visibility = View.VISIBLE
@@ -120,13 +124,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun initRecipeList() {
-        Log.d(TAG, "Retrieving recipes from Repo...")
+        //Log.d(TAG, "Retrieving recipes from Repo...")
         progressBarOn()
         viewModel.fetchReposRecipeList {
-            Log.d(TAG, "Recipes retrieval listener invoked.")
+            //Log.d(TAG, "Recipes retrieval listener invoked.")
             progressBarOff()
         }
     }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -140,6 +145,11 @@ class MainActivity : AppCompatActivity() {
 
         // Retrieve Recipes
         initRecipeList()
+
+        //fetch initial favorite recipe list for user
+        userViewModel.fetchInitialFavRecipes{
+            //Log.d(TAG, "favorite recipe list listener invoked")
+        }
 
         //observe top bar title
         initTitleObservers()
@@ -173,6 +183,14 @@ class MainActivity : AppCompatActivity() {
                 binding.navView.visibility = View.VISIBLE
             }
         }
+    }
+
+    //log out current user, go back to sign in page
+    fun logout(){
+        FirebaseAuth.getInstance().signOut()
+        val intent = Intent(this, SignInActivity::class.java)
+        startActivity(intent)
+        finish()
     }
 
     // navigateUp:

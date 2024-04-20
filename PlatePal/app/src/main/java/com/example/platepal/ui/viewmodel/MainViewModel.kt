@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.platepal.MainActivity
 import com.example.platepal.api.SpoonacularApi
+import com.example.platepal.camera.TakePictureWrapper
 import com.example.platepal.data.DummyRepository
 import com.example.platepal.data.RecipeMeta
 import com.example.platepal.data.SpoonacularRecipe
@@ -54,14 +55,10 @@ class MainViewModel: ViewModel() {
     //title of the fragment
     private var randomSpotlightRecipe = MutableLiveData<RecipeMeta>()
 
-    //favorite (cookbook)
-    private val favList = MutableLiveData<List<RecipeMeta>>().apply{
-        postValue(mutableListOf())
-    }
-
     // Photo Metadata
     var pictureNameByUser = "" // String provided by the user
     private var pictureUUID = ""
+
 
     fun observeRecipeList(): LiveData<List<RecipeMeta>> {
         return recipeList
@@ -71,45 +68,12 @@ class MainViewModel: ViewModel() {
         return recipeList.value ?: emptyList()
     }
 
-    // Getters
-    fun getFavList(): MutableList<RecipeMeta>? {
-        return favList.value?.toMutableList()
-    }
-
-    // Observers
-    fun observeFavListLive(): LiveData<List<RecipeMeta>> {
-        return favList
-    }
-
     fun observeRandomSpotlightRecipe(): LiveData<RecipeMeta> {
         return randomSpotlightRecipe
     }
 
     fun observeTitle(): LiveData<String> {
         return title
-    }
-
-    // Setters
-    fun setFavoriteRecipe(recipe: RecipeMeta, isFavorite: Boolean){
-        if (isFavorite){
-            //add favorite recipe
-            favList.apply{
-                this.value?.let{
-                    val tempFavList = it.toMutableList()
-                    tempFavList.add(recipe)
-                    this.value = tempFavList
-                }
-            }
-        } else {
-            //remove favorite recipe
-            favList.apply{
-                this.value?.let{
-                    val tempFavList = it.toMutableList()
-                    tempFavList.remove(recipe)
-                    this.value = tempFavList
-                }
-            }
-        }
     }
 
     fun setRandomRecipe() {
@@ -234,10 +198,6 @@ class MainViewModel: ViewModel() {
         }
     }
 
-    fun isFavoriteRecipe(recipe: RecipeMeta): Boolean? {
-        return favList.value?.contains(recipe)
-    }
-
     // Private helper functions
     private fun convertSpoonacularRecipeToRecipeMeta(spoonacularRecipe: SpoonacularRecipe): RecipeMeta {
         val createdBy = MainActivity.SPOONACULAR_API_NAME
@@ -254,4 +214,5 @@ class MainViewModel: ViewModel() {
     fun takePictureUUID(uuid: String) {
         pictureUUID = uuid
     }
+
 }

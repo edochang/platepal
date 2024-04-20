@@ -101,23 +101,6 @@
         android:label="Inbox"
         tools:layout="@layout/inbox_fragment" />
 
-    <fragment
-        android:id="@+id/registerFragment"
-        android:name="com.example.platepal.ui.ProfileFragment"
-        android:label="Profile"
-        tools:layout="@layout/register_fragment" />
-
-    <fragment
-        android:id="@+id/logInFragment"
-        android:name="com.example.platepal.ui.ProfileFragment"
-        android:label="Profile"
-        tools:layout="@layout/log_in_fragment" />
-
-    <fragment
-        android:id="@+id/newPasswordFragment"
-        android:name="com.example.platepal.ui.ProfileFragment"
-        android:label="Profile"
-        tools:layout="@layout/new_password_fragment" />
 
     <!-- Search Fragment -->
     <fragment
@@ -189,4 +172,5 @@
     </fragment>
 
     <!-- Global Actions -->
+
 </navigation>

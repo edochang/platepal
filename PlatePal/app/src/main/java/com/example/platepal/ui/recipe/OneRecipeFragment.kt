@@ -16,6 +16,7 @@ import com.example.platepal.databinding.OneRecipeFragmentBinding
 import com.example.platepal.ui.viewmodel.MainViewModel
 import com.example.platepal.ui.ViewPagerAdapter
 import com.example.platepal.ui.viewmodel.OneRecipeViewModel
+import com.example.platepal.ui.viewmodel.UserViewModel
 import com.google.android.material.tabs.TabLayoutMediator
 
 private const val TAG = "OneRecipeFragment"
@@ -26,6 +27,7 @@ class OneRecipeFragment : Fragment() {
     private val binding get() = _binding!!
     private val viewModel: MainViewModel by activityViewModels()
     private val oneRecipeViewModel: OneRecipeViewModel by activityViewModels()
+    private val userViewModel: UserViewModel by activityViewModels()
     private val args: OneRecipeFragmentArgs by navArgs()
 
     private fun getRecipeInfo() {
@@ -37,20 +39,20 @@ class OneRecipeFragment : Fragment() {
     }
 
     private fun setupFavorites(recipe: RecipeMeta) {
-        viewModel.isFavoriteRecipe(recipe)?.let {
+        userViewModel.isFavoriteRecipe(recipe)?.let {
             if (it) binding.oneRecipeHeart.setImageResource(R.drawable.ic_heart_filled)
             else binding.oneRecipeHeart.setImageResource(R.drawable.ic_heart_empty)
         }
 
         binding.oneRecipeHeart.setOnClickListener {
             Log.d(javaClass.simpleName, "heart clicklistener")
-            viewModel.isFavoriteRecipe(recipe)?.let {
+            userViewModel.isFavoriteRecipe(recipe)?.let {
                 if (it) {
-                    viewModel.setFavoriteRecipe(recipe, false)
+                    userViewModel.setFavoriteRecipe(recipe, false)
                     binding.oneRecipeHeart.setImageResource(R.drawable.ic_heart_empty)
                     Log.d(javaClass.simpleName, "set heart to empty")
                 } else {
-                    viewModel.setFavoriteRecipe(recipe, true)
+                    userViewModel.setFavoriteRecipe(recipe, true)
                     binding.oneRecipeHeart.setImageResource(R.drawable.ic_heart_filled)
                     Log.d(javaClass.simpleName, "set heart to filled")
                 }

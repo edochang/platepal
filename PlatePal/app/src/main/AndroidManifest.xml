@@ -14,21 +14,28 @@
         android:roundIcon="@drawable/ic_pal"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
+        <activity
+            android:name=".RegisterActivity"
+            android:exported="false"/>
+
+        <activity
+            android:name=".SignInActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
         <!-- original android:theme="@style/Theme.PlatePal" -->
         <!-- reddit uses android:theme="@style/AppTheme.NoActionBar" -->
         <!-- doc uses android:theme="@style/Theme.AppCompat.Light.NoActionBar" -->
         <activity
             android:name=".MainActivity"
-            android:exported="true"
+            android:exported="false"
             android:windowSoftInputMode="adjustPan">
-
             <!-- Need to use an AppCompat theme.  Comment out -->
             <!-- android:theme="@style/Theme.PlatePal" -->
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
 
         <meta-data

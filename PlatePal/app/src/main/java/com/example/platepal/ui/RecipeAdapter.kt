@@ -10,9 +10,14 @@ import com.example.platepal.R
 import com.example.platepal.data.RecipeMeta
 import com.example.platepal.databinding.RecipeCardBinding
 import com.example.platepal.ui.viewmodel.MainViewModel
+import com.example.platepal.ui.viewmodel.UserViewModel
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import edu.cs371m.reddit.glide.Glide
 
+private const val TAG = "RecipeAdapter"
 class RecipeAdapter(private val viewModel: MainViewModel,
+                    private val userViewModel: UserViewModel,
                     private val navigateToOneRecipe: (RecipeMeta)->Unit)
     : ListAdapter<RecipeMeta, RecipeAdapter.VH>(RecipeDiff())
 {
@@ -23,6 +28,7 @@ class RecipeAdapter(private val viewModel: MainViewModel,
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
         val cardBinding = RecipeCardBinding.inflate(LayoutInflater.from(parent.context),
             parent, false)
+
         return VH(cardBinding)
     }
 
@@ -33,23 +39,34 @@ class RecipeAdapter(private val viewModel: MainViewModel,
         //bind the post title & likes and comment counts
         cardBinding.recipeTitle.text = item.title
         viewModel.fetchRecipePhoto(item.image, item.createdBy, cardBinding.recipeImage)
-        Log.d(javaClass.simpleName, "onBindViewHolder")
+        //Log.d(javaClass.simpleName, "onBindViewHolder")
 
-        //favorites for discover RV
-        viewModel.isFavoriteRecipe(item)?.let{
+        /*
+        userViewModel.fetchInitialFavRecipes{
+            notifyItemChanged(position)
+            Log.d(TAG, "favorite recipe list listener invoked")
+        }
+
+         */
+
+
+        userViewModel.isFavoriteRecipe(item)?.let{
             if (it) cardBinding.heart.setImageResource(R.drawable.ic_heart_filled)
             else cardBinding.heart.setImageResource(R.drawable.ic_heart_empty)
+            //Log.d(TAG, "set favorite icon")
         }
 
         cardBinding.heart.setOnClickListener{
             //Log.d(javaClass.simpleName, "heart clicklistener")
-            viewModel.isFavoriteRecipe(item)?.let{
+            userViewModel.isFavoriteRecipe(item)?.let{
                 if(it){
-                    viewModel.setFavoriteRecipe(item, false)
+                    userViewModel.setFavoriteRecipe(item, false)
+                    //userViewModel.removeFavRecipe(item)
                     cardBinding.heart.setImageResource(R.drawable.ic_heart_empty)
                     //Log.d(javaClass.simpleName, "set heart to empty")
                 } else{
-                    viewModel.setFavoriteRecipe(item, true)
+                    userViewModel.setFavoriteRecipe(item, true)
+                    //userViewModel.addFavRecipe(item)
                     cardBinding.heart.setImageResource(R.drawable.ic_heart_filled)
                     //Log.d(javaClass.simpleName, "set heart to filled")
                 }

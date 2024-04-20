@@ -15,13 +15,17 @@ import com.example.platepal.data.RecipeMeta
 import com.example.platepal.databinding.SearchFragmentBinding
 import com.example.platepal.ui.viewmodel.MainViewModel
 import com.example.platepal.ui.viewmodel.OnePostViewModel
+import com.example.platepal.ui.viewmodel.UserViewModel
 
 private const val TAG = "SearchFragment"
 
+
 class SearchFragment : Fragment() {
+    private val viewModel: MainViewModel by activityViewModels()
     private var _binding: SearchFragmentBinding? = null
     private val binding get() = _binding!!
     private val viewModel: MainViewModel by activityViewModels()
+    private val userViewModel: UserViewModel by activityViewModels()
     private val onePostViewModel: OnePostViewModel by activityViewModels()
 
     //search
@@ -67,7 +71,7 @@ class SearchFragment : Fragment() {
 
         val fromAddress = requireArguments().getString("fromAddress")
 
-        val adapter = RecipeAdapter(viewModel){
+        val adapter = RecipeAdapter(viewModel, userViewModel){
             val action = if (fromAddress == MainActivity.SEARCH_FROM_ADDR_DISCOVER) {
                 SearchFragmentDirections.actionSearchToOneRecipe(it)
             } else {
