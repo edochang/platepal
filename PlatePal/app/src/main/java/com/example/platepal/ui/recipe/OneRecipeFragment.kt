@@ -71,11 +71,10 @@ class OneRecipeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         //Log.d(javaClass.simpleName, "onViewCreated")
         super.onViewCreated(view, savedInstanceState)
+        viewModel.setTitle("Recipe")
 
         val mainActivity = (requireActivity() as MainActivity)
-        oneRecipeViewModel.fetchDone.value = false
-        Log.d(TAG,"set fetchDone false (value: ${oneRecipeViewModel.fetchDone.value})")
-        mainActivity.progressBarOn()
+        val recipe = args.recipe
 
         oneRecipeViewModel.fetchDone.observe(viewLifecycleOwner) {
             Log.d(TAG,"Observer fetchDone: ${oneRecipeViewModel.fetchDone.value}")
@@ -84,8 +83,9 @@ class OneRecipeFragment : Fragment() {
             }
         }
 
-        viewModel.setTitle("Recipe")
-        val recipe = args.recipe
+        oneRecipeViewModel.fetchDone.value = false
+        Log.d(TAG,"set fetchDone false (value: ${oneRecipeViewModel.fetchDone.value})")
+        mainActivity.progressBarOn()
 
         if (recipe.sourceId != oneRecipeViewModel.getRecipeSourceId()) {
             oneRecipeViewModel.setRecipe(recipe)
@@ -94,7 +94,7 @@ class OneRecipeFragment : Fragment() {
         } else {
             Log.d(TAG, "Navigated from recipe creation or revisited the same recipe.  " +
                     "No need to fetch Recipe Info.")
-            mainActivity.progressBarOff()
+            oneRecipeViewModel.fetchDone.value = true
         }
 
         // Set main information
