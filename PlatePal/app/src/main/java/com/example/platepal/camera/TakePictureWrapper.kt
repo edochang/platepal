@@ -7,6 +7,7 @@ import android.util.Log
 import androidx.activity.result.ActivityResultLauncher
 import androidx.core.content.FileProvider
 import com.example.platepal.ui.viewmodel.OnePostViewModel
+import com.example.platepal.ui.viewmodel.OneRecipeViewModel
 import java.io.File
 import java.util.UUID
 
@@ -31,6 +32,22 @@ class TakePictureWrapper {
                         context: Context,
                         viewModel: OnePostViewModel,
                         takePictureLauncher : ActivityResultLauncher<Uri>
+        ) {
+            viewModel.pictureNameByUser = pictureName
+            val uuid = generateFileName()
+            viewModel.setPictureUUID(uuid)
+            val localPhotoFile = fileNameToFile(uuid)
+            val uri = FileProvider.getUriForFile(
+                context, context.applicationInfo.packageName, localPhotoFile)
+            Log.d(TAG, "photo uri $uri")
+            takePictureLauncher.launch(uri)
+        }
+
+        fun takePictureOneRecipe(
+            pictureName: String,
+            context: Context,
+            viewModel: OneRecipeViewModel,
+            takePictureLauncher : ActivityResultLauncher<Uri>
         ) {
             viewModel.pictureNameByUser = pictureName
             val uuid = generateFileName()
