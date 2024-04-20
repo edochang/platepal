@@ -39,7 +39,7 @@ class RecipeAdapter(private val viewModel: MainViewModel,
         //bind the post title & likes and comment counts
         cardBinding.recipeTitle.text = item.title
         viewModel.fetchRecipePhoto(item.image, item.createdBy, cardBinding.recipeImage)
-        Log.d(javaClass.simpleName, "onBindViewHolder")
+        //Log.d(javaClass.simpleName, "onBindViewHolder")
 
         /*
         userViewModel.fetchInitialFavRecipes{
@@ -53,7 +53,7 @@ class RecipeAdapter(private val viewModel: MainViewModel,
         userViewModel.isFavoriteRecipe(item)?.let{
             if (it) cardBinding.heart.setImageResource(R.drawable.ic_heart_filled)
             else cardBinding.heart.setImageResource(R.drawable.ic_heart_empty)
-            Log.d(TAG, "set favorite icon")
+            //Log.d(TAG, "set favorite icon")
         }
 
         cardBinding.heart.setOnClickListener{

@@ -57,8 +57,22 @@
             android:text="Edit Photo"
             />
 
+        <TextView
+            android:id="@+id/savePicture"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@android:color/transparent"
+            android:text="Save"
+            android:textColor="@color/orange"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:textSize="15sp"
+            />
+
 
     </LinearLayout>
+
 
     <TextView
         android:layout_width="wrap_content"

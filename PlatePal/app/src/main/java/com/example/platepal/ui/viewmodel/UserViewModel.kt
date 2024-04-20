@@ -61,6 +61,17 @@ class UserViewModel: ViewModel() {
         Log.d(TAG, "fetch LOCAL profile...bind using glide")
     }
 
+    fun pictureReplace() {
+        profilePhotoFile?.let {
+            if (it.delete()) {
+                Log.d(javaClass.simpleName, "Local file deleted for replacement.")
+                profilePhotoFile = null
+            } else {
+                Log.d(javaClass.simpleName, "Local file delete FAILED for replacement.")
+            }
+        }
+    }
+
     fun pictureReset() {
         profilePhotoUUID = ""
         profilePhotoFile?.let {
@@ -73,7 +84,7 @@ class UserViewModel: ViewModel() {
         }
     }
 
-    //old
+
     fun profilePhotoSuccess() {
         profilePhotoFile?.let{
             storage.uploadProfileImage(it, profilePhotoUUID) {
