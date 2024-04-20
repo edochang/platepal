@@ -32,7 +32,9 @@ class ProfileFragment : Fragment() {
     private val userViewModel: UserViewModel by activityViewModels()
     private lateinit var mainActivity: MainActivity
     private val db = FirebaseFirestore.getInstance()
-    private lateinit var listenerRegistration: ListenerRegistration
+    private lateinit var listenerRegistration1: ListenerRegistration
+    private lateinit var listenerRegistration2: ListenerRegistration
+    private var removeListener: Boolean = false
 
 
     private val cameraLauncher = registerForActivityResult(
@@ -85,7 +87,7 @@ class ProfileFragment : Fragment() {
 
         //filter query based on uid so there is only one document
         val docRef = db.collection("Users").whereEqualTo("uid", userID)
-        listenerRegistration = docRef.addSnapshotListener { value, error ->
+        listenerRegistration1 = docRef.addSnapshotListener { value, error ->
             //Log.d(TAG, "length of ref query result is ${value?.size()}")
             if (error != null){
                 Log.d(TAG, "snapshot listener failed: $error")
@@ -132,7 +134,7 @@ class ProfileFragment : Fragment() {
             userViewModel.profilePhotoSuccess()
             val data = hashMapOf<String, Any>("pictureUUID" to userViewModel.getProfilePhotoUUID())
             val query = db.collection("Users").whereEqualTo("uid", userID)
-            listenerRegistration = query.addSnapshotListener { value, error ->
+            listenerRegistration2 = query.addSnapshotListener { value, error ->
                 if (error != null){
                     Log.d(TAG, "snapshot listener failed: $error")
                     return@addSnapshotListener
@@ -141,20 +143,12 @@ class ProfileFragment : Fragment() {
                     for (doc in value){
                         //update newest picture reference in user meta
                         doc.reference.set(data, SetOptions.merge())
-                        Log.d(TAG, "Click listener: added newest pictureUUID in existing User meta")
+                        Log.d(TAG, "Click listener: added newest ${userViewModel.getProfilePhotoUUID()} in existing User meta")
                         break
                     }
                 }
             }
-            //userViewModel.profilePhotoSuccess()
-            //save data meta
-            /*
-            CoroutineScope(Dispatchers.IO).launch {
-                uploadPic(userID!!)
-            }
-
-             */
-
+            removeListener = true
         }
 
         binding.profileLogout.setOnClickListener{
@@ -164,37 +158,11 @@ class ProfileFragment : Fragment() {
         }
     }
 
-    /*
-    private suspend fun uploadPic(userID: String){
-        Log.d(TAG, "Suspend: starts")
-        userViewModel.profilePhotoSuccess()
-        Log.d(TAG, "Suspend: Finished uploading pic...or so I think")
-        withContext(Dispatchers.Main){
-            val data = hashMapOf<String, Any>("pictureUUID" to userViewModel.getProfilePhotoUUID())
-            val query = db.collection("Users").whereEqualTo("uid", userID)
-            listenerRegistration = query.addSnapshotListener { value, error ->
-                if (error != null){
-                    Log.d(TAG, "snapshot listener failed: $error")
-                    return@addSnapshotListener
-                }
-                if (value != null) {
-                    for (doc in value){
-                        //update newest picture reference in user meta
-                        doc.reference.set(data, SetOptions.merge())
-                        Log.d(TAG, "Click listener: added newest pictureUUID in existing User meta")
-                        break
-                    }
-                }
-            }
-            Log.d(TAG, "Suspend: withcontext: Coroutine update profile binding")
-        }
-    }
-
-     */
 
     override fun onDestroyView() {
         _binding = null
-        listenerRegistration.remove()
+        listenerRegistration1.remove()
+        if (removeListener) listenerRegistration2.remove()
         super.onDestroyView()
     }
 
