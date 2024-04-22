@@ -7,7 +7,6 @@ import java.io.Serializable
 /* The data class representing the Recipe data object provided by the Spoonacular Api:
     https://spoonacular.com/food-api/docs#Search-Recipes-Complex
  */
-
 data class SpoonacularRecipe(
     @Json(name="id")
     val id: Int,
@@ -15,8 +14,7 @@ data class SpoonacularRecipe(
     val title: String,
     @Json(name="image")
     val image: String,
-    @Json(name="i" +
-            "mageType")
+    @Json(name="imageType")
     val imageType: String
 ): Serializable {
     override fun equals(other: Any?) : Boolean =

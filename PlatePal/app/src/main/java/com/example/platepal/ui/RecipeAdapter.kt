@@ -9,20 +9,27 @@ import androidx.recyclerview.widget.DiffUtil
 import com.example.platepal.R
 import com.example.platepal.data.RecipeMeta
 import com.example.platepal.databinding.RecipeCardBinding
-import edu.cs371m.reddit.glide.Glide
+import com.example.platepal.ui.viewmodel.MainViewModel
+import com.example.platepal.ui.viewmodel.UserViewModel
 
+class RecipeAdapter(
+    private val viewModel: MainViewModel,
+    private val userViewModel: UserViewModel,
+    private val navigateToOneRecipe: (RecipeMeta) -> Unit
+) : ListAdapter<RecipeMeta, RecipeAdapter.VH>(RecipeDiff()) {
+    companion object {
+        const val TAG = "RecipeAdapter"
+    }
 
-class RecipeAdapter(private val viewModel: MainViewModel,
-                    private val navigateToOneRecipe: (RecipeMeta)->Unit)
-    : ListAdapter<RecipeMeta, RecipeAdapter.VH>(RecipeDiff())
-{
-
-    inner class VH(val recipeCardBinding: RecipeCardBinding)
-        : RecyclerView.ViewHolder(recipeCardBinding.root)
+    inner class VH(val recipeCardBinding: RecipeCardBinding) :
+        RecyclerView.ViewHolder(recipeCardBinding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
-        val cardBinding = RecipeCardBinding.inflate(LayoutInflater.from(parent.context),
-            parent, false)
+        val cardBinding = RecipeCardBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent, false
+        )
+
         return VH(cardBinding)
     }
 
@@ -32,44 +39,54 @@ class RecipeAdapter(private val viewModel: MainViewModel,
 
         //bind the post title & likes and comment counts
         cardBinding.recipeTitle.text = item.title
-        Glide.glideFetch(item.image, item.image, cardBinding.recipeImage)
-        Log.d(javaClass.simpleName, "onBindViewHolder")
+        viewModel.fetchRecipePhoto(item.image, item.createdBy, cardBinding.recipeImage)
+        //Log.d(javaClass.simpleName, "onBindViewHolder")
 
-        //favorites for discover RV
-        viewModel.isFavoriteRecipe(item)?.let{
-            if (it) cardBinding.heart.setImageResource(R.drawable.ic_heart_filled)
-            else cardBinding.heart.setImageResource(R.drawable.ic_heart_empty)
+        /*
+        userViewModel.fetchInitialFavRecipes{
+            notifyItemChanged(position)
+            Log.d(TAG, "favorite recipe list listener invoked")
         }
 
-        cardBinding.heart.setOnClickListener{
+         */
+
+        userViewModel.isFavoriteRecipe(item)?.let {
+            if (it) cardBinding.heart.setImageResource(R.drawable.ic_heart_filled)
+            else cardBinding.heart.setImageResource(R.drawable.ic_heart_empty)
+            //Log.d(TAG, "set favorite icon")
+        }
+
+        cardBinding.heart.setOnClickListener {
             //Log.d(javaClass.simpleName, "heart clicklistener")
-            viewModel.isFavoriteRecipe(item)?.let{
-                if(it){
-                    viewModel.setFavoriteRecipe(item, false)
+            userViewModel.isFavoriteRecipe(item)?.let {
+                if (it) {
+                    userViewModel.setFavoriteRecipe(item, false)
+                    //userViewModel.removeFavRecipe(item)
                     cardBinding.heart.setImageResource(R.drawable.ic_heart_empty)
                     //Log.d(javaClass.simpleName, "set heart to empty")
-                } else{
-                    viewModel.setFavoriteRecipe(item, true)
+                } else {
+                    userViewModel.setFavoriteRecipe(item, true)
+                    //userViewModel.addFavRecipe(item)
                     cardBinding.heart.setImageResource(R.drawable.ic_heart_filled)
                     //Log.d(javaClass.simpleName, "set heart to filled")
                 }
             }
         }
 
-        cardBinding.recipeImage.setOnClickListener {
+        cardBinding.root.setOnClickListener {
             navigateToOneRecipe(item)
         }
 
     }
 
 
-
-    class RecipeDiff: DiffUtil.ItemCallback<RecipeMeta>() {
+    class RecipeDiff : DiffUtil.ItemCallback<RecipeMeta>() {
         // Item identity
         override fun areItemsTheSame(oldItem: RecipeMeta, newItem: RecipeMeta): Boolean {
             Log.d("RecipeDiff", "areItemsTheSame triggered")
             return oldItem.hashCode() == newItem.hashCode()
         }
+
         // Item contents are the same, but the object might have changed
         override fun areContentsTheSame(oldItem: RecipeMeta, newItem: RecipeMeta): Boolean {
             Log.d("RecipeDiff", "areContentsTheSame triggered")

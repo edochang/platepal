@@ -4,11 +4,13 @@ import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 
-private const val TAG = "DBHelper"
-
-abstract class DBHelper<Any> (
-        protected val rootCollection: String
+abstract class DBHelper<Any : kotlin.Any>(
+    protected val rootCollection: String
 ) {
+    companion object {
+        const val TAG = "DBHelper"
+    }
+
     protected val db: FirebaseFirestore = FirebaseFirestore.getInstance()
 
     open val limit: Long = 100L
@@ -52,23 +54,36 @@ abstract class DBHelper<Any> (
             }
     }
 
-    open fun createDocuments(
-        meta: Class<Any>,
-        resultListener: (List<Any>)->Unit
+    open fun createDocument(
+        meta: Any,
+        resultListener: (id: String) -> Unit
     ) {
         db.collection(rootCollection)
             .add(meta)
             .addOnSuccessListener {
                 Log.d(TAG, "DocumentSnapshot successfully written with ID: ${it.id}")
+                resultListener(it.id)
             }
             .addOnFailureListener { e -> Log.w(TAG, "Error writing document.", e) }
     }
 
+    open fun updateDocument(
+        documentId: String,
+        data: Map<String, kotlin.Any>,
+        resultListener: () -> Unit
+    ) {
+        db.collection(rootCollection).document(documentId).update(data)
+            .addOnSuccessListener {
+                Log.d(TAG, "Document successfully updated with ID: $documentId")
+                resultListener()
+            }
+            .addOnFailureListener { e -> Log.w(TAG, "Error updating document ($documentId).", e) }
+    }
+
     open fun removeDocument(
         documentId: String,
-        resultListener: (List<Class<Any>>)->Unit
+        resultListener: (List<Class<Any>>) -> Unit
     ) {
-        // XXX Write me.  Make sure you delete the correct entry.  What uniquely identifies a photoMeta?
         db.collection(rootCollection).document(documentId)
             .delete()
             .addOnSuccessListener {
@@ -93,8 +108,7 @@ abstract class DBHelper<Any> (
                 Log.d(TAG, "Batch documents successfully created.")
                 resultListener.invoke()
             }
-            .addOnFailureListener {
-                e ->
+            .addOnFailureListener { e ->
                 Log.w(TAG, "Error batch documents failed to be created.", e)
             }
     }

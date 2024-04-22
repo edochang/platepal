@@ -1,50 +1,176 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/nav_graph"
-        app:startDestination="@id/discover">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/discoverFragment">
 
-    <include app:graph="@navigation/discover"/>
-    <include app:graph="@navigation/create"/>
-    <include app:graph="@navigation/cookbook"/>
-    <include app:graph="@navigation/community"/>
-
+    <!-- Main Fragments -->
     <fragment
-        android:id="@+id/searchFragment"
-        android:name="com.example.platepal.ui.SearchFragment"
-        android:label="Search" >
+        android:id="@+id/discoverFragment"
+        android:name="com.example.platepal.ui.DiscoverFragment"
+        android:label="Home"
+        tools:layout="@layout/discover_fragment">
 
         <action
-            android:id="@+id/action_search_to_one_post"
-            app:destination="@id/onePostFragment" >
+            android:id="@+id/action_discover_to_search"
+            app:destination="@id/searchFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"
+            app:popUpToInclusive="true" />
 
+        <action
+            android:id="@+id/action_discover_to_one_post"
+            app:destination="@id/oneRecipeFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"
+            app:popUpToInclusive="true">
+            <argument
+                android:name="recipe"
+                app:argType="com.example.platepal.data.RecipeMeta" />
         </action>
-
-
     </fragment>
 
+    <fragment
+        android:id="@+id/cookbookFragment"
+        android:name="com.example.platepal.ui.CookbookFragment"
+        android:label="Cookbook"
+        tools:layout="@layout/cookbook_fragment">
+        <action
+            android:id="@+id/action_cookbook_to_one_recipe"
+            app:destination="@id/oneRecipeFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"
+            app:popUpToInclusive="true">
+            <argument
+                android:name="recipe"
+                app:argType="com.example.platepal.data.RecipeMeta" />
+        </action>
+    </fragment>
+
+    <fragment
+        android:id="@+id/createRecipeFragment"
+        android:name="com.example.platepal.ui.create.CreateRecipeFragment"
+        android:label="Create"
+        tools:layout="@layout/create_recipe_fragment">
+        <action
+            android:id="@+id/action_create_recipe_to_one_recipe"
+            app:destination="@id/oneRecipeFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"
+            app:popUpToInclusive="true">
+            <argument
+                android:name="recipe"
+                app:argType="com.example.platepal.data.RecipeMeta" />
+        </action>
+    </fragment>
+
+    <fragment
+        android:id="@+id/communityFragment"
+        android:name="com.example.platepal.ui.community.CommunityFragment"
+        android:label="Community"
+        tools:layout="@layout/community_fragment">
+        <action
+            android:id="@+id/action_community_to_create_one_post"
+            app:destination="@id/createOnePostFragment"
+            app:enterAnim="@anim/fui_slide_in_right"
+            app:exitAnim="@anim/fui_slide_out_left"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <!-- User Fragment -->
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.example.platepal.ui.ProfileFragment"
-        android:label="Profile" >
-    </fragment>
+        android:label="Profile"
+        tools:layout="@layout/profile_fragment" />
 
     <fragment
         android:id="@+id/inboxFragment"
         android:name="com.example.platepal.ui.InboxFragment"
-        android:label="Inbox" >
+        android:label="Inbox"
+        tools:layout="@layout/inbox_fragment" />
+
+
+    <!-- Search Fragment -->
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="com.example.platepal.ui.SearchFragment"
+        android:label="Search"
+        tools:layout="@layout/search_fragment">
+        <argument
+            android:name="fromAddress"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_search_to_one_recipe"
+            app:destination="@id/oneRecipeFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"
+            app:popUpToInclusive="true">
+            <argument
+                android:name="recipe"
+                app:argType="com.example.platepal.data.RecipeMeta" />
+        </action>
+        <action
+            android:id="@+id/action_search_to_one_post"
+            app:destination="@id/createOnePostFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"
+            app:popUpTo="@id/createOnePostFragment"
+            app:popUpToInclusive="true">
+        </action>
     </fragment>
 
+    <!-- Recipe and Post Fragment -->
     <fragment
-        android:id="@+id/onePostFragment"
-        android:name="com.example.platepal.ui.onepost.OnePostFragment"
-        android:label="OnePost" >
-
+        android:id="@+id/oneRecipeFragment"
+        android:name="com.example.platepal.ui.recipe.OneRecipeFragment"
+        android:label="OneRecipe"
+        tools:layout="@layout/one_recipe_fragment">
         <argument
-            android:name="post"
+            android:name="recipe"
             app:argType="com.example.platepal.data.RecipeMeta" />
     </fragment>
+
+    <!-- Community Post Fragment -->
+    <fragment
+        android:id="@+id/createOnePostFragment"
+        android:name="com.example.platepal.ui.community.CreateOnePostFragment"
+        android:label="CreateOnePost"
+        tools:layout="@layout/community_create_fragment" >
+        <!--
+        <argument
+            android:name="recipe"
+            app:argType="com.example.platepal.data.RecipeMeta"
+            app:nullable="true" />
+            -->
+        <argument
+            android:name="trigger"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_create_one_post_to_search"
+            app:destination="@id/searchFragment"
+            app:enterAnim="@anim/fui_slide_in_right"
+            app:exitAnim="@anim/fui_slide_out_left"
+            app:popEnterAnim="@anim/fui_slide_in_right"
+            app:popExitAnim="@anim/fui_slide_out_left"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <!-- Global Actions -->
 
 </navigation>

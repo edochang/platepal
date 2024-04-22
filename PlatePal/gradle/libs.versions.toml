@@ -7,6 +7,7 @@ junit = "4.13.2"
 junitVersion = "1.1.5"
 espressoCore = "3.5.1"
 lifecycleRuntimeKtx = "2.7.0"
+lifecycleLivedataKtx = "2.7.0"
 activityCompose = "1.8.2"
 composeBom = "2024.04.00"
 material = "1.11.0"
@@ -25,9 +26,15 @@ logging-interceptor = "4.12.0"
 coroutines-core = "1.8.0"
 coroutines-android = "1.8.0"
 coroutines-test = "1.8.0"
-firebase-bom = "32.8.0"
+firebase-bom = "32.8.1"
 mockwebserver = "4.12.0"
 googleServices = "4.4.1"
+services-auth = "21.1.0"
+credential = "1.2.2"
+googleid = "1.1.0"
+firebase-ui = "8.0.2"
+appcompat = "1.6.1"
+activity = "1.8.2"
 
 [libraries]
 androidx-constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "constraintlayout" }
@@ -36,6 +43,7 @@ junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
+androidx-lifecycle-livedata-ktx = { group = "androidx.lifecycle", name = "lifecycle-livedata-ktx", version.ref = "lifecycleLivedataKtx" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
 androidx-ui = { group = "androidx.compose.ui", name = "ui" }
@@ -75,10 +83,20 @@ firebase-auth = { group = "com.google.firebase", name = "firebase-auth" }
 firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore" }
 firebase-storage = { group = "com.google.firebase", name = "firebase-storage" }
 google-services = { group = "com.google.gms", name = "google-services", version.ref = "googleServices" }
+firebase-ui-auth = { group = "com.firebaseui", name = "firebase-ui-auth", version.ref = "firebase-ui"}
+firebase-ui-storage = { group = "com.firebaseui", name = "firebase-ui-storage", version.ref = "firebase-ui"}
+
+# Authentication
+google-services-auth = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "services-auth"}
+androidx-credentials = { group = "androidx.credentials", name = "credentials", version.ref = "credential"}
+androidx-credentials-auth = { group = "androidx.credentials", name = "credentials-play-services-auth"}
+google-id = { group = "com.google.android.libraries.identity.googleid", name = "googleid", version.ref = "googleid"}
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
+
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 jetbrainsKotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 jetbrainsKotlinKapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 androidxNavigationSafeargs = { id = "androidx.navigation.safeargs.kotlin", version.ref = "navigation" }
-

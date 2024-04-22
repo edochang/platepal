@@ -5,11 +5,14 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import com.example.platepal.databinding.NotesFragmentBinding
+import com.example.platepal.ui.viewmodel.OneRecipeViewModel
 
 class Notes : Fragment() {
     private var _binding: NotesFragmentBinding? = null
     private val binding get() = _binding!!
+    private val oneRecipeViewModel: OneRecipeViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -21,4 +24,8 @@ class Notes : Fragment() {
         return binding.root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        oneRecipeViewModel.initNotesFragmentBinding(binding)
+    }
 }

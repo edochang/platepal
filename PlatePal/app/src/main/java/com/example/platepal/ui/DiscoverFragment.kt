@@ -1,32 +1,31 @@
 package com.example.platepal.ui
 
-import android.opengl.Visibility
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.Navigation
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.platepal.R
 import com.example.platepal.databinding.DiscoverFragmentBinding
-import edu.cs371m.reddit.glide.Glide
+import com.example.platepal.glide.Glide
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSnapHelper
+import com.example.platepal.MainActivity
+import com.example.platepal.ui.viewmodel.MainViewModel
+import com.example.platepal.ui.viewmodel.UserViewModel
 
-private const val TAG = "MainActivity"
-
-class DiscoverFragment: Fragment() {
+class DiscoverFragment : Fragment() {
+    companion object {
+        const val TAG = "DiscoverFragment"
+    }
 
     private var _binding: DiscoverFragmentBinding? = null
     private val binding get() = _binding!!
     private val viewModel: MainViewModel by activityViewModels()
-    //private lateinit var searchView: SearchView
+    private val userViewModel: UserViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -35,35 +34,65 @@ class DiscoverFragment: Fragment() {
     ): View {
         // Inflate the layout for this fragment
         _binding = DiscoverFragmentBinding.inflate(inflater, container, false)
+
         return binding.root
     }
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.d(javaClass.simpleName, "onViewCreated")
+        //Log.d(javaClass.simpleName, "onViewCreated")
         viewModel.setTitle("PlatePal")
+        val mainActivity = (requireActivity() as MainActivity)
 
-        //bind adapter
-        val adapter = RecipeAdapter(viewModel){
+        Log.d(TAG, "current profile photo UUID is ${userViewModel.getProfilePhotoUUID()}")
+        Log.d(
+            TAG,
+            "current profile photo FILE exists?${
+                userViewModel.getProfilePhotoFile()?.exists()
+            }: ${userViewModel.getProfilePhotoFile()}"
+        )
+
+        //bind adapter to show Popular list
+        val popularAdapter = RecipeAdapter(viewModel, userViewModel) {
             val action = DiscoverFragmentDirections.actionDiscoverToOnePost(it)
             findNavController().navigate(action)
         }
-        binding.discoverRv.adapter = adapter
+        binding.discoverRv.adapter = popularAdapter
+        val popularLayoutManager =
+            LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
+        binding.discoverRv.layoutManager = popularLayoutManager
+        val snapHelperPopular = LinearSnapHelper()
+        snapHelperPopular.attachToRecyclerView(binding.discoverRv)
 
-        // grid layout for RecyclerView
-        val layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-        binding.discoverRv.layoutManager = layoutManager
-
-        //populate recipe list
         viewModel.observeRecipeList().observe(viewLifecycleOwner) {
-            adapter.submitList(it)
+            popularAdapter.submitList(it)
             viewModel.setRandomRecipe()
+            Log.d(TAG, "popular list size is ${it.size}")
+        }
+
+        //bind adapter to show User Created List
+        //TODO(make sure that the list is not empty first. If empty, view gone)
+        val userCreatedAdapter = RecipeAdapter(viewModel, userViewModel) {
+            val action = DiscoverFragmentDirections.actionDiscoverToOnePost(it)
+            findNavController().navigate(action)
+        }
+        binding.userCreatedRv.adapter = userCreatedAdapter
+        val userCreatedLayoutManager =
+            LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
+        binding.userCreatedRv.layoutManager = userCreatedLayoutManager
+
+        val snapHelperUser = LinearSnapHelper()
+        snapHelperUser.attachToRecyclerView(binding.userCreatedRv)
+
+        viewModel.observeUserCreatedRecipeList().observe(viewLifecycleOwner) {
+            userCreatedAdapter.submitList(it)
+            Log.d(TAG, "user created list size is ${it.size}")
+            //mainActivity.progressBarOff()  // TODO: review progress functionality.  This could break.
         }
 
         //populate spotlight
         viewModel.observeRandomSpotlightRecipe().observe(viewLifecycleOwner) { recipeSpotlight ->
-            Log.d(TAG, "Observed random recipe: $recipeSpotlight")
+            //Log.d(TAG, "Observed random recipe: $recipeSpotlight")
             if (recipeSpotlight == null) {
                 binding.spotlightText.visibility = View.GONE
                 binding.spotlightCardView.visibility = View.GONE
@@ -71,30 +100,34 @@ class DiscoverFragment: Fragment() {
                 binding.spotlightText.visibility = View.VISIBLE
                 binding.spotlightCardView.visibility = View.VISIBLE
                 binding.spotlightRecipeTitle.text = recipeSpotlight.title
-                Glide.glideFetch(recipeSpotlight.image, recipeSpotlight.image, binding.spotlightRecipeImage)
+                Glide.glideFetch(
+                    recipeSpotlight.image,
+                    recipeSpotlight.image,
+                    binding.spotlightRecipeImage
+                )
 
                 //spotlight favorites
-                viewModel.isFavoriteRecipe(recipeSpotlight)?.let{
+                userViewModel.isFavoriteRecipe(recipeSpotlight)?.let {
                     if (it) binding.spotlightHeart.setImageResource(R.drawable.ic_heart_filled)
                     else binding.spotlightHeart.setImageResource(R.drawable.ic_heart_empty)
                 }
 
-                binding.spotlightHeart.setOnClickListener{
-                    Log.d(javaClass.simpleName, "heart clicklistener")
-                    viewModel.isFavoriteRecipe(recipeSpotlight)?.let{
-                        if(it){
-                            viewModel.setFavoriteRecipe(recipeSpotlight, false)
+                binding.spotlightHeart.setOnClickListener {
+                    //Log.d(javaClass.simpleName, "heart clicklistener")
+                    userViewModel.isFavoriteRecipe(recipeSpotlight)?.let {
+                        if (it) {
+                            userViewModel.setFavoriteRecipe(recipeSpotlight, false)
                             binding.spotlightHeart.setImageResource(R.drawable.ic_heart_empty)
-                            Log.d(javaClass.simpleName, "set heart to empty")
-                        } else{
-                            viewModel.setFavoriteRecipe(recipeSpotlight, true)
+                            //Log.d(javaClass.simpleName, "set heart to empty")
+                        } else {
+                            userViewModel.setFavoriteRecipe(recipeSpotlight, true)
                             binding.spotlightHeart.setImageResource(R.drawable.ic_heart_filled)
-                            Log.d(javaClass.simpleName, "set heart to filled")
+                            //Log.d(javaClass.simpleName, "set heart to filled")
                         }
                     }
                 }
 
-                binding.spotlightRecipeImage.setOnClickListener{
+                binding.spotlightRecipeImage.setOnClickListener {
                     val action = DiscoverFragmentDirections.actionDiscoverToOnePost(recipeSpotlight)
                     findNavController().navigate(action)
                 }
@@ -102,12 +135,11 @@ class DiscoverFragment: Fragment() {
         }
 
         //click into search page
-        /*
-        binding.discoverActionSearch.setOnClickListener{
-            val action = DiscoverFragmentDirections.actionDiscoverToSearch()
+        binding.discoverActionSearch.setOnClickListener {
+            val action =
+                DiscoverFragmentDirections.actionDiscoverToSearch(MainActivity.SEARCH_FROM_ADDR_DISCOVER)
             findNavController().navigate(action)
         }
-         */
     }
 
     override fun onDestroyView() {
