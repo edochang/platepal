@@ -19,6 +19,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.example.platepal.ui.viewmodel.MainViewModel
 import com.google.firebase.auth.FirebaseAuth
 import android.content.Intent
+import com.example.platepal.ui.viewmodel.OneRecipeViewModel
 import com.example.platepal.ui.viewmodel.UserViewModel
 import com.google.android.material.snackbar.Snackbar
 
@@ -53,6 +54,7 @@ class MainActivity : AppCompatActivity() {
 
     private val viewModel: MainViewModel by viewModels()
     private val userViewModel: UserViewModel by viewModels()
+    private val oneRecipeViewModel: OneRecipeViewModel by viewModels()
 
     fun progressBarOn() {
         binding.indeterminateBar.visibility = View.VISIBLE
@@ -98,6 +100,45 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /* Note use alternative approach and turn this into a mediatorlive data with two sources
+        1. API Recipe List
+        2. User Recipe List
+     */
+    // Used for search for a combine list of all recipes.
+    private fun initAllRecipeList(){
+        progressBarOn()
+        viewModel.fetchAllRecipeList {
+            //Log.d(TAG, "Recipes retrieval listener invoked.")
+            progressBarOff()
+        }
+    }
+
+    private fun initOtherObservers() {
+        oneRecipeViewModel.fetchDone.observe(this) {
+            Log.d(TAG, "Observer fetchDone: ${oneRecipeViewModel.fetchDone.value}")
+            if (it) {
+                progressBarOff()
+            }
+        }
+    }
+
+    fun initRecipeList() {
+        //Log.d(TAG, "Retrieving recipes from Repo...")
+        progressBarOn()
+        viewModel.fetchReposRecipeList {
+            //Log.d(TAG, "Recipes retrieval listener invoked.")
+            progressBarOff()
+        }
+    }
+
+    private fun initTitleObservers() {
+        // Observe title changes
+        viewModel.observeTitle().observe(this) {
+            binding.barTitle.text = it
+            Log.d(javaClass.simpleName, it)
+        }
+    }
+
     private fun initToolBarMenu() {
         addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
@@ -124,41 +165,11 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
-    fun initRecipeList() {
-        //Log.d(TAG, "Retrieving recipes from Repo...")
-        progressBarOn()
-        viewModel.fetchReposRecipeList {
-            //Log.d(TAG, "Recipes retrieval listener invoked.")
-            progressBarOff()
-        }
-    }
-
     fun initUserCreatedRecipeList(){
         progressBarOn()
         viewModel.fetchReposUserCreatedRecipeList {
             //Log.d(TAG, "Recipes retrieval listener invoked.")
             progressBarOff()
-        }
-    }
-
-    /* Note use alternative approach and turn this into a mediatorlive data with two sources
-        1. API Recipe List
-        2. User Recipe List
-     */
-    // Used for search for a combine list of all recipes.
-    private fun initAllRecipeList(){
-        progressBarOn()
-        viewModel.fetchAllRecipeList {
-            //Log.d(TAG, "Recipes retrieval listener invoked.")
-            progressBarOff()
-        }
-    }
-
-    private fun initTitleObservers() {
-        // Observe title changes
-        viewModel.observeTitle().observe(this) {
-            binding.barTitle.text = it
-            Log.d(javaClass.simpleName, it)
         }
     }
 
@@ -180,18 +191,14 @@ class MainActivity : AppCompatActivity() {
             supportFragmentManager.findFragmentById(R.id.main_frame) as NavHostFragment
         navController = navHostFragment.navController
 
-        //observe top bar title
-        initTitleObservers()
-
-        // Initialize User Data
-        initUserSession()
+        initTitleObservers() //observe top bar title
+        initOtherObservers()
+        initUserSession() // Initialize User Data
 
         // Initialize Recipe Lists
         //initRecipeList() // Retrieve Spoonacular Recipes
         //initUserCreatedRecipeList() //retrieve user created recipes
-
-        //Retrieve spoonacular + user created recipes
-        initAllRecipeList()
+        initAllRecipeList() //Retrieve spoonacular + user created recipes
 
         progressBarOn()
         //fetch initial favorite recipe list for user
