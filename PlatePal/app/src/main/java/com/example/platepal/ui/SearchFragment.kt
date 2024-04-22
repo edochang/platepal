@@ -32,7 +32,7 @@ class SearchFragment : Fragment() {
     private fun filterList(query: String?, adapter: RecipeAdapter, view: View) {
         Log.d(TAG, "Enter filterList with query: $query")
         var recipeList: List<RecipeMeta> = emptyList()
-        viewModel.observeRecipeList().observe(viewLifecycleOwner) {
+        viewModel.observeAllRecipeList().observe(viewLifecycleOwner) {
             recipeList = it
         }
 
@@ -88,7 +88,7 @@ class SearchFragment : Fragment() {
 
         //populate recipe list
         //adapter.submitList(viewModel.getCopyOfRecipeList())
-        viewModel.observeRecipeList().observe(viewLifecycleOwner) {
+        viewModel.observeAllRecipeList().observe(viewLifecycleOwner) {
             adapter.submitList(it)
         }
 

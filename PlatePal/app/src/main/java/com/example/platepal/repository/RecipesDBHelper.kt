@@ -20,6 +20,11 @@ class RecipesDBHelper : DBHelper<RecipeMeta>(
         getDocuments(query, RecipeMeta::class.java, resultListener)
     }
 
+    fun getAllRecipes(resultListener: (List<RecipeMeta>) -> Unit) {
+        val query = db.collection(rootCollection)
+        getDocuments(query, RecipeMeta::class.java, resultListener)
+    }
+
 
     fun getRecipe(documentId: String, resultListener: (List<RecipeMeta>) -> Unit) {
         val query = db.collection(rootCollection)

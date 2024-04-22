@@ -48,11 +48,14 @@ class MainViewModel : ViewModel() {
     private val spoonacularRecipeRepository = SpoonacularRecipeRepository(spoonacularApi)
     private val storage = Storage()
 
-    // Maintain a list of all Recipe items
+    // Maintain a list of all Spoonacular Recipe items
     private var recipeList = MutableLiveData<List<RecipeMeta>>()
 
     //Maintain a list of user created recipe items
     private var userCreatedRecipeList = MutableLiveData<List<RecipeMeta>>()
+
+    //Maintain a list of Spoonacular + User-created recipe items
+    private var allRecipeList = MutableLiveData<List<RecipeMeta>>()
 
     //title of the fragment
     private var title = MutableLiveData<String>()
@@ -71,6 +74,10 @@ class MainViewModel : ViewModel() {
 
     fun observeUserCreatedRecipeList(): LiveData<List<RecipeMeta>> {
         return userCreatedRecipeList
+    }
+
+    fun observeAllRecipeList(): LiveData<List<RecipeMeta>> {
+        return allRecipeList
     }
 
     fun getRecipeList(): List<RecipeMeta> {
@@ -123,6 +130,14 @@ class MainViewModel : ViewModel() {
         }
     }
 
+    fun fetchAllRecipeList(resultListener: () -> Unit){
+        recipesDBHelper.getAllRecipes {
+            if (it.isNotEmpty()) {
+                allRecipeList.postValue(it)
+                resultListener.invoke()
+            }
+        }
+    }
 
     fun fetchReposRecipeList(resultListener: () -> Unit) {
         recipesDBHelper.getRecipes {

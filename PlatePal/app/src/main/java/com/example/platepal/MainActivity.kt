@@ -142,9 +142,17 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun initUserCreatedRecipeList(){
+    private fun initUserCreatedRecipeList(){
         progressBarOn()
         viewModel.fetchReposUserCreatedRecipeList {
+            //Log.d(TAG, "Recipes retrieval listener invoked.")
+            progressBarOff()
+        }
+    }
+
+    private fun initAllRecipeList(){
+        progressBarOn()
+        viewModel.fetchAllRecipeList {
             //Log.d(TAG, "Recipes retrieval listener invoked.")
             progressBarOff()
         }
@@ -161,11 +169,14 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.setDisplayShowTitleEnabled(false) //disable title in bar, didn't work
         supportActionBar?.setDisplayShowCustomEnabled(true)
 
-        // Retrieve Recipes
+        // Retrieve Spoonacular Recipes
         initRecipeList()
 
         //retrieve user created recipes
         initUserCreatedRecipeList()
+
+        //Retrieve spoonacular + user created recipes
+        initAllRecipeList()
 
         //fetch initial favorite recipe list for user
         userViewModel.fetchInitialFavRecipes {

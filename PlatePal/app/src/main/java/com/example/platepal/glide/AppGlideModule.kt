@@ -15,7 +15,6 @@ import com.bumptech.glide.request.RequestOptions
 import com.firebase.ui.storage.images.FirebaseImageLoader
 import com.example.platepal.R
 import com.google.firebase.storage.StorageReference
-import edu.cs371m.reddit.glide.GlideApp
 import java.io.File
 import java.io.InputStream
 
