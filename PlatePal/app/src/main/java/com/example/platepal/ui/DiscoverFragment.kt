@@ -42,10 +42,10 @@ class DiscoverFragment : Fragment() {
         //Log.d(javaClass.simpleName, "onViewCreated")
         viewModel.setTitle("PlatePal")
 
-        Log.d(TAG, "current profile UUID is ${userViewModel.getProfilePhotoUUID()}")
+        Log.d(TAG, "current profile photo UUID is ${userViewModel.getProfilePhotoUUID()}")
         Log.d(
             TAG,
-            "current profile FILE exists?${
+            "current profile photo FILE exists?${
                 userViewModel.getProfilePhotoFile()?.exists()
             }: ${userViewModel.getProfilePhotoFile()}"
         )

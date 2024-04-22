@@ -75,6 +75,7 @@
         android:layout_gravity="center_horizontal"
         android:contentDescription="Community Post User Profile Picture"
         android:scaleType="fitCenter"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="@id/post_user_profile_picture"
         app:layout_constraintEnd_toEndOf="@id/post_user_profile_picture"
         app:layout_constraintStart_toStartOf="@id/post_user_profile_picture"

@@ -2,6 +2,7 @@ package com.example.platepal.repository
 
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
+import com.example.platepal.data.PostMeta
 import com.example.platepal.data.RecipeMeta
 import com.example.platepal.data.UserMeta
 import com.google.android.gms.tasks.Task
@@ -117,5 +118,32 @@ class UserDBHelper : DBHelper<UserMeta>(
         }
     }
 
+    fun getUserMetaDocuments(
+        resultListener: (UserMeta) -> Unit
+    ) {
+        val query = db.collection(rootCollection)
+            .whereEqualTo("uid", userID)
+        super.getDocuments(query, UserMeta::class.java) {
+            resultListener(it.first())
+        }
+    }
 
+    fun realTimeReadUserMeta(resultListener: (List<UserMeta>) -> Unit) {
+        val query = db.collection(rootCollection)
+        query.addSnapshotListener { snapshot, e ->
+            if (e != null) {
+                Log.w(TAG, "Listen failed.", e)
+                return@addSnapshotListener
+            }
+
+            if (snapshot != null && !snapshot.isEmpty) {
+                Log.d(TAG, "Current documents size: ${snapshot.size()}")
+                resultListener(snapshot.documents.mapNotNull {
+                    it.toObject(UserMeta::class.java)
+                })
+            } else {
+                Log.d(TAG, "Current documents: null")
+            }
+        }
+    }
 }

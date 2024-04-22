@@ -1,19 +1,28 @@
 package com.example.platepal.ui.community
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.compose.ui.graphics.Color
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.platepal.R
 import com.example.platepal.data.PostMeta
 import com.example.platepal.databinding.CommunityPostCardBinding
 import com.example.platepal.ui.viewmodel.OnePostViewModel
 import com.example.platepal.ui.viewmodel.PostViewModel
+import com.example.platepal.ui.viewmodel.UserViewModel
 
 class PostAdapter(
     private val viewModel: PostViewModel,
-    private val navigateToOnePost: (PostMeta) -> Unit
+    private val userViewModel: UserViewModel,
+    private val navigateToOnePost: (PostMeta) -> Unit  // TODO: Not MVP, but could create a one post view
 ) : ListAdapter<PostMeta, PostAdapter.VH>(PostDiff()) {
+    companion object {
+        const val TAG = "PostAdapter"
+    }
+
     inner class VH(val communityPostCardBinding: CommunityPostCardBinding) :
         RecyclerView.ViewHolder(communityPostCardBinding.root) {
         //init {}
@@ -32,7 +41,20 @@ class PostAdapter(
         val item = getItem(position)
         val binding = holder.communityPostCardBinding
 
-        binding.postUsername.text = item.createdBy
+        val userRecord = userViewModel.userMetaList.filter {
+            it.uid == item.createdBy
+        }.first()
+        //Log.d(TAG, "Size: ${userViewModel.userMetaList.size}:: ${userViewModel.userMetaList}")
+        //Log.d(TAG, "Size: ${userRecord.size}:: $userRecord")
+
+        if (userRecord.pictureUUID.isNotEmpty()) {
+            binding.postUserProfilePicture.setImageResource(R.drawable.transparent)
+            binding.postUserProfilePicture.setBackgroundColor(Color.Transparent.hashCode())
+            binding.postUserProfilePicture.imageTintList = null
+            userViewModel.fetchProfilePhoto(userRecord.pictureUUID, binding.postUserProfilePicture)
+        }
+
+        binding.postUsername.text = userRecord.fullName
         viewModel.fetchPostPhoto(item.picture, binding.postImage)
         binding.postRecipe.text = item.recipeTitle
         binding.postBody.text = item.postMessage

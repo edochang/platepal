@@ -144,7 +144,8 @@ class MainViewModel : ViewModel() {
                             updateAppMeta as Map<String, kotlin.Any>
                         ) {
                             Log.d(
-                                TAG, "Set last call time for Spoonacular Search API"
+                                TAG, "Set last call time for Spoonacular Search API " +
+                                        "(sec: $nowTimestampSec, nanosec: $nowTimestampNanosec)"
                             )
                         }
                     }
@@ -181,7 +182,7 @@ class MainViewModel : ViewModel() {
                                 //Log.d(TAG, "Recipes are more than a day created.  Check Spoonacular for changes...")
                                 Log.d(
                                     TAG,
-                                    "Recipes are more than 99 calls stale.  Check Spoonacular for changes..."
+                                    "Recipes could be stale.  Check Spoonacular for changes..."
                                 )
                                 spoonacularRecipeRepository.getRecipes()
                             }
@@ -197,14 +198,22 @@ class MainViewModel : ViewModel() {
                                 }
                             }
 
+                            val nowTimestamp = Timestamp.now()
+                            val nowTimestampSec = nowTimestamp.seconds
+                            val nowTimestampNanosec = nowTimestamp.nanoseconds
+
                             val updateAppMeta = hashMapOf(
-                                "spoonacularSearchRecipeApiCallCount" to 0
+                                "lastSpoonacularSearchApiCallTimestampSec" to nowTimestampSec,
+                                "lastSpoonacularSearchApiCallTimestampNanosec" to nowTimestampNanosec
                             )
                             appDBHelper.updateDocument(
                                 appMetaDocumentId,
                                 updateAppMeta as Map<String, kotlin.Any>
                             ) {
-                                Log.d(TAG, "spoonacularSearchRecipeApiCallCount reset to: 0")
+                                Log.d(
+                                    TAG, "Set last call time for Spoonacular Search API " +
+                                            "(sec: $nowTimestampSec, nanosec: $nowTimestampNanosec)"
+                                )
                             }
                         }
                     }

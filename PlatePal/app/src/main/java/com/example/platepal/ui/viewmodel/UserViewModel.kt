@@ -5,14 +5,11 @@ import android.widget.ImageView
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.platepal.camera.TakePictureWrapper
 import com.example.platepal.data.RecipeMeta
 import com.example.platepal.data.UserMeta
-import com.example.platepal.repository.DBHelper
 import com.example.platepal.repository.Storage
 import com.example.platepal.repository.UserDBHelper
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
 import edu.cs371m.reddit.glide.Glide
 import java.io.File
 
@@ -32,8 +29,33 @@ class UserViewModel : ViewModel() {
     private var profilePhotoFile: File? = null
     private var previousUUID = ""
 
-    //for user profile picture
+    // User Meta
+    var userMeta: UserMeta? = null
+    var userMetaList = mutableListOf<UserMeta>().apply {
+        dbHelper.realTimeReadUserMeta {
+            this.addAll((it.toSet() - this.toSet()).toMutableList())
+            Log.d(TAG, "this userMetaList: $this")
+            //Log.d(TAG, "it userMetaList: $it")
+        }
+    }
+
     // Getter
+    fun getAuthDisplayName(): String {
+        val displayName = FirebaseAuth.getInstance().currentUser?.displayName ?: ""
+        Log.d(TAG, "User Display Name: $displayName")
+        return displayName
+    }
+
+    fun getAuthEmail(): String {
+        return FirebaseAuth.getInstance().currentUser?.email ?: ""
+    }
+
+    fun getAuthUUID(): String {
+        return FirebaseAuth.getInstance().currentUser?.uid ?: ""
+    }
+
+
+    //for user profile picture
     fun getProfilePhotoUUID(): String {
         return profilePhotoUUID
     }
@@ -42,7 +64,7 @@ class UserViewModel : ViewModel() {
         return profilePhotoFile
     }
 
-    fun getPreviousUUID(): String{
+    fun getPreviousUUID(): String {
         return previousUUID
     }
 
@@ -56,14 +78,20 @@ class UserViewModel : ViewModel() {
         profilePhotoUUID = uuid
     }
 
-    fun setPreviousUUID(uuid: String){
+    fun setPreviousUUID(uuid: String) {
         previousUUID = uuid
         Log.d(TAG, "previous uuid has been set to $uuid")
     }
 
-    fun resetPreviousUUID(){
+    fun resetPreviousUUID() {
         previousUUID = ""
         Log.d(TAG, "previous uuid has been reset")
+    }
+
+    fun fetchUserMeta(uuid: String) {
+        dbHelper.getUserMetaDocuments {
+            userMeta = it
+        }
     }
 
     fun fetchProfilePhoto(uuid: String, imageView: ImageView) {

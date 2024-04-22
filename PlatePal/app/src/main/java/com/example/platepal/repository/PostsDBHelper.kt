@@ -3,15 +3,17 @@ package com.example.platepal.repository
 import android.util.Log
 import com.example.platepal.data.PostMeta
 import com.example.platepal.data.RecipeMeta
+import com.google.firebase.firestore.Query
 
 class PostsDBHelper: DBHelper<PostMeta>(
     "Posts"
 ) {
     companion object {
-        const val TAG = "Posts"
+        const val TAG = "PostsDBHelper"
     }
     fun realTimeReadPosts(resultListener: (List<PostMeta>) -> Unit) {
         val query = db.collection(rootCollection)
+            .orderBy("timeStamp", Query.Direction.DESCENDING)
         query.addSnapshotListener { snapshot, e ->
             if (e != null) {
                 Log.w(TAG, "Listen failed.", e)

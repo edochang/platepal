@@ -15,6 +15,7 @@ import com.example.platepal.MainActivity
 import com.example.platepal.databinding.CommunityFragmentBinding
 import com.example.platepal.ui.viewmodel.MainViewModel
 import com.example.platepal.ui.viewmodel.PostViewModel
+import com.example.platepal.ui.viewmodel.UserViewModel
 
 class CommunityFragment : Fragment() {
     companion object {
@@ -25,6 +26,7 @@ class CommunityFragment : Fragment() {
     private val binding get() = _binding!!
     private val viewModel: MainViewModel by activityViewModels()
     private val postViewModel: PostViewModel by activityViewModels()
+    private val userViewModel: UserViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -45,7 +47,7 @@ class CommunityFragment : Fragment() {
         postViewModel.fetchPosts()
 
         // Init and bind adapter
-        val adapter = PostAdapter(postViewModel) {
+        val adapter = PostAdapter(postViewModel, userViewModel) {
 
         }
         val communityRV = binding.communityRv

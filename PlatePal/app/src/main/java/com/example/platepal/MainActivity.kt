@@ -36,7 +36,6 @@ class MainActivity : AppCompatActivity() {
         // Variables
         var globalDebug = false
 
-
         fun showSnackbarMessage(view: View, message: String) {
             Snackbar
                 .make(
@@ -125,6 +124,15 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
+    fun initRecipeList() {
+        //Log.d(TAG, "Retrieving recipes from Repo...")
+        progressBarOn()
+        viewModel.fetchReposRecipeList {
+            //Log.d(TAG, "Recipes retrieval listener invoked.")
+            progressBarOff()
+        }
+    }
+
     private fun initTitleObservers() {
         // Observe title changes
         viewModel.observeTitle().observe(this) {
@@ -133,13 +141,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun initRecipeList() {
-        //Log.d(TAG, "Retrieving recipes from Repo...")
-        progressBarOn()
-        viewModel.fetchReposRecipeList {
-            //Log.d(TAG, "Recipes retrieval listener invoked.")
-            progressBarOff()
-        }
+    private fun initUserSession() {
+        userViewModel.fetchUserMeta(userViewModel.getAuthUUID())
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -158,6 +161,9 @@ class MainActivity : AppCompatActivity() {
 
         //observe top bar title
         initTitleObservers()
+
+        // Initialize User Data
+        initUserSession()
 
         // Retrieve Recipes
         //initRecipeList()

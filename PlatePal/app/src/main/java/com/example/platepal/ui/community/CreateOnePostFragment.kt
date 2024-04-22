@@ -6,17 +6,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.ui.graphics.Color
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.platepal.MainActivity
+import com.example.platepal.R
 import com.example.platepal.camera.TakePictureWrapper
 import com.example.platepal.data.CreatePostValidations
 import com.example.platepal.data.PostMeta
 import com.example.platepal.data.RecipeMeta
 import com.example.platepal.databinding.CommunityCreateFragmentBinding
 import com.example.platepal.ui.viewmodel.OnePostViewModel
+import com.example.platepal.ui.viewmodel.UserViewModel
 
 class CreateOnePostFragment : Fragment() {
     companion object {
@@ -26,6 +29,7 @@ class CreateOnePostFragment : Fragment() {
     private var _binding: CommunityCreateFragmentBinding? = null
     private val binding get() = _binding!!
     private val onePostViewModel: OnePostViewModel by activityViewModels()
+    private val userViewModel: UserViewModel by activityViewModels()
 
     private val cameraLauncher = registerForActivityResult(
         ActivityResultContracts.TakePicture()
@@ -90,7 +94,18 @@ class CreateOnePostFragment : Fragment() {
 
         val recipeMeta: RecipeMeta? = onePostViewModel.recipeMeta
         val trigger = requireArguments().getString("trigger")
-        val user = "DummyUser" // TODO: Need the authenticated user's username
+        val user = userViewModel.getAuthUUID()
+        val username = userViewModel.userMeta?.fullName ?: userViewModel.getAuthEmail()
+
+        binding.postUserName.text = username
+        userViewModel.userMeta?.pictureUUID?.let {
+            if (it.isNotEmpty()) {
+                binding.postUserProfilePicture.setImageResource(R.drawable.transparent)
+                binding.postUserProfilePicture.setBackgroundColor(Color.Transparent.hashCode())
+                binding.postUserProfilePicture.imageTintList = null
+                userViewModel.fetchProfilePhoto(it, binding.postUserProfilePicture)
+            }
+        }
 
         Log.d(TAG, "recipeMeta:$recipeMeta")
         recipeMeta?.let {

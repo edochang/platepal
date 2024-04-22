@@ -81,9 +81,9 @@ class ProfileFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         //Log.d(javaClass.simpleName, "onViewCreated")
         _binding = ProfileFragmentBinding.bind(view)
-        super.onViewCreated(view, savedInstanceState)
         mainActivity = (requireActivity() as MainActivity)
         viewModel.setTitle("Profile")
 
