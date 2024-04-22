@@ -20,20 +20,24 @@ import com.example.platepal.databinding.CreateRecipeFragmentBinding
 import com.example.platepal.ui.viewmodel.MainViewModel
 import com.example.platepal.ui.ViewPagerAdapter
 import com.example.platepal.ui.viewmodel.OneRecipeViewModel
+import com.example.platepal.ui.viewmodel.UserViewModel
 import com.google.android.material.tabs.TabLayoutMediator
 
 class CreateRecipeFragment : Fragment() {
     companion object {
         const val TAG = "CreateFragment"
     }
+
     private var _binding: CreateRecipeFragmentBinding? = null
     private val binding get() = _binding!!
     private val viewModel: MainViewModel by activityViewModels()
     private val oneRecipeViewModel: OneRecipeViewModel by activityViewModels()
+    private val userViewModel: UserViewModel by activityViewModels()
     private lateinit var mainActivity: MainActivity
 
     private val cameraLauncher = registerForActivityResult(
-        ActivityResultContracts.TakePicture()) { success ->
+        ActivityResultContracts.TakePicture()
+    ) { success ->
         if (success) {
             oneRecipeViewModel.getPhotoFile()?.let {
                 if (it.exists()) {
@@ -49,8 +53,7 @@ class CreateRecipeFragment : Fragment() {
     }
 
     private fun saveAndNavigate(recipeMeta: RecipeMeta) {
-        //TODO(Check with Ed to see if this needs to be changed to initUserCreatedRecipeList?
-        mainActivity.initRecipeList()
+        mainActivity.initUserCreatedRecipeList()
         val action = CreateRecipeFragmentDirections.actionCreateRecipeToOneRecipe(recipeMeta)
         findNavController().navigate(action, navOptions {
             popUpTo(R.id.discoverFragment)
@@ -83,7 +86,8 @@ class CreateRecipeFragment : Fragment() {
                 pictureName,
                 it,
                 oneRecipeViewModel,
-                cameraLauncher)
+                cameraLauncher
+            )
         } ?: Log.e(TAG, "Failed to launch Camera")
     }
 
@@ -104,11 +108,15 @@ class CreateRecipeFragment : Fragment() {
         mainActivity = (requireActivity() as MainActivity)
         viewModel.setTitle("PlatePal")
 
-        val user = "DummyUser" // TODO: Need the authenticated user's username
+        val user = userViewModel.getAuthUUID()
         val fragmentsList = arrayListOf(Ingredients(), Directions(), Notes())
 
         binding.apply {
-            viewPager.adapter = ViewPagerAdapter(fragmentsList, this@CreateRecipeFragment.childFragmentManager, lifecycle)
+            viewPager.adapter = ViewPagerAdapter(
+                fragmentsList,
+                this@CreateRecipeFragment.childFragmentManager,
+                lifecycle
+            )
 
             TabLayoutMediator(tabView, viewPager) { tab, position ->
                 when (position) {
@@ -134,7 +142,10 @@ class CreateRecipeFragment : Fragment() {
             val directionsBinding = oneRecipeViewModel.getDirectionsFragmentBinding()
             val notesBinding = oneRecipeViewModel.getNotesFragmentBinding()
 
-            Log.d(TAG, "Check binding instance: $ingredientsBinding, $directionsBinding, $notesBinding")
+            Log.d(
+                TAG,
+                "Check binding instance: $ingredientsBinding, $directionsBinding, $notesBinding"
+            )
 
             if (ingredientsBinding != null) {
                 if (ingredientsBinding.ingredientsEditText.text.isBlank()) {
@@ -162,8 +173,12 @@ class CreateRecipeFragment : Fragment() {
             }
 
             // Create Recipe
-            val ingredients = Html.toHtml(ingredientsBinding.ingredientsEditText.text, Html.FROM_HTML_MODE_COMPACT)
-            val directions = Html.toHtml(directionsBinding.directionsEditText.text, Html.FROM_HTML_MODE_COMPACT)
+            val ingredients = Html.toHtml(
+                ingredientsBinding.ingredientsEditText.text,
+                Html.FROM_HTML_MODE_COMPACT
+            )
+            val directions =
+                Html.toHtml(directionsBinding.directionsEditText.text, Html.FROM_HTML_MODE_COMPACT)
             val notes = notesBinding?.notesEditText?.text?.let {
                 Html.toHtml(it, Html.FROM_HTML_MODE_COMPACT)
             } ?: ""

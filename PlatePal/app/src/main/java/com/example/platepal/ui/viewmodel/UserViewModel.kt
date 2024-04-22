@@ -95,13 +95,13 @@ class UserViewModel : ViewModel() {
     }
 
     fun fetchProfilePhoto(uuid: String, imageView: ImageView) {
-        Glide.fetchFromStorage(storage.uuid2StorageReferenceProfile(uuid), imageView)
+        Glide.fetchFromStorageForProfile(storage.uuid2StorageReferenceProfile(uuid), imageView)
         Log.d(TAG, "fetch STORAGE profile...bind using glide")
     }
 
     fun fetchLocalProfilePhoto(imageView: ImageView) {
         profilePhotoFile?.let {
-            Glide.fetchFromLocal(it, imageView)
+            Glide.fetchFromLocalForProfile(it, imageView)
         }
         Log.d(TAG, "fetch LOCAL profile...bind using glide")
     }

@@ -133,14 +133,19 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun initUserCreatedRecipeList(){
+    fun initUserCreatedRecipeList(){
         progressBarOn()
         viewModel.fetchReposUserCreatedRecipeList {
             //Log.d(TAG, "Recipes retrieval listener invoked.")
-            progressBarOff()  // TODO: Need to redo progress bar.  You'll have a race between the two recipe list.
+            progressBarOff()
         }
     }
 
+    /* Note use alternative approach and turn this into a mediatorlive data with two sources
+        1. API Recipe List
+        2. User Recipe List
+     */
+    // Used for search for a combine list of all recipes.
     private fun initAllRecipeList(){
         progressBarOn()
         viewModel.fetchAllRecipeList {
@@ -181,11 +186,9 @@ class MainActivity : AppCompatActivity() {
         // Initialize User Data
         initUserSession()
 
-        // Retrieve Spoonacular Recipes
-        initRecipeList()  // TODO: Favorites will not work with this implementation.
-
-        //retrieve user created recipes
-        initUserCreatedRecipeList()
+        // Initialize Recipe Lists
+        //initRecipeList() // Retrieve Spoonacular Recipes
+        //initUserCreatedRecipeList() //retrieve user created recipes
 
         //Retrieve spoonacular + user created recipes
         initAllRecipeList()

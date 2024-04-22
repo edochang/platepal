@@ -54,13 +54,6 @@ class OnePostViewModel : ViewModel() {
         pictureReset()
     }
 
-    fun fetchPostPhoto(image: String, imageView: ImageView) {
-        Glide.fetchFromStorage(
-            storage.uuid2StorageReference(image, StorageDirectory.POST),
-            imageView
-        )
-    }
-
     fun fetchLocalPostPhoto(imageView: ImageView) {
         photoFile?.let {
             Log.d(TAG, "Glide Local Fetch")

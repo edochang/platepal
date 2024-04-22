@@ -42,6 +42,7 @@ class DiscoverFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         //Log.d(javaClass.simpleName, "onViewCreated")
         viewModel.setTitle("PlatePal")
+        val mainActivity = (requireActivity() as MainActivity)
 
         Log.d(TAG, "current profile photo UUID is ${userViewModel.getProfilePhotoUUID()}")
         Log.d(
@@ -51,17 +52,14 @@ class DiscoverFragment : Fragment() {
             }: ${userViewModel.getProfilePhotoFile()}"
         )
 
-        val mainActivity = (requireActivity() as MainActivity)
-
-        val mainActivity = (requireActivity() as MainActivity)
-
         //bind adapter to show Popular list
         val popularAdapter = RecipeAdapter(viewModel, userViewModel) {
             val action = DiscoverFragmentDirections.actionDiscoverToOnePost(it)
             findNavController().navigate(action)
         }
         binding.discoverRv.adapter = popularAdapter
-        val popularLayoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
+        val popularLayoutManager =
+            LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
         binding.discoverRv.layoutManager = popularLayoutManager
         val snapHelperPopular = LinearSnapHelper()
         snapHelperPopular.attachToRecyclerView(binding.discoverRv)
@@ -79,16 +77,17 @@ class DiscoverFragment : Fragment() {
             findNavController().navigate(action)
         }
         binding.userCreatedRv.adapter = userCreatedAdapter
-        val userCreatedLayoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
+        val userCreatedLayoutManager =
+            LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
         binding.userCreatedRv.layoutManager = userCreatedLayoutManager
 
         val snapHelperUser = LinearSnapHelper()
         snapHelperUser.attachToRecyclerView(binding.userCreatedRv)
 
-         viewModel.observeUserCreatedRecipeList().observe(viewLifecycleOwner){
-             userCreatedAdapter.submitList(it)
-             Log.d(TAG, "user created list size is ${it.size}")
-             //mainActivity.progressBarOff()  // TODO: review progress functionality.  This could break.
+        viewModel.observeUserCreatedRecipeList().observe(viewLifecycleOwner) {
+            userCreatedAdapter.submitList(it)
+            Log.d(TAG, "user created list size is ${it.size}")
+            //mainActivity.progressBarOff()  // TODO: review progress functionality.  This could break.
         }
 
         //populate spotlight

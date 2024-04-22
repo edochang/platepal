@@ -115,7 +115,6 @@ class OneRecipeViewModel : ViewModel() {
         createdBy: String,
         navigateToOneRecipe: (RecipeMeta) -> Unit
     ) {
-        // TODO(Add image and ImageType)  // will do this when working on community post
         val createdRecipeMeta = RecipeMeta(
             "",
             title,

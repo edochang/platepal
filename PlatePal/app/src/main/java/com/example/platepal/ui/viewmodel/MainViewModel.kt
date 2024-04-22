@@ -65,10 +65,31 @@ class MainViewModel : ViewModel() {
     }
 
     //Maintain a list of user created recipe items
-    private var userCreatedRecipeList = MutableLiveData<List<RecipeMeta>>()
+    private var userCreatedRecipeList = MediatorLiveData<List<RecipeMeta>>().apply {
+        addSource(initFavList) {
+            if (it) {
+                fetchReposUserCreatedRecipeList {
+                    Log.d(TAG, "Initial User Recipe List fetched after favlist")
+                }
+            }
+        }
+    }
 
     //Maintain a list of Spoonacular + User-created recipe items
     private var allRecipeList = MutableLiveData<List<RecipeMeta>>()
+
+    private var allRecipes = MediatorLiveData<List<RecipeMeta>>().apply {
+        addSource(recipeList) {
+            fetchAllRecipeList {
+                Log.d(TAG, "Fetch all recipe list by source: recipeList")
+            }
+        }
+        addSource(userCreatedRecipeList) {
+            fetchAllRecipeList {
+                Log.d(TAG, "Fetch all recipe list by source: userCreatedRecipeList")
+            }
+        }
+    }
 
     //title of the fragment
     private var title = MutableLiveData<String>()  // fragment title
@@ -130,7 +151,7 @@ class MainViewModel : ViewModel() {
         if (createdBy == MainActivity.SPOONACULAR_API_NAME) {
             Glide.glideFetch(image, image, imageView)
         } else {
-            Glide.fetchFromStorage(
+            Glide.fetchFromStorageForDiscover(
                 storage.uuid2StorageReference(image, StorageDirectory.RECIPE),
                 imageView
             )

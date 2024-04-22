@@ -1,30 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:layout_margin="4dp"
-        android:orientation="vertical"
-        xmlns:android="http://schemas.android.com/apk/res/android">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_margin="4dp"
+    android:orientation="vertical">
 
 
-    <androidx.cardview.widget.CardView
-        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    <androidx.cardview.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
         android:id="@+id/recipe_card_view"
-        android:layout_width="200dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        card_view:cardCornerRadius="8dp"
-        card_view:cardMaxElevation="2dp"
-        card_view:cardElevation="1dp"
         android:layout_gravity="center"
+        android:outlineAmbientShadowColor="@android:color/transparent"
         card_view:cardBackgroundColor="@android:color/transparent"
-        >
+        card_view:cardCornerRadius="8dp"
+        card_view:cardElevation="1dp"
+        card_view:cardMaxElevation="2dp">
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:gravity="center"
-            >
+            android:gravity="center">
 
             <ImageView
                 android:id="@+id/recipeImage"
@@ -32,10 +30,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:adjustViewBounds="true"
-                android:scaleType="fitCenter"
-                android:maxHeight="150dp"
                 android:maxWidth="200dp"
-                />
+                android:maxHeight="150dp"
+                android:scaleType="fitCenter" />
 
             <ImageButton
                 android:id="@+id/heart"
@@ -43,9 +40,8 @@
                 android:layout_height="wrap_content"
                 android:layout_alignTop="@+id/recipeImage"
                 android:layout_alignEnd="@+id/recipeImage"
-                android:src="@drawable/ic_heart_empty"
                 android:backgroundTint="@android:color/transparent"
-                />
+                android:src="@drawable/ic_heart_empty" />
 
         </RelativeLayout>
 
@@ -55,16 +51,15 @@
         android:id="@+id/recipeTitle"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
-        android:textColor="#000"
-        android:textSize="15sp"
-        android:layout_margin="5dp"
         android:layout_gravity="center"
-        android:gravity="center"
-        android:fontFamily="sans-serif-condensed"
-        android:text="To be replaced"
+        android:layout_margin="5dp"
         android:ellipsize="end"
-        android:minLines="2"
+        android:fontFamily="sans-serif-condensed"
+        android:gravity="center"
         android:maxLines="2"
-        />
+        android:minLines="2"
+        android:text="To be replaced"
+        android:textColor="#000"
+        android:textSize="15sp" />
 
 </LinearLayout>

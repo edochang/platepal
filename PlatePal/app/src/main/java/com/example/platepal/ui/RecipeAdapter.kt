@@ -50,7 +50,6 @@ class RecipeAdapter(
 
          */
 
-
         userViewModel.isFavoriteRecipe(item)?.let {
             if (it) cardBinding.heart.setImageResource(R.drawable.ic_heart_filled)
             else cardBinding.heart.setImageResource(R.drawable.ic_heart_empty)

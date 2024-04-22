@@ -16,7 +16,8 @@ class RecipesDBHelper : DBHelper<RecipeMeta>(
     }
 
     fun getUserCreatedRecipes(resultListener: (List<RecipeMeta>) -> Unit) {
-        val query = db.collection(rootCollection).whereEqualTo("imageType", "image/jpg")
+        val query = db.collection(rootCollection)
+            .whereNotEqualTo("createdBy", "SpoonacularApi")
         getDocuments(query, RecipeMeta::class.java, resultListener)
     }
 
