@@ -10,7 +10,7 @@ import com.example.platepal.data.UserMeta
 import com.example.platepal.repository.Storage
 import com.example.platepal.repository.UserDBHelper
 import com.google.firebase.auth.FirebaseAuth
-import edu.cs371m.reddit.glide.Glide
+import com.example.platepal.glide.Glide
 import java.io.File
 
 class UserViewModel : ViewModel() {

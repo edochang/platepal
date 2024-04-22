@@ -9,7 +9,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.platepal.MainActivity
 import com.example.platepal.api.SpoonacularApi
 import com.example.platepal.data.DummyRepository
-import com.example.platepal.data.PostMeta
 import com.example.platepal.data.RecipeInfoMeta
 import com.example.platepal.data.RecipeMeta
 import com.example.platepal.data.SpoonacularRecipeInfo
@@ -21,7 +20,7 @@ import com.example.platepal.repository.RecipeInfoDBHelper
 import com.example.platepal.repository.RecipesDBHelper
 import com.example.platepal.repository.SpoonacularRecipeRepository
 import com.example.platepal.repository.Storage
-import edu.cs371m.reddit.glide.Glide
+import com.example.platepal.glide.Glide
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.File

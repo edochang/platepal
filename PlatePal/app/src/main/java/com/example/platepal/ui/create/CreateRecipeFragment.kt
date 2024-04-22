@@ -49,6 +49,7 @@ class CreateRecipeFragment : Fragment() {
     }
 
     private fun saveAndNavigate(recipeMeta: RecipeMeta) {
+        //TODO(Check with Ed to see if this needs to be changed to initUserCreatedRecipeList?
         mainActivity.initRecipeList()
         val action = CreateRecipeFragmentDirections.actionCreateRecipeToOneRecipe(recipeMeta)
         findNavController().navigate(action, navOptions {

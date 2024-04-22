@@ -2,14 +2,13 @@ package com.example.platepal.ui.viewmodel
 
 import android.util.Log
 import android.widget.ImageView
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.platepal.data.PostMeta
 import com.example.platepal.data.RecipeMeta
 import com.example.platepal.data.StorageDirectory
 import com.example.platepal.repository.PostsDBHelper
 import com.example.platepal.repository.Storage
-import edu.cs371m.reddit.glide.Glide
+import com.example.platepal.glide.Glide
 import java.io.File
 
 class OnePostViewModel : ViewModel() {

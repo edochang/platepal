@@ -133,6 +133,22 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun initUserCreatedRecipeList(){
+        progressBarOn()
+        viewModel.fetchReposUserCreatedRecipeList {
+            //Log.d(TAG, "Recipes retrieval listener invoked.")
+            progressBarOff()  // TODO: Need to redo progress bar.  You'll have a race between the two recipe list.
+        }
+    }
+
+    private fun initAllRecipeList(){
+        progressBarOn()
+        viewModel.fetchAllRecipeList {
+            //Log.d(TAG, "Recipes retrieval listener invoked.")
+            progressBarOff()
+        }
+    }
+
     private fun initTitleObservers() {
         // Observe title changes
         viewModel.observeTitle().observe(this) {
@@ -165,8 +181,14 @@ class MainActivity : AppCompatActivity() {
         // Initialize User Data
         initUserSession()
 
-        // Retrieve Recipes
-        //initRecipeList()
+        // Retrieve Spoonacular Recipes
+        initRecipeList()  // TODO: Favorites will not work with this implementation.
+
+        //retrieve user created recipes
+        initUserCreatedRecipeList()
+
+        //Retrieve spoonacular + user created recipes
+        initAllRecipeList()
 
         progressBarOn()
         //fetch initial favorite recipe list for user

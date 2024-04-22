@@ -18,7 +18,7 @@ import com.example.platepal.repository.RecipesDBHelper
 import com.example.platepal.repository.SpoonacularRecipeRepository
 import com.example.platepal.repository.Storage
 import com.google.firebase.Timestamp
-import edu.cs371m.reddit.glide.Glide
+import com.example.platepal.glide.Glide
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.time.Duration
@@ -53,7 +53,7 @@ class MainViewModel : ViewModel() {
         this.value = false
     }
 
-    // Maintain a list of all Recipe items
+    // Maintain a list of all Spoonacular Recipe items
     private var recipeList = MediatorLiveData<List<RecipeMeta>>().apply {
         addSource(initFavList) {
             if (it) {
@@ -64,10 +64,32 @@ class MainViewModel : ViewModel() {
         }
     }
 
+    //Maintain a list of user created recipe items
+    private var userCreatedRecipeList = MutableLiveData<List<RecipeMeta>>()
+
+    //Maintain a list of Spoonacular + User-created recipe items
+    private var allRecipeList = MutableLiveData<List<RecipeMeta>>()
+
+    //title of the fragment
     private var title = MutableLiveData<String>()  // fragment title
     private var randomSpotlightRecipe = MutableLiveData<RecipeMeta>()
 
-    // Getter
+    // Photo Metadata
+    var pictureNameByUser = "" // String provided by the user
+    private var pictureUUID = ""
+
+    fun observeRecipeList(): LiveData<List<RecipeMeta>> {
+        return recipeList
+    }
+
+    fun observeUserCreatedRecipeList(): LiveData<List<RecipeMeta>> {
+        return userCreatedRecipeList
+    }
+
+    fun observeAllRecipeList(): LiveData<List<RecipeMeta>> {
+        return allRecipeList
+    }
+
     fun getRecipeList(): List<RecipeMeta> {
         return recipeList.value ?: emptyList()
     }
@@ -95,10 +117,6 @@ class MainViewModel : ViewModel() {
     }
 
     // Observers
-    fun observeRecipeList(): LiveData<List<RecipeMeta>> {
-        return recipeList
-    }
-
     fun observeRandomSpotlightRecipe(): LiveData<RecipeMeta> {
         return randomSpotlightRecipe
     }
@@ -116,6 +134,24 @@ class MainViewModel : ViewModel() {
                 storage.uuid2StorageReference(image, StorageDirectory.RECIPE),
                 imageView
             )
+        }
+    }
+
+    fun fetchReposUserCreatedRecipeList(resultListener: () -> Unit){
+        recipesDBHelper.getUserCreatedRecipes {
+            if (it.isNotEmpty()) {
+                userCreatedRecipeList.postValue(it)
+                resultListener.invoke()
+            }
+        }
+    }
+
+    fun fetchAllRecipeList(resultListener: () -> Unit){
+        recipesDBHelper.getAllRecipes {
+            if (it.isNotEmpty()) {
+                allRecipeList.postValue(it)
+                resultListener.invoke()
+            }
         }
     }
 

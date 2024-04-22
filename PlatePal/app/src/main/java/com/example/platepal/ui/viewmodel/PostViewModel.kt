@@ -8,7 +8,7 @@ import com.example.platepal.data.PostMeta
 import com.example.platepal.data.StorageDirectory
 import com.example.platepal.repository.PostsDBHelper
 import com.example.platepal.repository.Storage
-import edu.cs371m.reddit.glide.Glide
+import com.example.platepal.glide.Glide
 
 class PostViewModel : ViewModel() {
     companion object {

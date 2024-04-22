@@ -7,11 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.platepal.R
 import com.example.platepal.databinding.DiscoverFragmentBinding
-import edu.cs371m.reddit.glide.Glide
+import com.example.platepal.glide.Glide
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSnapHelper
 import com.example.platepal.MainActivity
 import com.example.platepal.ui.viewmodel.MainViewModel
 import com.example.platepal.ui.viewmodel.UserViewModel
@@ -52,27 +53,42 @@ class DiscoverFragment : Fragment() {
 
         val mainActivity = (requireActivity() as MainActivity)
 
-        //bind adapter
-        val adapter = RecipeAdapter(viewModel, userViewModel) {
+        val mainActivity = (requireActivity() as MainActivity)
+
+        //bind adapter to show Popular list
+        val popularAdapter = RecipeAdapter(viewModel, userViewModel) {
             val action = DiscoverFragmentDirections.actionDiscoverToOnePost(it)
             findNavController().navigate(action)
         }
-        binding.discoverRv.adapter = adapter
+        binding.discoverRv.adapter = popularAdapter
+        val popularLayoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
+        binding.discoverRv.layoutManager = popularLayoutManager
+        val snapHelperPopular = LinearSnapHelper()
+        snapHelperPopular.attachToRecyclerView(binding.discoverRv)
 
-        // grid layout for RecyclerView
-        val layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-        binding.discoverRv.layoutManager = layoutManager
-
-        //userViewModel.fetchInitialFavRecipes{
-        //  Log.d(TAG, "favorite recipe list listener invoked")
-        //}
-
-
-        //populate recipe list
         viewModel.observeRecipeList().observe(viewLifecycleOwner) {
-            adapter.submitList(it)
+            popularAdapter.submitList(it)
             viewModel.setRandomRecipe()
-            mainActivity.progressBarOff()
+            Log.d(TAG, "popular list size is ${it.size}")
+        }
+
+        //bind adapter to show User Created List
+        //TODO(make sure that the list is not empty first. If empty, view gone)
+        val userCreatedAdapter = RecipeAdapter(viewModel, userViewModel) {
+            val action = DiscoverFragmentDirections.actionDiscoverToOnePost(it)
+            findNavController().navigate(action)
+        }
+        binding.userCreatedRv.adapter = userCreatedAdapter
+        val userCreatedLayoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
+        binding.userCreatedRv.layoutManager = userCreatedLayoutManager
+
+        val snapHelperUser = LinearSnapHelper()
+        snapHelperUser.attachToRecyclerView(binding.userCreatedRv)
+
+         viewModel.observeUserCreatedRecipeList().observe(viewLifecycleOwner){
+             userCreatedAdapter.submitList(it)
+             Log.d(TAG, "user created list size is ${it.size}")
+             //mainActivity.progressBarOff()  // TODO: review progress functionality.  This could break.
         }
 
         //populate spotlight
