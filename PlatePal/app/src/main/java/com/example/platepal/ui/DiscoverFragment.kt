@@ -83,12 +83,14 @@ class DiscoverFragment : Fragment() {
                 val userCreatedLayoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
                 binding.userCreatedRv.layoutManager = userCreatedLayoutManager
 
+                /*
                 //snaphelper does not work well when there are only 3 recipes
                 //given the size of our recipe cards
                 if(it.size > 3){
                     val snapHelperUser = LinearSnapHelper()
                     snapHelperUser.attachToRecyclerView(binding.userCreatedRv)
                 }
+                 */
                 userCreatedAdapter.submitList(it)
                 Log.d(TAG, "user created list size is ${it.size}")
             }else{
