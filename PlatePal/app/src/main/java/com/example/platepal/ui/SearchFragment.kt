@@ -10,6 +10,7 @@ import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.platepal.MainActivity
 import com.example.platepal.data.RecipeMeta
 import com.example.platepal.databinding.SearchFragmentBinding
@@ -84,7 +85,10 @@ class SearchFragment : Fragment() {
         binding.searchRv.adapter = adapter
 
         // linear layout for RecyclerView
-        binding.searchRv.layoutManager = LinearLayoutManager(activity)
+        //binding.searchRv.layoutManager = LinearLayoutManager(activity)
+
+        val layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+        binding.searchRv.layoutManager = layoutManager
 
         //populate recipe list
         //adapter.submitList(viewModel.getCopyOfRecipeList())

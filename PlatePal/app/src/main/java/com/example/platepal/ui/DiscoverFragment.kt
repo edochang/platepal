@@ -71,23 +71,31 @@ class DiscoverFragment : Fragment() {
         }
 
         //bind adapter to show User Created List
-        //TODO(make sure that the list is not empty first. If empty, view gone)
-        val userCreatedAdapter = RecipeAdapter(viewModel, userViewModel) {
-            val action = DiscoverFragmentDirections.actionDiscoverToOnePost(it)
-            findNavController().navigate(action)
-        }
-        binding.userCreatedRv.adapter = userCreatedAdapter
-        val userCreatedLayoutManager =
-            LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
-        binding.userCreatedRv.layoutManager = userCreatedLayoutManager
+        viewModel.observeUserCreatedRecipeList().observe(viewLifecycleOwner){
+            if (it.isNotEmpty()){
+                binding.userCreatedText.visibility = View.VISIBLE
+                binding.userCreatedRv.visibility = View.VISIBLE
+                val userCreatedAdapter = RecipeAdapter(viewModel, userViewModel) {
+                    val action = DiscoverFragmentDirections.actionDiscoverToOnePost(it)
+                    findNavController().navigate(action)
+                }
+                binding.userCreatedRv.adapter = userCreatedAdapter
+                val userCreatedLayoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
+                binding.userCreatedRv.layoutManager = userCreatedLayoutManager
 
-        val snapHelperUser = LinearSnapHelper()
-        snapHelperUser.attachToRecyclerView(binding.userCreatedRv)
+                //snaphelper does not work well when there are only 3 recipes
+                //given the size of our recipe cards
+                if(it.size > 3){
+                    val snapHelperUser = LinearSnapHelper()
+                    snapHelperUser.attachToRecyclerView(binding.userCreatedRv)
+                }
+                userCreatedAdapter.submitList(it)
+                Log.d(TAG, "user created list size is ${it.size}")
+            }else{
+                binding.userCreatedText.visibility = View.GONE
+                binding.userCreatedRv.visibility = View.GONE
+            }
 
-        viewModel.observeUserCreatedRecipeList().observe(viewLifecycleOwner) {
-            userCreatedAdapter.submitList(it)
-            Log.d(TAG, "user created list size is ${it.size}")
-            //mainActivity.progressBarOff()
         }
 
         //populate spotlight
