@@ -64,6 +64,7 @@ class SearchFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.setTitle("Search")
+        recipeList = viewModel.getAllRecipeList()
 
         val fromAddress = requireArguments().getString("fromAddress")
 

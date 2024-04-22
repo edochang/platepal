@@ -111,6 +111,10 @@ class MainViewModel : ViewModel() {
         return allRecipeList
     }
 
+    fun getAllRecipeList(): List<RecipeMeta> {
+        return allRecipeList.value ?: emptyList()
+    }
+
     fun getRecipeList(): List<RecipeMeta> {
         return recipeList.value ?: emptyList()
     }
