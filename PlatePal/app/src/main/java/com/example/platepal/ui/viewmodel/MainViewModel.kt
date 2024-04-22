@@ -8,7 +8,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.platepal.MainActivity
 import com.example.platepal.api.SpoonacularApi
-import com.example.platepal.camera.TakePictureWrapper
 import com.example.platepal.data.DummyRepository
 import com.example.platepal.data.RecipeMeta
 import com.example.platepal.data.SpoonacularRecipe
@@ -18,7 +17,7 @@ import com.example.platepal.repository.RecipesDBHelper
 import com.example.platepal.repository.SpoonacularRecipeRepository
 import com.example.platepal.repository.Storage
 import com.google.firebase.Timestamp
-import edu.cs371m.reddit.glide.Glide
+import com.example.platepal.glide.Glide
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.time.Duration
@@ -52,6 +51,9 @@ class MainViewModel : ViewModel() {
     // Maintain a list of all Recipe items
     private var recipeList = MutableLiveData<List<RecipeMeta>>()
 
+    //Maintain a list of user created recipe items
+    private var userCreatedRecipeList = MutableLiveData<List<RecipeMeta>>()
+
     //title of the fragment
     private var title = MutableLiveData<String>()
 
@@ -65,6 +67,10 @@ class MainViewModel : ViewModel() {
 
     fun observeRecipeList(): LiveData<List<RecipeMeta>> {
         return recipeList
+    }
+
+    fun observeUserCreatedRecipeList(): LiveData<List<RecipeMeta>> {
+        return userCreatedRecipeList
     }
 
     fun getRecipeList(): List<RecipeMeta> {
@@ -107,6 +113,16 @@ class MainViewModel : ViewModel() {
             )
         }
     }
+
+    fun fetchReposUserCreatedRecipeList(resultListener: () -> Unit){
+        recipesDBHelper.getUserCreatedRecipes {
+            if (it.isNotEmpty()) {
+                userCreatedRecipeList.postValue(it)
+                resultListener.invoke()
+            }
+        }
+    }
+
 
     fun fetchReposRecipeList(resultListener: () -> Unit) {
         recipesDBHelper.getRecipes {

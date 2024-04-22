@@ -11,9 +11,6 @@ import com.example.platepal.data.RecipeMeta
 import com.example.platepal.databinding.RecipeCardBinding
 import com.example.platepal.ui.viewmodel.MainViewModel
 import com.example.platepal.ui.viewmodel.UserViewModel
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
-import edu.cs371m.reddit.glide.Glide
 
 class RecipeAdapter(
     private val viewModel: MainViewModel,

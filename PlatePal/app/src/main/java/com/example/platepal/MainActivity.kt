@@ -142,6 +142,14 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    fun initUserCreatedRecipeList(){
+        progressBarOn()
+        viewModel.fetchReposUserCreatedRecipeList {
+            //Log.d(TAG, "Recipes retrieval listener invoked.")
+            progressBarOff()
+        }
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -155,6 +163,9 @@ class MainActivity : AppCompatActivity() {
 
         // Retrieve Recipes
         initRecipeList()
+
+        //retrieve user created recipes
+        initUserCreatedRecipeList()
 
         //fetch initial favorite recipe list for user
         userViewModel.fetchInitialFavRecipes {

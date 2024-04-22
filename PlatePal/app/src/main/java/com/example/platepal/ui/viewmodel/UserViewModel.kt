@@ -5,15 +5,11 @@ import android.widget.ImageView
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.platepal.camera.TakePictureWrapper
 import com.example.platepal.data.RecipeMeta
 import com.example.platepal.data.UserMeta
-import com.example.platepal.repository.DBHelper
 import com.example.platepal.repository.Storage
 import com.example.platepal.repository.UserDBHelper
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
-import edu.cs371m.reddit.glide.Glide
+import com.example.platepal.glide.Glide
 import java.io.File
 
 class UserViewModel : ViewModel() {

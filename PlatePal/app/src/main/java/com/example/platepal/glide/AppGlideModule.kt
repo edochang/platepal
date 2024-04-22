@@ -1,8 +1,7 @@
-package edu.cs371m.reddit.glide
+package com.example.platepal.glide
 
 import android.content.Context
 import android.content.res.Resources
-import android.os.Build
 import android.text.Html
 import android.util.Log
 import android.widget.ImageView
@@ -16,6 +15,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.firebase.ui.storage.images.FirebaseImageLoader
 import com.example.platepal.R
 import com.google.firebase.storage.StorageReference
+import edu.cs371m.reddit.glide.GlideApp
 import java.io.File
 import java.io.InputStream
 
@@ -85,6 +85,7 @@ object Glide {
             .error(android.R.color.holo_red_dark)
             .override(width, height)
             .into(imageView)
+        Log.d("Glide", "the image width is $width, image height is $height")
     }
 
     fun fetchFromLocal(photoFile: File, imageView: ImageView) {
