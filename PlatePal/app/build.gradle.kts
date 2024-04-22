@@ -28,12 +28,19 @@ android {
         val keystoreFile = project.rootProject.file("secrets.properties")
         val properties = Properties()
         properties.load(keystoreFile.inputStream())
-        val apiKey = properties.getProperty("SPOONACULAR_API_KEY") ?: ""
+        val spoonacularApiKey = properties.getProperty("SPOONACULAR_API_KEY") ?: ""
+        val geminiApiKey = properties.getProperty("GEMINI_API_KEY") ?: ""
 
         buildConfigField(
             type = "String",
             name = "SPOONACULAR_API_KEY",
-            value = apiKey
+            value = spoonacularApiKey
+        )
+
+        buildConfigField(
+            type = "String",
+            name = "GEMINI_API_KEY",
+            value = geminiApiKey
         )
     }
 
