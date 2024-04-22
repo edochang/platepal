@@ -51,7 +51,9 @@
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tab_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="@color/baby_pink" />
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/view_pager"
@@ -99,7 +101,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:background="@color/baby_pink"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:visibility="gone">
 
         <TextView
             android:layout_width="0dp"

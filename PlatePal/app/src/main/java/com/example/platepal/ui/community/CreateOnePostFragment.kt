@@ -18,6 +18,7 @@ import com.example.platepal.data.CreatePostValidations
 import com.example.platepal.data.PostMeta
 import com.example.platepal.data.RecipeMeta
 import com.example.platepal.databinding.CommunityCreateFragmentBinding
+import com.example.platepal.ui.viewmodel.MainViewModel
 import com.example.platepal.ui.viewmodel.OnePostViewModel
 import com.example.platepal.ui.viewmodel.UserViewModel
 
@@ -28,6 +29,7 @@ class CreateOnePostFragment : Fragment() {
 
     private var _binding: CommunityCreateFragmentBinding? = null
     private val binding get() = _binding!!
+    private val mainViewModel: MainViewModel by activityViewModels()
     private val onePostViewModel: OnePostViewModel by activityViewModels()
     private val userViewModel: UserViewModel by activityViewModels()
 
@@ -91,6 +93,7 @@ class CreateOnePostFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d(javaClass.simpleName, "onViewCreated")
+        mainViewModel.setTitle("PlatePal")
 
         val recipeMeta: RecipeMeta? = onePostViewModel.recipeMeta
         val trigger = requireArguments().getString("trigger")

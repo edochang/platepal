@@ -4,6 +4,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.compose.ui.graphics.Color
+import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -43,18 +44,22 @@ class PostAdapter(
 
         val userRecord = userViewModel.userMetaList.filter {
             it.uid == item.createdBy
-        }.first()
+        }
+        val user = if (userRecord.isNotEmpty()) userRecord.first()
+        else null
         //Log.d(TAG, "Size: ${userViewModel.userMetaList.size}:: ${userViewModel.userMetaList}")
         //Log.d(TAG, "Size: ${userRecord.size}:: $userRecord")
 
-        if (userRecord.pictureUUID.isNotEmpty()) {
-            binding.postUserProfilePicture.setImageResource(R.drawable.transparent)
-            binding.postUserProfilePicture.setBackgroundColor(Color.Transparent.hashCode())
-            binding.postUserProfilePicture.imageTintList = null
-            userViewModel.fetchProfilePhoto(userRecord.pictureUUID, binding.postUserProfilePicture)
+        user?.let {
+            if (it.pictureUUID.isNotEmpty()) {
+                binding.postUserProfilePicture.setImageResource(R.drawable.transparent)
+                binding.postUserProfilePicture.setBackgroundColor(Color.Transparent.hashCode())
+                binding.postUserProfilePicture.imageTintList = null
+                userViewModel.fetchProfilePhoto(it.pictureUUID, binding.postUserProfilePicture)
+            }
         }
 
-        binding.postUsername.text = userRecord.fullName
+        binding.postUsername.text = user?.fullName ?: "Anonymous Chef"
         viewModel.fetchPostPhoto(item.picture, binding.postImage)
         binding.postRecipe.text = item.recipeTitle
         binding.postBody.text = item.postMessage

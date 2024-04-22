@@ -28,30 +28,25 @@ class SearchFragment : Fragment() {
     private val viewModel: MainViewModel by activityViewModels()
     private val userViewModel: UserViewModel by activityViewModels()
     private val onePostViewModel: OnePostViewModel by activityViewModels()
+    private lateinit var recipeList: List<RecipeMeta>
 
     //search
     private fun filterList(query: String?, adapter: RecipeAdapter, view: View) {
-        Log.d(TAG, "Enter filterList with query: $query")
-        var recipeList: List<RecipeMeta> = emptyList()
-        viewModel.observeAllRecipeList().observe(viewLifecycleOwner) {
-            recipeList = it
-        }
+        Log.d(TAG, "Enter filterList with query: $query (adapter: $adapter, view: $view")
 
         query?.let {
-            if (it.isNotEmpty()) {
-                val filteredList = mutableListOf<RecipeMeta>()
-                for (i in recipeList) {
-                    if (i.title.lowercase().contains(query)) {
-                        filteredList.add(i)
-                    }
+            val filteredList = mutableListOf<RecipeMeta>()
+            for (i in recipeList) {
+                if (i.title.lowercase().contains(query)) {
+                    filteredList.add(i)
                 }
-                if (filteredList.isEmpty()) {
-                    //Toast.makeText(activity, "No data found", Toast.LENGTH_SHORT).show()
-                    view.visibility = View.GONE // remove recycler view list
-                } else {
-                    view.visibility = View.VISIBLE  // put rv list back in
-                    adapter.submitList(filteredList)
-                }
+            }
+            if (filteredList.isEmpty()) {
+                //Toast.makeText(activity, "No data found", Toast.LENGTH_SHORT).show()
+                view.visibility = View.GONE // remove recycler view list
+            } else {
+                view.visibility = View.VISIBLE  // put rv list back in
+                adapter.submitList(filteredList)
             }
         }
     }
@@ -93,7 +88,11 @@ class SearchFragment : Fragment() {
         //populate recipe list
         //adapter.submitList(viewModel.getCopyOfRecipeList())
         viewModel.observeAllRecipeList().observe(viewLifecycleOwner) {
-            adapter.submitList(it)
+            recipeList = it
+            if (binding.search.query.isEmpty()) {
+                adapter.submitList(it)
+            }
+            Log.d(TAG, "Search query: ${binding.search.query.toString()}")
         }
 
         //search
@@ -101,6 +100,7 @@ class SearchFragment : Fragment() {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 //hides keyboard when submitted a query
                 //but does not hide keybarod when submitting empty query
+                Log.d(TAG, "search.onQueryTextSubmit")
                 binding.search.clearFocus()
                 return false
             }

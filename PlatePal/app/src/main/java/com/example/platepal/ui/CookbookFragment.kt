@@ -35,10 +35,9 @@ class CookbookFragment : Fragment() {
         //Log.d(javaClass.simpleName, "onViewCreated")
         _binding = CookbookFragmentBinding.bind(view)
         super.onViewCreated(view, savedInstanceState)
-
         viewModel.setTitle("PlatePal")
 
-        val adapter = RecipeAdapter(viewModel, userViewModel){
+        val adapter = RecipeAdapter(viewModel, userViewModel) {
             val action = CookbookFragmentDirections.actionCookbookToOneRecipe(it)
             findNavController().navigate(action)
         }
@@ -48,12 +47,11 @@ class CookbookFragment : Fragment() {
         val layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         binding.cookbookRv.layoutManager = layoutManager
 
-        userViewModel.observeDbFavList().observe(viewLifecycleOwner){
-            if (it.isNotEmpty()){
+        userViewModel.observeDbFavList().observe(viewLifecycleOwner) {
+            if (it.isNotEmpty()) {
                 binding.placeholder.visibility = View.GONE
                 //Log.d(javaClass.simpleName, "placeholder view gone")
-            }
-            else {
+            } else {
                 binding.placeholder.visibility = View.VISIBLE
                 //Log.d(javaClass.simpleName, "placeholder view visible")
             }
@@ -61,7 +59,7 @@ class CookbookFragment : Fragment() {
         }
 
         //search
-        binding.search.setOnQueryTextListener(object: SearchView.OnQueryTextListener{
+        binding.search.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 //hides keyboard when submitted a query
                 //but does not hide keybarod when submitting empty query
@@ -76,19 +74,19 @@ class CookbookFragment : Fragment() {
         })
     }
 
-    private fun filterFavList(query: String?, adapter: RecipeAdapter, view: View){
+    private fun filterFavList(query: String?, adapter: RecipeAdapter, view: View) {
 
-        if (query != null){
-            val filteredList =  mutableListOf<RecipeMeta>()
-            for (i in userViewModel.getFavList()!!){
+        if (query != null) {
+            val filteredList = mutableListOf<RecipeMeta>()
+            for (i in userViewModel.getFavList()!!) {
                 if (i.title.lowercase().contains(query)) {
                     filteredList.add(i)
                 }
             }
-            if (filteredList.isEmpty()){
+            if (filteredList.isEmpty()) {
                 //Toast.makeText(activity, "No data found", Toast.LENGTH_SHORT).show()
                 view.visibility = View.GONE // remove recycler view list
-            }else{
+            } else {
                 view.visibility = View.VISIBLE  // put rv list back in
                 adapter.submitList(filteredList)
             }
