@@ -87,7 +87,7 @@ class DiscoverFragment : Fragment() {
         viewModel.observeUserCreatedRecipeList().observe(viewLifecycleOwner) {
             userCreatedAdapter.submitList(it)
             Log.d(TAG, "user created list size is ${it.size}")
-            //mainActivity.progressBarOff()  // TODO: review progress functionality.  This could break.
+            //mainActivity.progressBarOff()
         }
 
         //populate spotlight

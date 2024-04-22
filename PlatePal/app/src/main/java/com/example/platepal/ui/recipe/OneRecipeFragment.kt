@@ -79,13 +79,6 @@ class OneRecipeFragment : Fragment() {
         val mainActivity = (requireActivity() as MainActivity)
         val recipe = args.recipe
 
-        oneRecipeViewModel.fetchDone.observe(viewLifecycleOwner) {
-            Log.d(TAG, "Observer fetchDone: ${oneRecipeViewModel.fetchDone.value}")
-            if (it) {
-                mainActivity.progressBarOff()
-            }
-        }
-
         oneRecipeViewModel.fetchDone.value = false
         Log.d(TAG, "set fetchDone false (value: ${oneRecipeViewModel.fetchDone.value})")
         mainActivity.progressBarOn()
