@@ -1,5 +1,6 @@
 package com.example.platepal.ui.community
 
+import android.content.res.ColorStateList
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -23,6 +24,7 @@ class PostAdapter(
     companion object {
         const val TAG = "PostAdapter"
     }
+    private lateinit var imageTintList: ColorStateList
 
     inner class VH(val communityPostCardBinding: CommunityPostCardBinding) :
         RecyclerView.ViewHolder(communityPostCardBinding.root) {
@@ -35,6 +37,9 @@ class PostAdapter(
             parent,
             false
         )
+        rowBinding.postUserProfilePicture.imageTintList?.let {
+            imageTintList = it
+        }
         return VH(rowBinding)
     }
 
@@ -50,12 +55,18 @@ class PostAdapter(
         //Log.d(TAG, "Size: ${userViewModel.userMetaList.size}:: ${userViewModel.userMetaList}")
         //Log.d(TAG, "Size: ${userRecord.size}:: $userRecord")
 
+
         user?.let {
             if (it.pictureUUID.isNotEmpty()) {
                 binding.postUserProfilePicture.setImageResource(R.drawable.transparent)
                 binding.postUserProfilePicture.setBackgroundColor(Color.Transparent.hashCode())
                 binding.postUserProfilePicture.imageTintList = null
                 userViewModel.fetchProfilePhoto(it.pictureUUID, binding.postUserProfilePicture)
+            } else {
+                binding.postUserProfilePicture.setImageResource(R.drawable.ic_profile)
+                binding.postUserProfilePicture.setBackgroundColor(
+                    android.graphics.Color.parseColor("#FFE493"))
+                binding.postUserProfilePicture.imageTintList = imageTintList
             }
         }
 
