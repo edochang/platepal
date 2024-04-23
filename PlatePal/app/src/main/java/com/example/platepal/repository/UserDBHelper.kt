@@ -32,13 +32,19 @@ class UserDBHelper : DBHelper<UserMeta>(
             .addOnFailureListener { e -> Log.w(TAG, "Error writing document.", e) }
     }
 
-    private fun getCurrentUserDocID(resultListener: (id: String) -> Unit) {
+    private fun getCurrentUserDocID(resultListener: (id: String?) -> Unit) {
         db.collection(rootCollection)
             .whereEqualTo("uid", userID)
             .get()
             .addOnSuccessListener { result ->
-                Log.d(TAG, "doc id retrieval success: ${result.documents[0].id}")
-                resultListener(result.documents[0].id)
+                if (result.documents.isNotEmpty()) {
+                    Log.d(TAG, "doc id retrieval success: ${result.documents[0].id}")
+                    resultListener(result.documents[0].id)
+                } else {
+                    Log.d(TAG, "doc id retrieval success, but no Id.  User not logged in" +
+                            " or no registered user for the app")
+                    resultListener(null)
+                }
             }
             .addOnFailureListener {
                 Log.d(TAG, "doc id retrieval failed")
@@ -48,20 +54,24 @@ class UserDBHelper : DBHelper<UserMeta>(
 
     private fun dbFetchFavRecipes(callback: (list: List<RecipeMeta>) -> Unit) {
         getCurrentUserDocID { userDocID ->
-            db.collection(rootCollection)
-                .document(userDocID)
-                .collection(subCollection)
-                .get()
-                .addOnSuccessListener { result ->
-                    Log.d(TAG, "all favorite recipes fetch ${result!!.documents.size}")
-                    // done on a background thread
-                    callback(result.documents.mapNotNull {
-                        it.toObject(RecipeMeta::class.java)
-                    })
-                }
-                .addOnFailureListener {
-                    Log.d(TAG, "all favorite recipes fetc FAILED ", it)
-                }
+            if (userDocID != null) {
+                db.collection(rootCollection)
+                    .document(userDocID)
+                    .collection(subCollection)
+                    .get()
+                    .addOnSuccessListener { result ->
+                        Log.d(TAG, "all favorite recipes fetch ${result!!.documents.size}")
+                        // done on a background thread
+                        callback(result.documents.mapNotNull {
+                            it.toObject(RecipeMeta::class.java)
+                        })
+                    }
+                    .addOnFailureListener {
+                        Log.d(TAG, "all favorite recipes fetch FAILED ", it)
+                    }
+            } else {
+                Log.d(TAG, "all favorite recipes cannot be fetched because no logged in user.")
+            }
         }
     }
 
@@ -74,21 +84,25 @@ class UserDBHelper : DBHelper<UserMeta>(
         callback: (list: List<RecipeMeta>) -> Unit
     ) {
         getCurrentUserDocID { userDocID ->
-            db.collection(rootCollection)
-                .document(userDocID)
-                .collection(subCollection)
-                .document(recipe.firestoreId)
-                .set(recipe)
-                .addOnSuccessListener {
-                    Log.d(
-                        TAG, "recipe added with doc id: ${recipe.firestoreId}"
-                    )
-                    dbFetchFavRecipes(callback)
-                }
-                .addOnFailureListener { e ->
-                    Log.d(TAG, "Recipe addition FAILED")
-                    Log.w(TAG, "Error ", e)
-                }
+            if (userDocID != null) {
+                db.collection(rootCollection)
+                    .document(userDocID)
+                    .collection(subCollection)
+                    .document(recipe.firestoreId)
+                    .set(recipe)
+                    .addOnSuccessListener {
+                        Log.d(
+                            TAG, "recipe added with doc id: ${recipe.firestoreId}"
+                        )
+                        dbFetchFavRecipes(callback)
+                    }
+                    .addOnFailureListener { e ->
+                        Log.d(TAG, "Recipe addition FAILED")
+                        Log.w(TAG, "Error ", e)
+                    }
+            } else {
+                Log.d(TAG, "Recipe addition FAILED because no logged in user.")
+            }
         }
     }
 
@@ -98,33 +112,41 @@ class UserDBHelper : DBHelper<UserMeta>(
         callback: (list: List<RecipeMeta>) -> Unit
     ) {
         getCurrentUserDocID { userDocID ->
-            db.collection(rootCollection)
-                .document(userDocID)
-                .collection(subCollection)
-                .document(recipe.firestoreId)
-                .delete()
+            if (userDocID != null) {
+                db.collection(rootCollection)
+                    .document(userDocID)
+                    .collection(subCollection)
+                    .document(recipe.firestoreId)
+                    .delete()
 
-                .addOnSuccessListener {
-                    Log.d(
-                        TAG,
-                        "Recipe deleted sucessfully id: ${recipe.firestoreId}"
-                    )
-                    dbFetchFavRecipes(callback)
-                }
-                .addOnFailureListener { e ->
-                    Log.d(TAG, "Recipe deleting FAILED")
-                    Log.w(TAG, "Error ", e)
-                }
+                    .addOnSuccessListener {
+                        Log.d(
+                            TAG,
+                            "Recipe deleted sucessfully id: ${recipe.firestoreId}"
+                        )
+                        dbFetchFavRecipes(callback)
+                    }
+                    .addOnFailureListener { e ->
+                        Log.d(TAG, "Recipe deleting FAILED")
+                        Log.w(TAG, "Error ", e)
+                    }
+            } else {
+                Log.d(TAG, "Recipe deleting FAILED because there is no logged in user.")
+            }
         }
     }
 
     fun getUserMetaDocuments(
-        resultListener: (UserMeta) -> Unit
+        resultListener: (UserMeta?) -> Unit
     ) {
         val query = db.collection(rootCollection)
             .whereEqualTo("uid", userID)
         super.getDocuments(query, UserMeta::class.java) {
-            resultListener(it.first())
+            if (it.isNotEmpty()) {
+                resultListener(it.first())
+            } else {
+                resultListener(null)
+            }
         }
     }
 

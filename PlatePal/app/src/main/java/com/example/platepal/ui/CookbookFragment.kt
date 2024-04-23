@@ -1,6 +1,7 @@
 package com.example.platepal.ui
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -15,11 +16,15 @@ import com.example.platepal.ui.viewmodel.MainViewModel
 import com.example.platepal.ui.viewmodel.UserViewModel
 
 class CookbookFragment : Fragment() {
+    companion object {
+        const val TAG = "CookbookFragment"
+    }
 
     private var _binding: CookbookFragmentBinding? = null
     private val binding get() = _binding!!
     private val viewModel: MainViewModel by activityViewModels()
     private val userViewModel: UserViewModel by activityViewModels()
+    private lateinit var favList: List<RecipeMeta>
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,6 +41,7 @@ class CookbookFragment : Fragment() {
         _binding = CookbookFragmentBinding.bind(view)
         super.onViewCreated(view, savedInstanceState)
         viewModel.setTitle("PlatePal")
+        favList = userViewModel.getFavList()
 
         val adapter = RecipeAdapter(viewModel, userViewModel) {
             val action = CookbookFragmentDirections.actionCookbookToOneRecipe(it)
@@ -48,6 +54,7 @@ class CookbookFragment : Fragment() {
         binding.cookbookRv.layoutManager = layoutManager
 
         userViewModel.observeDbFavList().observe(viewLifecycleOwner) {
+            favList = it
             if (it.isNotEmpty()) {
                 binding.placeholder.visibility = View.GONE
                 //Log.d(javaClass.simpleName, "placeholder view gone")
@@ -55,7 +62,10 @@ class CookbookFragment : Fragment() {
                 binding.placeholder.visibility = View.VISIBLE
                 //Log.d(javaClass.simpleName, "placeholder view visible")
             }
-            adapter.submitList(it)
+            if (binding.search.query.isEmpty()) {
+                adapter.submitList(it)
+            }
+            Log.d(TAG, "Search query: ${binding.search.query.toString()}")
         }
 
         //search
@@ -75,10 +85,11 @@ class CookbookFragment : Fragment() {
     }
 
     private fun filterFavList(query: String?, adapter: RecipeAdapter, view: View) {
+        Log.d(TAG, "Enter filterList with query: $query (adapter: $adapter, view: $view")
 
-        if (query != null) {
+        query?.let {
             val filteredList = mutableListOf<RecipeMeta>()
-            for (i in userViewModel.getFavList()!!) {
+            for (i in favList) {
                 if (i.title.lowercase().contains(query)) {
                     filteredList.add(i)
                 }

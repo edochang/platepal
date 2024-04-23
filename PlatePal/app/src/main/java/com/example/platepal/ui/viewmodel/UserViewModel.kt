@@ -157,8 +157,8 @@ class UserViewModel : ViewModel() {
 
     //Managing User Favorites
     // getter - favorite
-    fun getFavList(): MutableList<RecipeMeta>? {
-        return dbFavList.value?.toMutableList()
+    fun getFavList(): List<RecipeMeta> {
+        return dbFavList.value ?: emptyList()
     }
 
     //setters -favorite, using db

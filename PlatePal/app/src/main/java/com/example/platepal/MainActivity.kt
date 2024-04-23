@@ -108,14 +108,14 @@ class MainActivity : AppCompatActivity() {
     private fun initAllRecipeList(){
         progressBarOn()
         viewModel.fetchAllRecipeList {
-            //Log.d(TAG, "Recipes retrieval listener invoked.")
+            Log.d(TAG, "All Recipes retrieval listener invoked.")
             progressBarOff()
         }
     }
 
     private fun initOtherObservers() {
         oneRecipeViewModel.fetchDone.observe(this) {
-            Log.d(TAG, "Observer fetchDone: ${oneRecipeViewModel.fetchDone.value}")
+            Log.d(TAG, "One Recipe observer fetchDone: ${oneRecipeViewModel.fetchDone.value}")
             if (it) {
                 progressBarOff()
             }
@@ -200,7 +200,7 @@ class MainActivity : AppCompatActivity() {
         //initUserCreatedRecipeList() //retrieve user created recipes
         initAllRecipeList() //Retrieve spoonacular + user created recipes
 
-        progressBarOn()
+        //progressBarOn()
         //fetch initial favorite recipe list for user
         userViewModel.fetchInitialFavRecipes {
             //Log.d(TAG, "favorite recipe list listener invoked")

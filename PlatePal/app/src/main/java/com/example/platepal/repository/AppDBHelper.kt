@@ -13,11 +13,24 @@ class AppDBHelper: DBHelper<AppMeta>(
 
     override val limit: Long = 1L
 
-    fun getAppMeta(resultListener: (AppMeta) -> Unit) {
+    fun getOrCreateAppMeta(resultListener: (AppMeta?) -> Unit) {
         val query = db.collection(rootCollection)
 
         super.getAndLimitDocuments(query, AppMeta::class.java) {
-            resultListener(it.first())
+            if (it.isNotEmpty()) {
+                resultListener(it.first())
+            } else {
+                val appMeta = AppMeta(
+                    0L,
+                    0
+                )
+
+                createDocument(appMeta) { id ->
+                    super.getAndLimitDocuments(query, AppMeta::class.java) { appMetaDoc ->
+                        resultListener(appMetaDoc.first())
+                    }
+                }
+            }
         }
     }
 

@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.platepal.MainActivity
 import com.example.platepal.api.SpoonacularApi
+import com.example.platepal.data.AppMeta
 import com.example.platepal.data.DummyRepository
 import com.example.platepal.data.RecipeMeta
 import com.example.platepal.data.SpoonacularRecipe
@@ -35,13 +36,15 @@ class MainViewModel : ViewModel() {
     // API Interfaces
     private val spoonacularApi = SpoonacularApi.create()
     private var lastSpoonacularSearchApiCall: Timestamp? = null
-    private var appMetaDocumentId: String = "".apply {
-        appDBHelper.getAppMeta {
-            appMetaDocumentId = it.firestoreId
-            lastSpoonacularSearchApiCall = Timestamp(
-                it.lastSpoonacularSearchApiCallTimestampSec,
-                it.lastSpoonacularSearchApiCallTimestampNanosec
-            )
+    var appMetaDocumentId: String = "".apply {
+        appDBHelper.getOrCreateAppMeta {
+            if (it != null) {
+                appMetaDocumentId = it.firestoreId
+                lastSpoonacularSearchApiCall = Timestamp(
+                    it.lastSpoonacularSearchApiCallTimestampSec,
+                    it.lastSpoonacularSearchApiCallTimestampNanosec
+                )
+            }
         }
     }
 
@@ -175,8 +178,8 @@ class MainViewModel : ViewModel() {
         recipesDBHelper.getAllRecipes {
             if (it.isNotEmpty()) {
                 allRecipeList.postValue(it)
-                resultListener.invoke()
             }
+            resultListener.invoke()
         }
     }
 

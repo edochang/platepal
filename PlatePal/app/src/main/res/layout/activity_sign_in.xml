@@ -34,6 +34,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Enter Email"
+            android:inputType="text"
             android:textSize="15sp" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -53,6 +54,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Enter Password"
+            android:inputType="text"
             android:textSize="15sp" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -65,8 +67,7 @@
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/lPasswordTextInput"
-         />
+        app:layout_constraintTop_toBottomOf="@+id/lPasswordTextInput" />
 
     <LinearLayout
         android:id="@+id/textLayout1"
